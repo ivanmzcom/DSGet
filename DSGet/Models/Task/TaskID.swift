@@ -16,6 +16,14 @@ struct TaskID: Hashable, Sendable, ExpressibleByStringLiteral, CustomStringConve
     var description: String {
         rawValue
     }
+
+    nonisolated static func == (lhs: TaskID, rhs: TaskID) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
+
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
 }
 
 extension TaskID: Codable {

@@ -24,6 +24,14 @@ struct FeedID: Hashable, Sendable, ExpressibleByStringLiteral, CustomStringConve
     var numericValue: Int? {
         Int(rawValue)
     }
+
+    nonisolated static func == (lhs: FeedID, rhs: FeedID) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
+
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
 }
 
 extension FeedID: Codable {
