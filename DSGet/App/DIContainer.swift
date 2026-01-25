@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import DSGetCore
 
 // MARK: - Dependency Container
 

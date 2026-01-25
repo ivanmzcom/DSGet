@@ -12,12 +12,9 @@ struct DSGetApp: App {
     /// Main application ViewModel.
     @State private var appViewModel = AppViewModel()
 
-    private var showLoginSheet: Binding<Bool> {
-        Binding(
-            get: { !appViewModel.isLoggedIn && !appViewModel.isCheckingAuth },
-            set: { _ in }
-        )
-    }
+    /// Tracks whether the login sheet should be shown.
+    /// Using a separate State prevents SwiftUI binding issues with computed properties.
+    @State private var showLoginSheet = false
 
     var body: some Scene {
         WindowGroup {
@@ -29,11 +26,18 @@ struct DSGetApp: App {
                     loadingOverlay
                 }
             }
-            .sheet(isPresented: showLoginSheet) {
-                LoginView(isLoggedIn: Binding(
-                    get: { appViewModel.isLoggedIn },
-                    set: { appViewModel.isLoggedIn = $0 }
-                ))
+            .onChange(of: appViewModel.isLoggedIn) { _, isLoggedIn in
+                showLoginSheet = !isLoggedIn && !appViewModel.isCheckingAuth
+            }
+            .onChange(of: appViewModel.isCheckingAuth) { _, isCheckingAuth in
+                showLoginSheet = !appViewModel.isLoggedIn && !isCheckingAuth
+            }
+            .onAppear {
+                // Initial state check
+                showLoginSheet = !appViewModel.isLoggedIn && !appViewModel.isCheckingAuth
+            }
+            .sheet(isPresented: $showLoginSheet) {
+                LoginView(isLoggedIn: $appViewModel.isLoggedIn)
                 .interactiveDismissDisabled(true)
             }
             .onOpenURL { url in

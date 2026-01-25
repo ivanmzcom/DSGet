@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DSGetCore
 
 private let feedRelativeDateFormatter: RelativeDateTimeFormatter = {
     let formatter = RelativeDateTimeFormatter()

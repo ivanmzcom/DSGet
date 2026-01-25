@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import DSGetCore
 
 struct AddTaskPreselectedTorrent {
     let name: String

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DSGetCore
 
 // MARK: - Authentication Error Notification
 

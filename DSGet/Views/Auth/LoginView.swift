@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DSGetCore
 
 struct LoginView: View {
     @Binding var isLoggedIn: Bool

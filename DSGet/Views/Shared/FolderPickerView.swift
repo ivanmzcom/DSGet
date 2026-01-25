@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DSGetCore
 
 struct FolderPickerView: View {
     @Binding var selectedFolderPath: String

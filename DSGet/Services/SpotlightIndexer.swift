@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreSpotlight
+import DSGetCore
 
 // MARK: - Spotlight Indexer
 

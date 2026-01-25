@@ -7,45 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0AD9498290294A1AEAFCBE24 /* TaskListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF36D20796F0208BCBBDE02D /* TaskListUITests.swift */; };
-		187BA9C21A807F0F44552E76 /* SearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC2A6CCAF2D55A7BB09638A /* SearchUITests.swift */; };
-		1A295C49AEC722421ECB10F3 /* MockUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DFECE9B71D50CC8A9FBE96 /* MockUseCases.swift */; };
-		24404E109923B91B420E30B5 /* DSGetErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5757522144D3B68BDDB33E /* DSGetErrorTests.swift */; };
-		2ABF64136AE273481C32657A /* AppViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECF6402AB7DD7A1C30EDD91 /* AppViewModelTests.swift */; };
-		2C7327662F18273D0085C219 /* FactoryKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2C7327652F18273D0085C219 /* FactoryKit */; };
-		396F6BE9F8DB283D08BCCF79 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F491F3364613D1E4F97DAED /* APITests.swift */; };
-		4B598D8CE5BC96CD477019A7 /* DSGetUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC24239B326A8E3D7CF9AC60 /* DSGetUITestsLaunchTests.swift */; };
-		4BE4FCB22F898164C5782BBF /* TasksViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65002F00A8CA3B7DA3D97F9B /* TasksViewModelTests.swift */; };
-		4F27E5B95FE59FFEE6310829 /* RSSFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAAA35CE31AAC9991679F88 /* RSSFeedTests.swift */; };
-		740B7A5292547BFAD5F5B9C8 /* AppGroupStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E567E1485184C1028145969F /* AppGroupStorageTests.swift */; };
-		76EBB21B2DADFB267AB6D16E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F111BC1A96518A569258CDC4 /* Foundation.framework */; };
-		7D0129F0DE51D6A8393730BF /* FeedsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF770DE33C06D3380368844 /* FeedsUITests.swift */; };
-		853A5372E4053D3907FF5E25 /* NetworkMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137481481CF842BD11D8B9D7 /* NetworkMonitorTests.swift */; };
-		8B09BFA224557C67BF8A08E4 /* DSGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF5661F200F92DCAAC8F50C /* DSGetTests.swift */; };
-		995A61F83BA72A4AE14DC5B7 /* SettingsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59285CDC2ED9187D58D84CF3 /* SettingsUITests.swift */; };
-		A98F8D80E564EDD7C2E6EF7E /* DSGetUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570CE2D9BFB312D17925EDE8 /* DSGetUITests.swift */; };
-		AB637164AFB55DA6C26D9FCF /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AE14C24BE163D2F9DB6E2 /* SearchViewModelTests.swift */; };
-		BE7E29116F6BE21E53752EC1 /* LoginUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465AE8674C054BDE354E6761 /* LoginUITests.swift */; };
-		C8EAD858B9B52F00FD528F35 /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989B246430FC077A11A3E82E /* CacheManagerTests.swift */; };
-		CB860BCF25B12EB27A3F0558 /* FeedsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED25550B4804B9F48A3E28C7 /* FeedsViewModelTests.swift */; };
-		CF601F1168A4537A62556AAD /* DownloadTaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E40565031E5BF9AC336F01 /* DownloadTaskTests.swift */; };
-		FA63342B7C62D2EAB91AD5D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F111BC1A96518A569258CDC4 /* Foundation.framework */; };
+		2C9E82212F2609B200AF889C /* iDSGet Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 2C9E82172F2609B100AF889C /* iDSGet Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2CDSGET0012F26100000000001 /* DSGetCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2CDSGET0012F26100000000002 /* DSGetCore */; };
+		2CDSGET0012F26100000000003 /* DSGetCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2CDSGET0012F26100000000004 /* DSGetCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2405F2571BD5AE2EE4000843 /* PBXContainerItemProxy */ = {
+		2C9E821F2F2609B200AF889C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2C58217A2E85A5E200AB9642 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 2C5821812E85A5E200AB9642;
-			remoteInfo = DSGet;
-		};
-		A833FB4080EBF59C5C6E7044 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2C58217A2E85A5E200AB9642 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2C5821812E85A5E200AB9642;
-			remoteInfo = DSGet;
+			remoteGlobalIDString = 2C9E82162F2609B100AF889C;
+			remoteInfo = "iDSGet Watch App";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -60,41 +33,31 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2C9E82252F2609B200AF889C /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				2C9E82212F2609B200AF889C /* iDSGet Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		080AE14C24BE163D2F9DB6E2 /* SearchViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
-		137481481CF842BD11D8B9D7 /* NetworkMonitorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NetworkMonitorTests.swift; sourceTree = "<group>"; };
 		1954B9A95F1DDC63B3043E45 /* DSGetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1EC2A6CCAF2D55A7BB09638A /* SearchUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SearchUITests.swift; sourceTree = "<group>"; };
 		2C31EED32F16D91000B55639 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		2C31EED52F16D91000B55639 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
 		2C5821822E85A5E200AB9642 /* DSGet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DSGet.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2ECF6402AB7DD7A1C30EDD91 /* AppViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppViewModelTests.swift; sourceTree = "<group>"; };
-		465AE8674C054BDE354E6761 /* LoginUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginUITests.swift; sourceTree = "<group>"; };
-		46DFECE9B71D50CC8A9FBE96 /* MockUseCases.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MockUseCases.swift; sourceTree = "<group>"; };
+		2C9E82172F2609B100AF889C /* iDSGet Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iDSGet Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		53936FA2F4DF26E821F9C919 /* DSGetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		570CE2D9BFB312D17925EDE8 /* DSGetUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DSGetUITests.swift; sourceTree = "<group>"; };
-		59285CDC2ED9187D58D84CF3 /* SettingsUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsUITests.swift; sourceTree = "<group>"; };
-		5BF770DE33C06D3380368844 /* FeedsUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FeedsUITests.swift; sourceTree = "<group>"; };
 		64DB645D36F4F848C0824181 /* DSGetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		65002F00A8CA3B7DA3D97F9B /* TasksViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TasksViewModelTests.swift; sourceTree = "<group>"; };
-		6F491F3364613D1E4F97DAED /* APITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
 		72A233C29BA45C6B9E676575 /* DSGetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		83F9828B82249921416FBBDB /* DSGetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BF2D032BBE6AFA38EED2459 /* DSGetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		989B246430FC077A11A3E82E /* CacheManagerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CacheManagerTests.swift; sourceTree = "<group>"; };
 		A63CAEC3A26C0DEEE66E37DB /* DSGetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9BFF14A36FA14483324915A /* DSGetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BDF5661F200F92DCAAC8F50C /* DSGetTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DSGetTests.swift; sourceTree = "<group>"; };
-		CC24239B326A8E3D7CF9AC60 /* DSGetUITestsLaunchTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DSGetUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		CD5757522144D3B68BDDB33E /* DSGetErrorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DSGetErrorTests.swift; sourceTree = "<group>"; };
-		DEAAA35CE31AAC9991679F88 /* RSSFeedTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RSSFeedTests.swift; sourceTree = "<group>"; };
-		E1FFA88B8501FC1B21C530D3 /* DSGetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E3E40565031E5BF9AC336F01 /* DownloadTaskTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DownloadTaskTests.swift; sourceTree = "<group>"; };
-		E567E1485184C1028145969F /* AppGroupStorageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppGroupStorageTests.swift; sourceTree = "<group>"; };
-		ED25550B4804B9F48A3E28C7 /* FeedsViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FeedsViewModelTests.swift; sourceTree = "<group>"; };
-		EF36D20796F0208BCBBDE02D /* TaskListUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TaskListUITests.swift; sourceTree = "<group>"; };
 		F111BC1A96518A569258CDC4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		F17656EEC55B21E8D5749692 /* DSGetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F67385F2A22D319E18FC0454 /* DSGetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DSGetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,6 +83,11 @@
 			path = DSGet;
 			sourceTree = "<group>";
 		};
+		2C9E82182F2609B100AF889C /* iDSGet Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "iDSGet Watch App";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,45 +95,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C7327662F18273D0085C219 /* FactoryKit in Frameworks */,
+				2CDSGET0012F26100000000001 /* DSGetCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		47DC127AA7248D94585E28EC /* Frameworks */ = {
+		2C9E82142F2609B100AF889C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76EBB21B2DADFB267AB6D16E /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B30BB1924B4C583505E9087C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FA63342B7C62D2EAB91AD5D1 /* Foundation.framework in Frameworks */,
+				2CDSGET0012F26100000000003 /* DSGetCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		116628ED2CF115516204DE29 /* ViewModels/Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				46DFECE9B71D50CC8A9FBE96 /* MockUseCases.swift */,
-			);
-			path = ViewModels/Mocks;
-			sourceTree = "<group>";
-		};
-		160B048AB25424E65FD16DC0 /* API */ = {
-			isa = PBXGroup;
-			children = (
-				6F491F3364613D1E4F97DAED /* APITests.swift */,
-			);
-			path = API;
-			sourceTree = "<group>";
-		};
 		2C31EED22F16D91000B55639 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -180,10 +124,9 @@
 			isa = PBXGroup;
 			children = (
 				2C5821842E85A5E200AB9642 /* DSGet */,
+				2C9E82182F2609B100AF889C /* iDSGet Watch App */,
 				2C31EED22F16D91000B55639 /* Frameworks */,
 				2C5821832E85A5E200AB9642 /* Products */,
-				96FEB044A80751D3C8B92380 /* DSGetTests */,
-				54C0ADFC5965603D697FC06D /* DSGetUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -201,8 +144,7 @@
 				F67385F2A22D319E18FC0454 /* DSGetUITests.xctest */,
 				FE8825B982E07FE9363DCA97 /* DSGetTests.xctest */,
 				1954B9A95F1DDC63B3043E45 /* DSGetUITests.xctest */,
-				83F9828B82249921416FBBDB /* DSGetTests.xctest */,
-				E1FFA88B8501FC1B21C530D3 /* DSGetUITests.xctest */,
+				2C9E82172F2609B100AF889C /* iDSGet Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -213,72 +155,6 @@
 				F111BC1A96518A569258CDC4 /* Foundation.framework */,
 			);
 			name = iOS;
-			sourceTree = "<group>";
-		};
-		54C0ADFC5965603D697FC06D /* DSGetUITests */ = {
-			isa = PBXGroup;
-			children = (
-				570CE2D9BFB312D17925EDE8 /* DSGetUITests.swift */,
-				CC24239B326A8E3D7CF9AC60 /* DSGetUITestsLaunchTests.swift */,
-				5BF770DE33C06D3380368844 /* FeedsUITests.swift */,
-				465AE8674C054BDE354E6761 /* LoginUITests.swift */,
-				1EC2A6CCAF2D55A7BB09638A /* SearchUITests.swift */,
-				59285CDC2ED9187D58D84CF3 /* SettingsUITests.swift */,
-				EF36D20796F0208BCBBDE02D /* TaskListUITests.swift */,
-			);
-			path = DSGetUITests;
-			sourceTree = "<group>";
-		};
-		810CF1B520B334FF7C90ABD3 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				CD5757522144D3B68BDDB33E /* DSGetErrorTests.swift */,
-			);
-			path = Error;
-			sourceTree = "<group>";
-		};
-		96FEB044A80751D3C8B92380 /* DSGetTests */ = {
-			isa = PBXGroup;
-			children = (
-				BDF5661F200F92DCAAC8F50C /* DSGetTests.swift */,
-				E52AE514C64309E7D796FFF5 /* Models */,
-				DD8E83A4D2B34C153D6D85A6 /* Services */,
-				116628ED2CF115516204DE29 /* ViewModels/Mocks */,
-				A43ACBD2A97B8BE5BC54A38A /* ViewModels */,
-				160B048AB25424E65FD16DC0 /* API */,
-				810CF1B520B334FF7C90ABD3 /* Error */,
-			);
-			path = DSGetTests;
-			sourceTree = "<group>";
-		};
-		A43ACBD2A97B8BE5BC54A38A /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				ED25550B4804B9F48A3E28C7 /* FeedsViewModelTests.swift */,
-				65002F00A8CA3B7DA3D97F9B /* TasksViewModelTests.swift */,
-				080AE14C24BE163D2F9DB6E2 /* SearchViewModelTests.swift */,
-				2ECF6402AB7DD7A1C30EDD91 /* AppViewModelTests.swift */,
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		DD8E83A4D2B34C153D6D85A6 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				E567E1485184C1028145969F /* AppGroupStorageTests.swift */,
-				989B246430FC077A11A3E82E /* CacheManagerTests.swift */,
-				137481481CF842BD11D8B9D7 /* NetworkMonitorTests.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		E52AE514C64309E7D796FFF5 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				E3E40565031E5BF9AC336F01 /* DownloadTaskTests.swift */,
-				DEAAA35CE31AAC9991679F88 /* RSSFeedTests.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -292,54 +168,46 @@
 				2C58217F2E85A5E200AB9642 /* Frameworks */,
 				2C5821802E85A5E200AB9642 /* Resources */,
 				2C31EEE82F16D91000B55639 /* Embed Foundation Extensions */,
+				2C9E82252F2609B200AF889C /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2C9E82202F2609B200AF889C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2C5821842E85A5E200AB9642 /* DSGet */,
+			);
+			name = DSGet;
+			packageProductDependencies = (
+				2CDSGET0012F26100000000002 /* DSGetCore */,
+			);
+			productName = DSGet;
+			productReference = 2C5821822E85A5E200AB9642 /* DSGet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2C9E82162F2609B100AF889C /* iDSGet Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C9E82222F2609B200AF889C /* Build configuration list for PBXNativeTarget "iDSGet Watch App" */;
+			buildPhases = (
+				2C9E82132F2609B100AF889C /* Sources */,
+				2C9E82142F2609B100AF889C /* Frameworks */,
+				2C9E82152F2609B100AF889C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				2C5821842E85A5E200AB9642 /* DSGet */,
+				2C9E82182F2609B100AF889C /* iDSGet Watch App */,
 			);
-			name = DSGet;
-			productName = DSGet;
-			productReference = 2C5821822E85A5E200AB9642 /* DSGet.app */;
+			name = "iDSGet Watch App";
+			packageProductDependencies = (
+				2CDSGET0012F26100000000004 /* DSGetCore */,
+			);
+			productName = "iDSGet Watch App";
+			productReference = 2C9E82172F2609B100AF889C /* iDSGet Watch App.app */;
 			productType = "com.apple.product-type.application";
-		};
-		3481D978D477D0B6D4A7F750 /* DSGetTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 706F37BF602FF8B92BAF38C6 /* Build configuration list for PBXNativeTarget "DSGetTests" */;
-			buildPhases = (
-				8ABC1BB15E0877A7A9DC43CC /* Sources */,
-				B30BB1924B4C583505E9087C /* Frameworks */,
-				18B1848EDCA81F25BB65723F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EF99397639D98F27BF252FE4 /* PBXTargetDependency */,
-			);
-			name = DSGetTests;
-			productName = DSGetTests;
-			productReference = 83F9828B82249921416FBBDB /* DSGetTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		98A49B4F3347BCF038FF6069 /* DSGetUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 85109C9EAC64A950079CA725 /* Build configuration list for PBXNativeTarget "DSGetUITests" */;
-			buildPhases = (
-				EC8BFB61412C9C8AC274D8ED /* Sources */,
-				47DC127AA7248D94585E28EC /* Frameworks */,
-				CCED77CBA2A85B48279B46FA /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				092257CD8DB74EF85021F83C /* PBXTargetDependency */,
-			);
-			name = DSGetUITests;
-			productName = DSGetUITests;
-			productReference = E1FFA88B8501FC1B21C530D3 /* DSGetUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -354,6 +222,9 @@
 					2C5821812E85A5E200AB9642 = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
+					2C9E82162F2609B100AF889C = {
+						CreatedOnToolsVersion = 26.2;
+					};
 				};
 			};
 			buildConfigurationList = 2C58217D2E85A5E200AB9642 /* Build configuration list for PBXProject "DSGet" */;
@@ -366,7 +237,7 @@
 			mainGroup = 2C5821792E85A5E200AB9642;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				2C7327642F18273D0085C219 /* XCRemoteSwiftPackageReference "Factory" */,
+				2CDSGET0012F26100000000005 /* XCLocalSwiftPackageReference "DSGetCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2C5821832E85A5E200AB9642 /* Products */;
@@ -374,20 +245,12 @@
 			projectRoot = "";
 			targets = (
 				2C5821812E85A5E200AB9642 /* DSGet */,
-				3481D978D477D0B6D4A7F750 /* DSGetTests */,
-				98A49B4F3347BCF038FF6069 /* DSGetUITests */,
+				2C9E82162F2609B100AF889C /* iDSGet Watch App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		18B1848EDCA81F25BB65723F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		2C5821802E85A5E200AB9642 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -395,7 +258,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CCED77CBA2A85B48279B46FA /* Resources */ = {
+		2C9E82152F2609B100AF889C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -412,54 +275,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8ABC1BB15E0877A7A9DC43CC /* Sources */ = {
+		2C9E82132F2609B100AF889C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B09BFA224557C67BF8A08E4 /* DSGetTests.swift in Sources */,
-				CF601F1168A4537A62556AAD /* DownloadTaskTests.swift in Sources */,
-				4F27E5B95FE59FFEE6310829 /* RSSFeedTests.swift in Sources */,
-				740B7A5292547BFAD5F5B9C8 /* AppGroupStorageTests.swift in Sources */,
-				C8EAD858B9B52F00FD528F35 /* CacheManagerTests.swift in Sources */,
-				853A5372E4053D3907FF5E25 /* NetworkMonitorTests.swift in Sources */,
-				1A295C49AEC722421ECB10F3 /* MockUseCases.swift in Sources */,
-				CB860BCF25B12EB27A3F0558 /* FeedsViewModelTests.swift in Sources */,
-				4BE4FCB22F898164C5782BBF /* TasksViewModelTests.swift in Sources */,
-				AB637164AFB55DA6C26D9FCF /* SearchViewModelTests.swift in Sources */,
-				2ABF64136AE273481C32657A /* AppViewModelTests.swift in Sources */,
-				396F6BE9F8DB283D08BCCF79 /* APITests.swift in Sources */,
-				24404E109923B91B420E30B5 /* DSGetErrorTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC8BFB61412C9C8AC274D8ED /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A98F8D80E564EDD7C2E6EF7E /* DSGetUITests.swift in Sources */,
-				4B598D8CE5BC96CD477019A7 /* DSGetUITestsLaunchTests.swift in Sources */,
-				7D0129F0DE51D6A8393730BF /* FeedsUITests.swift in Sources */,
-				BE7E29116F6BE21E53752EC1 /* LoginUITests.swift in Sources */,
-				187BA9C21A807F0F44552E76 /* SearchUITests.swift in Sources */,
-				995A61F83BA72A4AE14DC5B7 /* SettingsUITests.swift in Sources */,
-				0AD9498290294A1AEAFCBE24 /* TaskListUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		092257CD8DB74EF85021F83C /* PBXTargetDependency */ = {
+		2C9E82202F2609B200AF889C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = DSGet;
-			target = 2C5821812E85A5E200AB9642 /* DSGet */;
-			targetProxy = 2405F2571BD5AE2EE4000843 /* PBXContainerItemProxy */;
-		};
-		EF99397639D98F27BF252FE4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = DSGet;
-			target = 2C5821812E85A5E200AB9642 /* DSGet */;
-			targetProxy = A833FB4080EBF59C5C6E7044 /* PBXContainerItemProxy */;
+			target = 2C9E82162F2609B100AF889C /* iDSGet Watch App */;
+			targetProxy = 2C9E821F2F2609B200AF889C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -588,7 +417,7 @@
 				CODE_SIGN_ENTITLEMENTS = DSGet/DSGet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V6HSSZ7WYZ;
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -628,8 +457,8 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -643,7 +472,7 @@
 				CODE_SIGN_ENTITLEMENTS = DSGet/DSGet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V6HSSZ7WYZ;
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -683,94 +512,77 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		4CD55C64278CD6FF4CFC7C9B /* Debug */ = {
+		2C9E82232F2609B200AF889C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V6HSSZ7WYZ;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DSGetTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetTests;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = iDSGet;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ivanmz.DSGet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_STRICT_CONCURRENCY = minimal;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DSGet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DSGet";
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
 			};
 			name = Debug;
 		};
-		6BA3DDFE2F4FA4206F06D21C /* Debug */ = {
+		2C9E82242F2609B200AF889C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ENABLE_OBJC_WEAK = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V6HSSZ7WYZ;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DSGetUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetUITests;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = iDSGet;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ivanmz.DSGet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_STRICT_CONCURRENCY = minimal;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = DSGet;
-			};
-			name = Debug;
-		};
-		903C3B96D4A81ED300CF2476 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V6HSSZ7WYZ;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DSGetTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DSGet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DSGet";
+				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		B03CB92F5D6974139C7235B9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V6HSSZ7WYZ;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DSGetUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = DSGet;
-				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
 			};
 			name = Release;
 		};
@@ -795,42 +607,32 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		706F37BF602FF8B92BAF38C6 /* Build configuration list for PBXNativeTarget "DSGetTests" */ = {
+		2C9E82222F2609B200AF889C /* Build configuration list for PBXNativeTarget "iDSGet Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				903C3B96D4A81ED300CF2476 /* Release */,
-				4CD55C64278CD6FF4CFC7C9B /* Debug */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		85109C9EAC64A950079CA725 /* Build configuration list for PBXNativeTarget "DSGetUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B03CB92F5D6974139C7235B9 /* Release */,
-				6BA3DDFE2F4FA4206F06D21C /* Debug */,
+				2C9E82232F2609B200AF889C /* Debug */,
+				2C9E82242F2609B200AF889C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		2C7327642F18273D0085C219 /* XCRemoteSwiftPackageReference "Factory" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/hmlongco/Factory";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.5.3;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		2CDSGET0012F26100000000005 /* XCLocalSwiftPackageReference "DSGetCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = DSGetCore;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2C7327652F18273D0085C219 /* FactoryKit */ = {
+		2CDSGET0012F26100000000002 /* DSGetCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2C7327642F18273D0085C219 /* XCRemoteSwiftPackageReference "Factory" */;
-			productName = FactoryKit;
+			productName = DSGetCore;
+		};
+		2CDSGET0012F26100000000004 /* DSGetCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DSGetCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

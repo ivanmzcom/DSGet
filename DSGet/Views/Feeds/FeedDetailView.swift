@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import DSGetCore
 
 struct FeedDetailView: View {
     var onClose: (() -> Void)? = nil

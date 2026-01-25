@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DSGetCore
 
 enum TaskDetailTab: String, CaseIterable {
     case general = "General"

@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import DSGetCore
 
 struct SettingsView: View {
     @Environment(AppViewModel.self) private var appViewModel
