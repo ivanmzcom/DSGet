@@ -2,7 +2,6 @@ import Foundation
 
 /// Maps between Task DTOs and Domain Entities.
 public struct TaskMapper: Sendable {
-
     public init() {}
 
     // MARK: - DTO to Entity

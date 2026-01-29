@@ -17,11 +17,11 @@ public struct TaskID: Hashable, Sendable, ExpressibleByStringLiteral, CustomStri
         rawValue
     }
 
-    public nonisolated static func == (lhs: TaskID, rhs: TaskID) -> Bool {
+    nonisolated public static func == (lhs: TaskID, rhs: TaskID) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
 
-    public nonisolated func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(rawValue)
     }
 }

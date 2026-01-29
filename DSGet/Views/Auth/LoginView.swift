@@ -76,7 +76,7 @@ struct LoginView: View {
                 Section {
                     Button(action: {
                         Task { await login() }
-                    }) {
+                    }, label: {
                         HStack {
                             Spacer()
                             if viewModel.isLoading {
@@ -88,7 +88,7 @@ struct LoginView: View {
                             }
                             Spacer()
                         }
-                    }
+                    })
                     .disabled(viewModel.isLoading || !viewModel.isFormValid)
                 }
 

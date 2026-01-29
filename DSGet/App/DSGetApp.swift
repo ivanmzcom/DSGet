@@ -61,7 +61,6 @@ struct DSGetApp: App {
         }
         .ignoresSafeArea()
     }
-
 }
 
 // MARK: - OTP Sheet View

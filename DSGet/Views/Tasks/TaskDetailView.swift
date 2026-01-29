@@ -27,7 +27,6 @@ enum TaskDetailTab: String, CaseIterable {
 }
 
 struct TaskDetailView: View {
-
     @State private var viewModel: TaskDetailViewModel
     let onClose: (() -> Void)?
     @Environment(\.dismiss) var dismiss
@@ -118,191 +117,6 @@ struct TaskDetailView: View {
         return allowedSchemes.contains(scheme) ? rawURI : nil
     }
 
-    // MARK: - Section Views
-
-    @ViewBuilder
-    private var generalTabContent: some View {
-        List {
-            overviewSection
-            taskInfoSection
-        }
-    }
-
-    @ViewBuilder
-    private var transferTabContent: some View {
-        List {
-            transferSection
-        }
-    }
-
-    @ViewBuilder
-    private var trackersTabContent: some View {
-        List {
-            trackersSection
-        }
-    }
-
-    @ViewBuilder
-    private var peersTabContent: some View {
-        List {
-            connectionSection
-        }
-    }
-
-    @ViewBuilder
-    private var filesTabContent: some View {
-        List {
-            filesSection
-        }
-    }
-
-    @ViewBuilder
-    private var overviewSection: some View {
-        Section(String.localized("taskDetail.overview")) {
-            LabeledContent(String.localized("taskDetail.title")) {
-                Text(viewModel.task.title)
-                    .multilineTextAlignment(.trailing)
-            }
-            LabeledContent(String.localized("taskDetail.status")) {
-                Text(statusTextAndColor.text)
-                    .foregroundStyle(statusTextAndColor.color)
-            }
-            LabeledContent(String.localized("taskDetail.progress")) {
-                Text(progressPercentage)
-            }
-            ProgressView(value: progressValue)
-                .tint(statusTextAndColor.color)
-            LabeledContent(String.localized("taskDetail.totalSize")) { Text(viewModel.task.size.formatted) }
-            LabeledContent(String.localized("taskDetail.downloaded")) { Text(viewModel.task.downloadedSize.formatted) }
-            LabeledContent(String.localized("taskDetail.uploaded")) { Text(viewModel.task.uploadedSize.formatted) }
-        }
-    }
-
-    @ViewBuilder
-    private var transferSection: some View {
-        Section(String.localized("taskDetail.transferDetails")) {
-            if let downloadSpeed = downloadSpeed {
-                LabeledContent(String.localized("taskDetail.downloadSpeed")) { Text(downloadSpeed) }
-            }
-            if let uploadSpeed = uploadSpeed {
-                LabeledContent(String.localized("taskDetail.uploadSpeed")) { Text(uploadSpeed) }
-            }
-            if let etaText = etaText {
-                LabeledContent(String.localized("taskDetail.timeRemaining")) { Text(etaText) }
-            }
-            if let seedElapsed = viewModel.task.detail?.seedElapsed, seedElapsed > 0 {
-                LabeledContent(String.localized("taskDetail.seedingTime")) { Text(formatTimeInterval(seedElapsed)) }
-            }
-            if !hasTransferDetails {
-                ContentUnavailableView(String.localized("taskDetail.noTransferData"), systemImage: "arrow.down.arrow.up", description: Text(String.localized("taskDetail.noTransferData.description")))
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var taskInfoSection: some View {
-        Section(String.localized("taskDetail.taskInfo")) {
-            LabeledContent(String.localized("taskDetail.type")) { Text(viewModel.task.type.displayName) }
-            if let createTime = viewModel.task.detail?.createTime {
-                LabeledContent(String.localized("taskDetail.created")) { Text(formatDate(createTime)) }
-            }
-            if let startTime = viewModel.task.detail?.startedTime {
-                LabeledContent(String.localized("taskDetail.started")) { Text(formatDate(startTime)) }
-            }
-            if let completedTime = viewModel.task.detail?.completedTime {
-                LabeledContent(String.localized("taskDetail.completed")) { Text(formatDate(completedTime)) }
-            }
-            destinationRow
-            uriRow
-        }
-    }
-
-    @ViewBuilder
-    private var destinationRow: some View {
-        let destination = viewModel.task.destination
-        if !destination.isEmpty {
-            Button {
-                viewModel.showingEditDestination = true
-            } label: {
-                LabeledContent(String.localized("taskDetail.destination")) {
-                    HStack {
-                        Text(destination)
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-        }
-    }
-
-    @ViewBuilder
-    private var uriRow: some View {
-        if let rawURI = viewModel.task.detail?.uri {
-            if let shareableURI = shareableURI {
-                ShareLink(item: shareableURI) {
-                    HStack {
-                        Text("URI")
-                        Spacer()
-                        Text(rawURI)
-                            .font(.caption)
-                            .lineLimit(1)
-                    }
-                }
-            } else {
-                LabeledContent(String.localized("taskDetail.uri")) {
-                    Text(rawURI)
-                        .font(.caption)
-                        .lineLimit(2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var connectionSection: some View {
-        Section(String.localized("taskDetail.connectionInfo")) {
-            if let detail = viewModel.task.detail, detail.hasPeerInfo {
-                LabeledContent(String.localized("taskDetail.connectedPeers")) { Text("\(detail.connectedPeers)") }
-                LabeledContent(String.localized("taskDetail.connectedSeeders")) { Text("\(detail.connectedSeeders)") }
-                LabeledContent(String.localized("taskDetail.connectedLeechers")) { Text("\(detail.connectedLeechers)") }
-                LabeledContent(String.localized("taskDetail.totalPeers")) { Text("\(detail.totalPeers)") }
-            } else {
-                ContentUnavailableView(String.localized("taskDetail.noPeerInfo"), systemImage: "person.2", description: Text(String.localized("taskDetail.noPeerInfo.description")))
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var filesSection: some View {
-        if !viewModel.task.files.isEmpty {
-            Section(String.localized("taskDetail.filesCount").replacingOccurrences(of: "%d", with: "\(viewModel.task.files.count)")) {
-                ForEach(viewModel.task.files) { file in
-                    fileRow(file)
-                }
-            }
-        } else {
-            ContentUnavailableView(String.localized("taskDetail.noFiles"), systemImage: "doc.on.doc", description: Text(String.localized("taskDetail.noFiles.description")))
-        }
-    }
-
-    private func fileRow(_ file: TaskFile) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(file.name)
-                    .font(.body)
-                Spacer()
-                Text(file.size.formatted)
-                    .foregroundStyle(.secondary)
-            }
-            ProgressView(value: file.progress)
-                .tint(.accentColor)
-        }
-        .opacity(file.isWanted ? 1.0 : 0.5)
-    }
-
     @ViewBuilder
     private var trackersSection: some View {
         if !viewModel.task.trackers.isEmpty {
@@ -312,7 +126,11 @@ struct TaskDetailView: View {
                 }
             }
         } else {
-            ContentUnavailableView(String.localized("taskDetail.noTrackers"), systemImage: "antenna.radiowaves.left.and.right", description: Text(String.localized("taskDetail.noTrackers.description")))
+            ContentUnavailableView(
+                String.localized("taskDetail.noTrackers"),
+                systemImage: "antenna.radiowaves.left.and.right",
+                description: Text(String.localized("taskDetail.noTrackers.description"))
+            )
         }
     }
 
@@ -377,13 +195,21 @@ struct TaskDetailView: View {
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(viewModel.isTaskPaused ? String.localized("taskDetail.button.resume") : String.localized("taskDetail.button.pause")) {
+                Button(
+                    viewModel.isTaskPaused
+                        ? String.localized("taskDetail.button.resume")
+                        : String.localized("taskDetail.button.pause")
+                ) {
                     Task { await viewModel.togglePauseResume() }
                 }
                 .disabled(!viewModel.canTogglePause)
             }
             ToolbarItem(placement: .destructiveAction) {
-                Button(String.localized("taskDetail.button.delete"), systemImage: "trash", role: .destructive) {
+                Button(
+                    String.localized("taskDetail.button.delete"),
+                    systemImage: "trash",
+                    role: .destructive
+                ) {
                     viewModel.showingDeleteConfirmation = true
                 }
                 .disabled(viewModel.isProcessingAction)
@@ -394,7 +220,11 @@ struct TaskDetailView: View {
                 }
             }
         }
-        .confirmationDialog(String.localized("taskDetail.delete.confirmTitle"), isPresented: $viewModel.showingDeleteConfirmation, titleVisibility: .visible) {
+        .confirmationDialog(
+            String.localized("taskDetail.delete.confirmTitle"),
+            isPresented: $viewModel.showingDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
             Button(String.localized("taskDetail.delete.confirmButton"), role: .destructive) {
                 Task {
                     await viewModel.deleteTask()
@@ -406,11 +236,11 @@ struct TaskDetailView: View {
             Text("Are you sure you want to delete \"\(viewModel.task.title)\"?")
         }
         .sheet(isPresented: $viewModel.showingEditDestination) {
-            EditDestinationSheet(task: viewModel.task, onSave: { newDestination in
-                Task { await viewModel.editDestination(newDestination) }
-            }, onDismiss: {
-                viewModel.showingEditDestination = false
-            })
+            EditDestinationSheet(
+                task: viewModel.task,
+                onSave: { newDestination in Task { await viewModel.editDestination(newDestination) } },
+                onDismiss: { viewModel.showingEditDestination = false }
+            )
         }
         .alert(String.localized("error.title"), isPresented: $viewModel.showingError) {
             Button("OK") { }
@@ -434,6 +264,205 @@ struct TaskDetailView: View {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
+    }
+}
+
+// MARK: - TaskDetailView Extension (Tab Content & Sections)
+
+private extension TaskDetailView {
+    @ViewBuilder
+    var generalTabContent: some View {
+        List {
+            overviewSection
+            taskInfoSection
+        }
+    }
+
+    @ViewBuilder
+    var transferTabContent: some View {
+        List {
+            transferSection
+        }
+    }
+
+    @ViewBuilder
+    var trackersTabContent: some View {
+        List {
+            trackersSection
+        }
+    }
+
+    @ViewBuilder
+    var peersTabContent: some View {
+        List {
+            connectionSection
+        }
+    }
+
+    @ViewBuilder
+    var filesTabContent: some View {
+        List {
+            filesSection
+        }
+    }
+
+    @ViewBuilder
+    var overviewSection: some View {
+        Section(String.localized("taskDetail.overview")) {
+            LabeledContent(String.localized("taskDetail.title")) {
+                Text(viewModel.task.title)
+                    .multilineTextAlignment(.trailing)
+            }
+            LabeledContent(String.localized("taskDetail.status")) {
+                Text(statusTextAndColor.text)
+                    .foregroundStyle(statusTextAndColor.color)
+            }
+            LabeledContent(String.localized("taskDetail.progress")) {
+                Text(progressPercentage)
+            }
+            ProgressView(value: progressValue)
+                .tint(statusTextAndColor.color)
+            LabeledContent(String.localized("taskDetail.totalSize")) { Text(viewModel.task.size.formatted) }
+            LabeledContent(String.localized("taskDetail.downloaded")) { Text(viewModel.task.downloadedSize.formatted) }
+            LabeledContent(String.localized("taskDetail.uploaded")) { Text(viewModel.task.uploadedSize.formatted) }
+        }
+    }
+
+    @ViewBuilder
+    var transferSection: some View {
+        Section(String.localized("taskDetail.transferDetails")) {
+            if let downloadSpeed = downloadSpeed {
+                LabeledContent(String.localized("taskDetail.downloadSpeed")) { Text(downloadSpeed) }
+            }
+            if let uploadSpeed = uploadSpeed {
+                LabeledContent(String.localized("taskDetail.uploadSpeed")) { Text(uploadSpeed) }
+            }
+            if let etaText = etaText {
+                LabeledContent(String.localized("taskDetail.timeRemaining")) { Text(etaText) }
+            }
+            if let seedElapsed = viewModel.task.detail?.seedElapsed, seedElapsed > 0 {
+                LabeledContent(String.localized("taskDetail.seedingTime")) { Text(formatTimeInterval(seedElapsed)) }
+            }
+            if !hasTransferDetails {
+                ContentUnavailableView(
+                    String.localized("taskDetail.noTransferData"),
+                    systemImage: "arrow.down.arrow.up",
+                    description: Text(String.localized("taskDetail.noTransferData.description"))
+                )
+            }
+        }
+    }
+
+    @ViewBuilder
+    var taskInfoSection: some View {
+        Section(String.localized("taskDetail.taskInfo")) {
+            LabeledContent(String.localized("taskDetail.type")) { Text(viewModel.task.type.displayName) }
+            if let createTime = viewModel.task.detail?.createTime {
+                LabeledContent(String.localized("taskDetail.created")) { Text(formatDate(createTime)) }
+            }
+            if let startTime = viewModel.task.detail?.startedTime {
+                LabeledContent(String.localized("taskDetail.started")) { Text(formatDate(startTime)) }
+            }
+            if let completedTime = viewModel.task.detail?.completedTime {
+                LabeledContent(String.localized("taskDetail.completed")) { Text(formatDate(completedTime)) }
+            }
+            destinationRow
+            uriRow
+        }
+    }
+
+    @ViewBuilder
+    var destinationRow: some View {
+        let destination = viewModel.task.destination
+        if !destination.isEmpty {
+            Button {
+                viewModel.showingEditDestination = true
+            } label: {
+                LabeledContent(String.localized("taskDetail.destination")) {
+                    HStack {
+                        Text(destination)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    @ViewBuilder
+    var uriRow: some View {
+        if let rawURI = viewModel.task.detail?.uri {
+            if let shareableURI = shareableURI {
+                ShareLink(item: shareableURI) {
+                    HStack {
+                        Text("URI")
+                        Spacer()
+                        Text(rawURI)
+                            .font(.caption)
+                            .lineLimit(1)
+                    }
+                }
+            } else {
+                LabeledContent(String.localized("taskDetail.uri")) {
+                    Text(rawURI)
+                        .font(.caption)
+                        .lineLimit(2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    var connectionSection: some View {
+        Section(String.localized("taskDetail.connectionInfo")) {
+            if let detail = viewModel.task.detail, detail.hasPeerInfo {
+                LabeledContent(String.localized("taskDetail.connectedPeers")) { Text("\(detail.connectedPeers)") }
+                LabeledContent(String.localized("taskDetail.connectedSeeders")) { Text("\(detail.connectedSeeders)") }
+                LabeledContent(String.localized("taskDetail.connectedLeechers")) { Text("\(detail.connectedLeechers)") }
+                LabeledContent(String.localized("taskDetail.totalPeers")) { Text("\(detail.totalPeers)") }
+            } else {
+                ContentUnavailableView(
+                    String.localized("taskDetail.noPeerInfo"),
+                    systemImage: "person.2",
+                    description: Text(String.localized("taskDetail.noPeerInfo.description"))
+                )
+            }
+        }
+    }
+
+    @ViewBuilder
+    var filesSection: some View {
+        if !viewModel.task.files.isEmpty {
+            Section(String.localized("taskDetail.filesCount").replacingOccurrences(of: "%d", with: "\(viewModel.task.files.count)")) {
+                ForEach(viewModel.task.files) { file in
+                    fileRow(file)
+                }
+            }
+        } else {
+            ContentUnavailableView(
+                String.localized("taskDetail.noFiles"),
+                systemImage: "doc.on.doc",
+                description: Text(String.localized("taskDetail.noFiles.description"))
+            )
+        }
+    }
+
+    func fileRow(_ file: TaskFile) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(file.name)
+                    .font(.body)
+                Spacer()
+                Text(file.size.formatted)
+                    .foregroundStyle(.secondary)
+            }
+            ProgressView(value: file.progress)
+                .tint(.accentColor)
+        }
+        .opacity(file.isWanted ? 1.0 : 0.5)
     }
 }
 

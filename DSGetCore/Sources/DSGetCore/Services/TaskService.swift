@@ -2,7 +2,6 @@ import Foundation
 
 /// Task service implementation for download operations.
 public final class TaskService: TaskServiceProtocol, @unchecked Sendable {
-
     private let apiClient: SynologyAPIClient
     private let connectivityService: ConnectivityServiceProtocol
     private let mapper: TaskMapper
@@ -131,15 +130,14 @@ public final class TaskService: TaskServiceProtocol, @unchecked Sendable {
             params["destination"] = dest
         }
 
+        let file = FileUpload(data: data, fileName: fileName, mimeType: "application/x-bittorrent")
         let _: SynoResponseDTO<EmptyDataDTO> = try await apiClient.postMultipart(
             endpoint: .downloadStation,
             api: "SYNO.DownloadStation.Task",
             method: "create",
             version: 3,
             params: params,
-            fileData: data,
-            fileName: fileName,
-            mimeType: "application/x-bittorrent"
+            file: file
         )
     }
 }

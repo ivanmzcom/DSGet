@@ -12,7 +12,6 @@ import DSGetCore
 // MARK: - Clipboard Utilities
 
 enum ClipboardUtility {
-
     static func copy(_ text: String) {
         UIPasteboard.general.string = text
     }
@@ -158,7 +157,6 @@ struct FeedItemContextMenu: View {
 // MARK: - View Extension for Context Menus
 
 extension View {
-
     /// Applies a task context menu to the view.
     func taskContextMenu(
         task: DownloadTask,

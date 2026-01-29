@@ -13,7 +13,6 @@ public struct FeedsResult: Sendable {
 
 /// Protocol for RSS feed operations.
 public protocol FeedServiceProtocol: Sendable {
-
     /// Fetches all RSS feeds with caching and offline support.
     /// - Parameter forceRefresh: If true, bypasses cache.
     /// - Returns: Result containing feeds and cache status.

@@ -58,11 +58,11 @@ struct MainView: View {
                     .environment(appViewModel)
             }
         }
-        .sheet(isPresented: $appVM.isShowingAddTask, onDismiss: {
-            appVM.prefilledAddTaskURL = nil
-        }) {
-            addTaskSheet
-        }
+        .sheet(
+            isPresented: $appVM.isShowingAddTask,
+            onDismiss: { appVM.prefilledAddTaskURL = nil },
+            content: { addTaskSheet }
+        )
         .onChange(of: appVM.incomingTorrentURL) { _, newValue in
             if newValue != nil {
                 selectedTab = .downloads
@@ -83,7 +83,11 @@ struct MainView: View {
     @ViewBuilder
     private var addTaskSheet: some View {
         NavigationStack {
-            AddTaskView(preselectedTorrent: nil, prefilledURL: appViewModel.prefilledAddTaskURL, isFromSearch: appViewModel.prefilledAddTaskURL != nil)
+            AddTaskView(
+                preselectedTorrent: nil,
+                prefilledURL: appViewModel.prefilledAddTaskURL,
+                isFromSearch: appViewModel.prefilledAddTaskURL != nil
+            )
         }
     }
 }
@@ -124,11 +128,11 @@ struct DownloadsTabView: View {
     @ViewBuilder
     private var taskDetailContent: some View {
         if let task = tasksVM.selectedTask {
-            TaskDetailView(task: task, onTaskUpdated: {
-                Task { await tasksVM.fetchTasks(forceRefresh: true) }
-            }, onClose: {
-                tasksVM.selectedTask = nil
-            })
+            TaskDetailView(
+                task: task,
+                onTaskUpdated: { Task { await tasksVM.fetchTasks(forceRefresh: true) } },
+                onClose: { tasksVM.selectedTask = nil }
+            )
             .id(task.id)
         } else {
             ContentUnavailableView(String.localized("tasks.selectTask"), systemImage: "arrow.down.circle")

@@ -10,7 +10,6 @@ import Foundation
 // MARK: - AppConstants
 
 enum AppConstants {
-
     // MARK: - App Group
 
     enum AppGroup {

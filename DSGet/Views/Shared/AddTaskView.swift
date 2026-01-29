@@ -24,7 +24,12 @@ struct AddTaskView: View {
 
     @State private var isShowingFilePicker = false
 
-    init(preselectedTorrent: AddTaskPreselectedTorrent? = nil, prefilledURL: String? = nil, feedItemTitle: String? = nil, isFromSearch: Bool = false) {
+    init(
+        preselectedTorrent: AddTaskPreselectedTorrent? = nil,
+        prefilledURL: String? = nil,
+        feedItemTitle: String? = nil,
+        isFromSearch: Bool = false
+    ) {
         self.feedItemTitle = feedItemTitle?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.isFromSearch = isFromSearch
         _viewModel = State(initialValue: AddTaskViewModel(
@@ -55,7 +60,11 @@ struct AddTaskView: View {
         .sheet(isPresented: $viewModel.showingFolderPicker) {
             folderPickerSheet
         }
-        .fileImporter(isPresented: $isShowingFilePicker, allowedContentTypes: [UTType(filenameExtension: "torrent") ?? .data], onCompletion: handleFileImport)
+        .fileImporter(
+            isPresented: $isShowingFilePicker,
+            allowedContentTypes: [UTType(filenameExtension: "torrent") ?? .data],
+            onCompletion: handleFileImport
+        )
         .alert(String.localized("addTask.alert.success"), isPresented: $viewModel.showingSuccessAlert) {
             Button("OK") { dismiss() }
         } message: {
@@ -144,7 +153,7 @@ struct AddTaskView: View {
     @ViewBuilder
     private var fileInputRow: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Button(action: { isShowingFilePicker = true }) {
+            Button(action: { isShowingFilePicker = true }, label: {
                 HStack {
                     if let selectedTorrentName = viewModel.selectedTorrentName {
                         Text(selectedTorrentName)
@@ -157,7 +166,7 @@ struct AddTaskView: View {
                     Image(systemName: "doc.badge.plus")
                         .foregroundStyle(.secondary)
                 }
-            }
+            })
 
             if viewModel.selectedTorrentName != nil {
                 Button(role: .destructive) {
@@ -175,7 +184,7 @@ struct AddTaskView: View {
     private var folderPickerButton: some View {
         Button(action: {
             viewModel.showingFolderPicker = true
-        }) {
+        }, label: {
             HStack {
                 Text(viewModel.destinationFolderPath.isEmpty ? "Select folder..." : viewModel.destinationFolderPath)
                     .foregroundStyle(viewModel.destinationFolderPath.isEmpty ? .secondary : .primary)
@@ -183,7 +192,7 @@ struct AddTaskView: View {
                 Image(systemName: "folder")
                     .foregroundStyle(.secondary)
             }
-        }
+        })
     }
 
     // MARK: - Recent Folders Section
@@ -225,7 +234,7 @@ struct AddTaskView: View {
         Section(String.localized("addTask.section.input")) {
             Button(action: {
                 Task { await viewModel.createTask() }
-            }) {
+            }, label: {
                 HStack {
                     Spacer()
                     if viewModel.isLoading {
@@ -235,7 +244,7 @@ struct AddTaskView: View {
                     }
                     Spacer()
                 }
-            }
+            })
             .disabled(viewModel.isLoading || !viewModel.canCreateTask)
         }
     }

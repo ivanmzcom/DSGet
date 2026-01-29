@@ -2,7 +2,6 @@ import Foundation
 
 /// Maps between FileStation DTOs and Domain Entities.
 public struct FileMapper: Sendable {
-
     public init() {}
 
     // MARK: - File DTO to Entity

@@ -79,7 +79,6 @@ struct IllustratedEmptyState: View {
 // MARK: - Predefined Empty States
 
 extension IllustratedEmptyState {
-
     /// Empty state for no downloads.
     static func noDownloads(onAdd: @escaping () -> Void) -> IllustratedEmptyState {
         IllustratedEmptyState(

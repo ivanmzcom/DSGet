@@ -32,7 +32,6 @@ protocol OfflineModeSupporting: AnyObject {
 // MARK: - Default Implementation
 
 extension DomainErrorHandling {
-
     /// Converts a DomainError to DSGetError and sets the error state.
     /// Uses DomainError's built-in categorization properties for cleaner mapping.
     func handleDomainError(_ error: DomainError) {

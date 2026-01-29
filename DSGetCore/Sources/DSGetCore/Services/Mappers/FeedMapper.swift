@@ -2,7 +2,6 @@ import Foundation
 
 /// Maps between RSS Feed DTOs and Domain Entities.
 public struct FeedMapper: Sendable {
-
     public init() {}
 
     // MARK: - DTO to Entity

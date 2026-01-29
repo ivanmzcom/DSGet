@@ -20,7 +20,6 @@ public struct TasksResult: Sendable {
 
 /// Protocol for task operations.
 public protocol TaskServiceProtocol: Sendable {
-
     /// Fetches all download tasks with caching and offline support.
     /// - Parameter forceRefresh: If true, bypasses cache.
     /// - Returns: Result containing tasks and cache status.

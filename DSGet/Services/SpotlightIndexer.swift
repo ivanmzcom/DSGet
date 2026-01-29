@@ -13,7 +13,6 @@ import DSGetCore
 
 @MainActor
 final class SpotlightIndexer {
-
     static let shared = SpotlightIndexer()
 
     private let domainIdentifier = "com.dsget.tasks"
@@ -163,7 +162,6 @@ final class SpotlightIndexer {
 // MARK: - Spotlight Activity Handler
 
 extension SpotlightIndexer {
-
     /// Extracts the task ID from a Spotlight user activity.
     func taskID(from userActivity: NSUserActivity) -> String? {
         guard userActivity.activityType == CSSearchableItemActionType,

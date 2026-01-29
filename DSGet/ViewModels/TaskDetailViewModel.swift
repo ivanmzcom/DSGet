@@ -15,7 +15,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class TaskDetailViewModel: DomainErrorHandling {
-
     // MARK: - Published State
 
     /// The task being displayed.
@@ -80,7 +79,7 @@ final class TaskDetailViewModel: DomainErrorHandling {
         taskService: TaskServiceProtocol? = nil
     ) {
         self.task = task
-        self.taskService = taskService ?? DI.taskService
+        self.taskService = taskService ?? DIService.taskService
     }
 
     // MARK: - Public Methods

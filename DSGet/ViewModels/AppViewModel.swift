@@ -14,7 +14,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class AppViewModel {
-
     // MARK: - Child ViewModels
 
     let tasksViewModel: TasksViewModel
@@ -76,8 +75,8 @@ final class AppViewModel {
         self.tasksViewModel = tasksViewModel ?? TasksViewModel()
         self.feedsViewModel = feedsViewModel ?? FeedsViewModel()
 
-        self.authService = authService ?? DI.authService
-        self.connectivityService = connectivityService ?? DI.connectivityService
+        self.authService = authService ?? DIService.authService
+        self.connectivityService = connectivityService ?? DIService.connectivityService
 
         setupAuthenticationObserver()
 

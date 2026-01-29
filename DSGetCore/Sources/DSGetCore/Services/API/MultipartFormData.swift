@@ -1,10 +1,17 @@
 import Foundation
 
 /// Multipart form data builder for file uploads.
+private struct FileAttachment: Sendable {
+    let name: String
+    let data: Data
+    let fileName: String
+    let mimeType: String
+}
+
 public struct MultipartFormData: Sendable {
     public let boundary: String
     private var fields: [(String, String)] = []
-    private var files: [(name: String, data: Data, fileName: String, mimeType: String)] = []
+    private var files: [FileAttachment] = []
 
     public init(boundary: String = "Boundary-\(UUID().uuidString)") {
         self.boundary = boundary
@@ -17,7 +24,7 @@ public struct MultipartFormData: Sendable {
 
     /// Adds a file.
     public mutating func addFile(name: String, data: Data, fileName: String, mimeType: String) {
-        files.append((name, data, fileName, mimeType))
+        files.append(FileAttachment(name: name, data: data, fileName: fileName, mimeType: mimeType))
     }
 
     /// Builds the multipart data.

@@ -15,7 +15,6 @@ import DSGetCore
 /// All services are created on the main actor where they're used.
 @MainActor
 final class DIContainer {
-
     static let shared = DIContainer()
 
     private init() {}
@@ -32,7 +31,7 @@ final class DIContainer {
     lazy var secureStorage: SecureStorageProtocol = KeychainService.shared
 
     /// Synology API client.
-    lazy var synologyAPIClient: SynologyAPIClient = SynologyAPIClient(networkClient: networkClient)
+    lazy var synologyAPIClient = SynologyAPIClient(networkClient: networkClient)
 
     // MARK: - Services
 
@@ -63,7 +62,7 @@ final class DIContainer {
 
 /// Provides convenient access to the shared container.
 @MainActor
-enum DI {
+enum DIService {
     static var container: DIContainer { DIContainer.shared }
 
     // Services

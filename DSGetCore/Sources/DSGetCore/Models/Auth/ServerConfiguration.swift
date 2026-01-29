@@ -56,7 +56,7 @@ extension ServerConfiguration {
     public var isValid: Bool {
         !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         port > 0 &&
-        port < 65536
+        port < 65_536
     }
 
     /// Validation error if configuration is invalid.
@@ -64,7 +64,7 @@ extension ServerConfiguration {
         if host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return "Host cannot be empty"
         }
-        if port <= 0 || port >= 65536 {
+        if port <= 0 || port >= 65_536 {
             return "Port must be between 1 and 65535"
         }
         return nil

@@ -2,7 +2,6 @@ import Foundation
 
 /// Auth service implementation combining authentication, session management, and server storage.
 public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
-
     private let apiClient: SynologyAPIClient
     private let networkClient: NetworkClientProtocol
     private let secureStorage: SecureStorageProtocol

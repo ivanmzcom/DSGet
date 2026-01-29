@@ -37,7 +37,6 @@ public protocol NetworkClientProtocol: Sendable {
 
 /// URLSession-based network client implementation.
 public final class NetworkClient: NetworkClientProtocol, @unchecked Sendable {
-
     public struct Configuration: Sendable {
         public let timeoutInterval: TimeInterval
         public let cachePolicy: URLRequest.CachePolicy
@@ -174,7 +173,7 @@ public final class NetworkClient: NetworkClientProtocol, @unchecked Sendable {
                 data.append(byte)
                 bytesReceived += 1
 
-                if bytesReceived % 65536 == 0 {
+                if bytesReceived.isMultiple(of: 65_536) {
                     progress?(bytesReceived, expectedLength)
                 }
             }

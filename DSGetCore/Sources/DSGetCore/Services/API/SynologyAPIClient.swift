@@ -27,12 +27,26 @@ private actor APIConfigurationStorage {
     }
 }
 
+// MARK: - File Upload
+
+/// Encapsulates file upload parameters.
+public struct FileUpload: Sendable {
+    public let data: Data
+    public let fileName: String
+    public let mimeType: String
+
+    public init(data: Data, fileName: String, mimeType: String) {
+        self.data = data
+        self.fileName = fileName
+        self.mimeType = mimeType
+    }
+}
+
 // MARK: - SynologyAPIClient
 
 /// Base client for Synology API communication.
 /// Thread-safe through actor-isolated configuration.
 public final class SynologyAPIClient: Sendable {
-
     private let networkClient: NetworkClientProtocol
     private let decoder: JSONDecoder
     private let config: APIConfigurationStorage
@@ -94,7 +108,11 @@ public final class SynologyAPIClient: Sendable {
         let (baseURL, sessionID) = await config.getConfig()
 
         #if DEBUG
-        print("[SynologyAPIClient] GET \(api).\(method) - baseURL: \(baseURL?.absoluteString ?? "nil"), sessionID: \(sessionID != nil ? "present" : "nil")")
+        let baseURLString = baseURL?.absoluteString ?? "nil"
+        let sessionStatus = sessionID != nil ? "present" : "nil"
+        print(
+            "[SynologyAPIClient] GET \(api).\(method) - baseURL: \(baseURLString), sessionID: \(sessionStatus)"
+        )
         #endif
 
         guard let baseURL = baseURL else {
@@ -186,9 +204,7 @@ public final class SynologyAPIClient: Sendable {
         method: String,
         version: Int = 1,
         params: [String: String] = [:],
-        fileData: Data,
-        fileName: String,
-        mimeType: String
+        file: FileUpload
     ) async throws -> SynoResponseDTO<T> {
         let (baseURL, sessionID) = await config.getConfig()
         guard let baseURL = baseURL else {
@@ -209,7 +225,7 @@ public final class SynologyAPIClient: Sendable {
         for (key, value) in params {
             multipartData.addField(name: key, value: value)
         }
-        multipartData.addFile(name: "file", data: fileData, fileName: fileName, mimeType: mimeType)
+        multipartData.addFile(name: "file", data: file.data, fileName: file.fileName, mimeType: file.mimeType)
 
         let (data, _) = try await networkClient.postMultipart(url: url, queryItems: queryItems, multipartData: multipartData)
         return try decode(data)
@@ -299,7 +315,7 @@ public final class SynologyAPIClient: Sendable {
         version: Int = 1,
         params: [String: String] = [:]
     ) async throws -> Data {
-        return try await downloadRawDataWithProgress(
+        try await downloadRawDataWithProgress(
             endpoint: endpoint,
             api: api,
             method: method,

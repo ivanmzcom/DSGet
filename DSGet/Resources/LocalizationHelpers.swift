@@ -33,31 +33,31 @@ struct EmptyStateText {
     static let noDownloadsTitle = "empty.downloads.title"
     static let noDownloadsDescription = "empty.downloads.description"
     static let noDownloadsAction = "empty.downloads.action"
-    
+
     static let noFeedsTitle = "empty.feeds.title"
     static let noFeedsDescription = "empty.feeds.description"
     static let noFeedsAction = "empty.feeds.action"
-    
+
     static let searchPromptTitle = "empty.search.title"
     static let searchPromptDescription = "empty.search.description"
-    
+
     static let offlineTitle = "empty.offline.title"
     static let offlineDescription = "empty.offline.description"
     static let offlineAction = "empty.offline.action"
-    
+
     static let errorTitle = "empty.error.title"
     static let errorAction = "empty.error.action"
-    
+
     static let notConnectedTitle = "empty.notConnected.title"
     static let notConnectedDescription = "empty.notConnected.description"
     static let notConnectedAction = "empty.notConnected.action"
-    
+
     static let loadingTitle = "empty.loading.title"
     static let loadingSubtitle = "empty.loading.subtitle"
-    
+
     static let noTasksTitle = "empty.noTasks.title"
     static let noTasksDescription = "empty.noTasks.description"
-    
+
     static let noFolders = "empty.noFolders"
 }
 

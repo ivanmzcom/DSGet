@@ -11,7 +11,6 @@ import SwiftUI
 
 @MainActor
 final class HapticManager {
-
     static let shared = HapticManager()
 
     private init() {}
@@ -76,7 +75,6 @@ final class HapticManager {
 // MARK: - SwiftUI View Extension
 
 extension View {
-
     /// Triggers light haptic feedback when the view appears.
     func hapticOnAppear() -> some View {
         self.onAppear {

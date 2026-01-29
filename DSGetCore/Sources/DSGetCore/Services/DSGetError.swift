@@ -117,69 +117,76 @@ public enum DSGetError: Error, LocalizedError {
     // MARK: - Conversion
 
     public static func from(_ error: Error) -> DSGetError {
-        // Handle URLError
         if let urlError = error as? URLError {
-            switch urlError.code {
-            case .notConnectedToInternet, .networkConnectionLost:
-                return .network(.offline)
-            case .timedOut:
-                return .network(.timeout)
-            default:
-                return .network(.requestFailed(reason: urlError.localizedDescription))
-            }
+            return fromURLError(urlError)
         }
-
-        // Handle KeychainError
         if let keychainError = error as? KeychainError {
-            if case .itemNotFound = keychainError {
-                return .authentication(.notLoggedIn)
-            }
-            return .network(.requestFailed(reason: keychainError.localizedDescription))
+            return fromKeychainError(keychainError)
         }
-
-        // Handle DataError (from API layer)
         if let dataError = error as? DataError {
-            switch dataError {
-            case .notAuthenticated:
-                return .authentication(.notLoggedIn)
-            case .sessionExpired:
-                return .api(.sessionExpired)
-            case .decodingFailed(let underlyingError):
-                return .api(.serverError(code: -1, message: "Decoding failed: \(underlyingError.localizedDescription)"))
-            case .networkError(let netError):
-                switch netError {
-                case .timeout:
-                    return .network(.timeout)
-                case .noConnection:
-                    return .network(.offline)
-                default:
-                    return .network(.requestFailed(reason: netError.localizedDescription))
-                }
-            case .apiError(let synoError):
-                return .api(.serverError(code: synoError.code, message: synoError.description ?? "Unknown server error"))
-            case .cacheExpired, .cacheMiss:
-                return .network(.requestFailed(reason: dataError.localizedDescription))
-            case .keychainError:
-                return .authentication(.notLoggedIn)
-            case .validationError(let message):
-                return .network(.requestFailed(reason: message))
-            case .otpRequired:
-                return .api(.otpRequired)
-            case .otpInvalid:
-                return .authentication(.invalidCredentials)
-            case .notFound(let message):
-                return .api(.serverError(code: 404, message: message))
-            case .invalidResponse:
-                return .api(.invalidResponse)
-            }
+            return fromDataError(dataError)
         }
-
-        // Handle DSGetError (pass through)
         if let dsgetError = error as? DSGetError {
             return dsgetError
         }
+        return fromUnknownError(error)
+    }
 
-        // Handle NetworkError from API layer (check by type name to avoid naming conflict)
+    private static func fromURLError(_ error: URLError) -> DSGetError {
+        switch error.code {
+        case .notConnectedToInternet, .networkConnectionLost:
+            return .network(.offline)
+        case .timedOut:
+            return .network(.timeout)
+        default:
+            return .network(.requestFailed(reason: error.localizedDescription))
+        }
+    }
+
+    private static func fromKeychainError(_ error: KeychainError) -> DSGetError {
+        if case .itemNotFound = error {
+            return .authentication(.notLoggedIn)
+        }
+        return .network(.requestFailed(reason: error.localizedDescription))
+    }
+
+    private static func fromDataError(_ error: DataError) -> DSGetError {
+        switch error {
+        case .notAuthenticated:
+            return .authentication(.notLoggedIn)
+        case .sessionExpired:
+            return .api(.sessionExpired)
+        case .decodingFailed(let underlyingError):
+            return .api(.serverError(code: -1, message: "Decoding failed: \(underlyingError.localizedDescription)"))
+        case .networkError(let netError):
+            switch netError {
+            case .timeout:
+                return .network(.timeout)
+            case .noConnection:
+                return .network(.offline)
+            default:
+                return .network(.requestFailed(reason: netError.localizedDescription))
+            }
+        case .apiError(let synoError):
+            return .api(.serverError(code: synoError.code, message: synoError.description ?? "Unknown server error"))
+        case .cacheExpired, .cacheMiss:
+            return .network(.requestFailed(reason: error.localizedDescription))
+        case .keychainError:
+            return .authentication(.notLoggedIn)
+        case .validationError(let message):
+            return .network(.requestFailed(reason: message))
+        case .otpRequired:
+            return .api(.otpRequired)
+        case .otpInvalid:
+            return .authentication(.invalidCredentials)
+        case .notFound(let message):
+            return .api(.serverError(code: 404, message: message))
+        case .invalidResponse:
+            return .api(.invalidResponse)
+        }
+    }
+
+    private static func fromUnknownError(_ error: Error) -> DSGetError {
         let errorTypeName = String(describing: type(of: error))
         if errorTypeName == "NetworkError" {
             let description = error.localizedDescription
@@ -192,7 +199,6 @@ public enum DSGetError: Error, LocalizedError {
             }
             return .network(.requestFailed(reason: description))
         }
-
         return .api(.serverError(code: -1, message: error.localizedDescription))
     }
 }

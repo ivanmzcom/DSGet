@@ -5,12 +5,11 @@
 //  Created by Iván Moreno Zambudio on 28/9/25.
 //
 
-
 import SwiftUI
 import DSGetCore
 
 struct FeedDetailView: View {
-    var onClose: (() -> Void)? = nil
+    var onClose: (() -> Void)?
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -77,11 +76,15 @@ struct FeedDetailView: View {
                 )
             }
         }
-        .sheet(item: $viewModel.presentedAddTaskLink, onDismiss: { viewModel.presentedAddTaskLink = nil }) { link in
-            NavigationStack {
-                AddTaskView(prefilledURL: link.url, feedItemTitle: link.title)
+        .sheet(
+            item: $viewModel.presentedAddTaskLink,
+            onDismiss: { viewModel.presentedAddTaskLink = nil },
+            content: { link in
+                NavigationStack {
+                    AddTaskView(prefilledURL: link.url, feedItemTitle: link.title)
+                }
             }
-        }
+        )
     }
 }
 

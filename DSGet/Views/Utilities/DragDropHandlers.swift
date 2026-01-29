@@ -107,7 +107,6 @@ struct TorrentDropDelegate: DropDelegate {
 // MARK: - View Extension
 
 extension View {
-
     /// Enables drop support for torrent files and magnet links.
     func torrentDropTarget(onDrop: @escaping (TorrentDropResult) -> Void) -> some View {
         self.onDrop(
@@ -141,31 +140,28 @@ struct TorrentDropZone<Content: View>: View {
     }
 
     private func handleProviders(_ providers: [NSItemProvider]) -> Bool {
-        for provider in providers {
-            // Try file URL
-            if provider.canLoadObject(ofClass: URL.self) {
-                _ = provider.loadObject(ofClass: URL.self) { url, error in
-                    guard let url = url, error == nil else { return }
+        for provider in providers where provider.canLoadObject(ofClass: URL.self) {
+            _ = provider.loadObject(ofClass: URL.self) { url, error in
+                guard let url = url, error == nil else { return }
 
-                    if url.isFileURL {
-                        if url.pathExtension.lowercased() == AppConstants.URLSchemes.torrentExtension {
-                            DispatchQueue.main.async {
-                                onDrop(.torrentFile(url))
-                            }
-                        }
-                    } else if url.scheme?.lowercased() == AppConstants.URLSchemes.magnet {
+                if url.isFileURL {
+                    if url.pathExtension.lowercased() == AppConstants.URLSchemes.torrentExtension {
                         DispatchQueue.main.async {
-                            onDrop(.magnetLink(url))
-                        }
-                    } else if url.pathExtension.lowercased() == AppConstants.URLSchemes.torrentExtension ||
-                              url.absoluteString.contains(".torrent") {
-                        DispatchQueue.main.async {
-                            onDrop(.httpURL(url))
+                            onDrop(.torrentFile(url))
                         }
                     }
+                } else if url.scheme?.lowercased() == AppConstants.URLSchemes.magnet {
+                    DispatchQueue.main.async {
+                        onDrop(.magnetLink(url))
+                    }
+                } else if url.pathExtension.lowercased() == AppConstants.URLSchemes.torrentExtension ||
+                          url.absoluteString.contains(".torrent") {
+                    DispatchQueue.main.async {
+                        onDrop(.httpURL(url))
+                    }
                 }
-                return true
             }
+            return true
         }
         return false
     }
@@ -206,13 +202,13 @@ private struct DropTargetOverlay: View {
 #Preview {
     TorrentDropZone(onDrop: { result in
         print("Dropped: \(result)")
-    }) {
+    }, content: {
         VStack {
             Text("Drop Zone")
                 .padding()
         }
         .frame(width: 300, height: 200)
         .background(Color.gray.opacity(0.1))
-    }
+    })
 }
 #endif

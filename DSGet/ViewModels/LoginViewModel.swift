@@ -15,7 +15,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class LoginViewModel: DomainErrorHandling {
-
     // MARK: - Published State
 
     /// Server name (user-friendly label).
@@ -60,7 +59,7 @@ final class LoginViewModel: DomainErrorHandling {
         !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !password.isEmpty &&
-        port > 0 && port < 65536
+        port > 0 && port < 65_536
     }
 
     /// Port as a string for text field binding.
@@ -90,7 +89,7 @@ final class LoginViewModel: DomainErrorHandling {
     // MARK: - Initialization
 
     init(authService: AuthServiceProtocol? = nil) {
-        self.authService = authService ?? DI.authService
+        self.authService = authService ?? DIService.authService
     }
 
     // MARK: - Public Methods
@@ -104,7 +103,7 @@ final class LoginViewModel: DomainErrorHandling {
         showingError = false
 
         // Validate port
-        guard port > 0 && port < 65536 else {
+        guard port > 0 && port < 65_536 else {
             currentError = DSGetError.api(.serverError(code: -1, message: "Port must be a valid number between 1 and 65535."))
             showingError = true
             isLoading = false
@@ -135,7 +134,6 @@ final class LoginViewModel: DomainErrorHandling {
 
             isLoading = false
             onLoginSuccess?()
-
         } catch {
             handleError(error)
             isLoading = false

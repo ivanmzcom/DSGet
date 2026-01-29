@@ -2,7 +2,6 @@ import Foundation
 
 /// Protocol for authentication operations.
 public protocol AuthServiceProtocol: Sendable {
-
     /// Logs in with server configuration and credentials.
     /// - Parameter request: Login request containing server config and credentials.
     /// - Returns: The authenticated session.

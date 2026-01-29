@@ -11,7 +11,6 @@ import DSGetCore
 // MARK: - Task Accessibility
 
 extension View {
-
     /// Applies accessibility labels and hints for a download task item.
     func taskAccessibility(_ task: DownloadTask) -> some View {
         self
@@ -47,7 +46,6 @@ extension View {
 // MARK: - Feed Accessibility
 
 extension View {
-
     /// Applies accessibility labels and hints for a feed item.
     func feedAccessibility(_ feed: RSSFeed, isFavorite: Bool, isRefreshing: Bool) -> some View {
         self
@@ -79,7 +77,6 @@ extension View {
 // MARK: - Progress Accessibility
 
 extension View {
-
     /// Applies accessibility for a progress indicator.
     func progressAccessibility(value: Double, label: String) -> some View {
         self
@@ -91,7 +88,6 @@ extension View {
 // MARK: - Action Button Accessibility
 
 extension View {
-
     /// Applies accessibility for action buttons.
     func actionButtonAccessibility(label: String, hint: String? = nil) -> some View {
         self
@@ -104,7 +100,6 @@ extension View {
 // MARK: - Reduce Motion Support
 
 extension View {
-
     /// Wraps content in animation that respects Reduce Motion setting.
     func animateWithMotionPreference<V: Equatable>(
         value: V,
@@ -128,7 +123,6 @@ private struct ReduceMotionAnimationModifier<V: Equatable>: ViewModifier {
 // MARK: - Dynamic Type Support
 
 extension View {
-
     /// Ensures view scales appropriately with Dynamic Type.
     func dynamicTypeAccessible() -> some View {
         self.dynamicTypeSize(...DynamicTypeSize.accessibility3)
@@ -152,7 +146,6 @@ struct ScaledSpacing: DynamicProperty {
 // MARK: - High Contrast Support
 
 extension View {
-
     /// Adjusts opacity for high contrast mode.
     func highContrastAdaptive(normalOpacity: Double = 0.6, highContrastOpacity: Double = 1.0) -> some View {
         modifier(HighContrastModifier(normalOpacity: normalOpacity, highContrastOpacity: highContrastOpacity))
@@ -174,7 +167,6 @@ private struct HighContrastModifier: ViewModifier {
 // MARK: - Rotor Actions
 
 extension View {
-
     /// Adds custom accessibility actions for VoiceOver rotor.
     func taskRotorActions(
         onPause: @escaping () -> Void,

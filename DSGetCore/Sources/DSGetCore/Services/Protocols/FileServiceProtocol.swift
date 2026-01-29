@@ -2,7 +2,6 @@ import Foundation
 
 /// Protocol for file system operations.
 public protocol FileServiceProtocol: Sendable {
-
     /// Lists shared folders on the NAS.
     /// - Returns: Array of shared folder items.
     func getShares() async throws -> [FileSystemItem]

@@ -15,7 +15,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class FolderPickerViewModel: DomainErrorHandling {
-
     // MARK: - Published State
 
     /// Folders in the current directory.
@@ -80,7 +79,7 @@ final class FolderPickerViewModel: DomainErrorHandling {
         fileService: FileServiceProtocol? = nil
     ) {
         self.currentPath = currentPath
-        self.fileService = fileService ?? DI.fileService
+        self.fileService = fileService ?? DIService.fileService
     }
 
     // MARK: - Public Methods
@@ -110,7 +109,6 @@ final class FolderPickerViewModel: DomainErrorHandling {
             if path != nil {
                 currentPath = targetPath
             }
-
         } catch {
             handleError(error)
         }
@@ -141,7 +139,6 @@ final class FolderPickerViewModel: DomainErrorHandling {
             // Reset state
             newFolderName = ""
             showingCreateFolder = false
-
         } catch {
             handleError(error)
         }

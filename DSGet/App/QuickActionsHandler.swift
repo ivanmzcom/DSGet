@@ -43,7 +43,6 @@ enum QuickActionType: String {
 
 @MainActor
 final class QuickActionsHandler: ObservableObject {
-
     static let shared = QuickActionsHandler()
 
     @Published var pendingAction: QuickActionType?

@@ -20,7 +20,7 @@ struct FeedListContentView: View {
     @Environment(AppViewModel.self) private var appViewModel
 
     var favoriteFeedIDs: Set<String> = []
-    var onToggleFavorite: ((RSSFeed) -> Void)? = nil
+    var onToggleFavorite: ((RSSFeed) -> Void)?
 
     // Convenience accessor
     private var feedsVM: FeedsViewModel { appViewModel.feedsViewModel }

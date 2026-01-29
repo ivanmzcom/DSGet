@@ -15,7 +15,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
-
     // MARK: - Published State
 
     /// Complete list of feeds.
@@ -76,7 +75,7 @@ final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
     // MARK: - Initialization
 
     init(feedService: FeedServiceProtocol? = nil) {
-        self.feedService = feedService ?? DI.feedService
+        self.feedService = feedService ?? DIService.feedService
     }
 
     // MARK: - Public Methods
@@ -94,7 +93,6 @@ final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
                 $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
             }
             isOfflineMode = result.isFromCache
-
         } catch is CancellationError {
             // Ignore - SwiftUI task was cancelled (view disappeared)
         } catch let netError as NetworkError {
@@ -136,7 +134,6 @@ final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
         do {
             try await feedService.refreshFeed(id: feed.id)
             await fetchFeeds(forceRefresh: true)
-
         } catch {
             handleError(error)
         }
@@ -168,5 +165,4 @@ final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
     func isRefreshing(_ feed: RSSFeed) -> Bool {
         refreshingFeeds.contains(feed.id) || feed.isUpdating
     }
-
 }

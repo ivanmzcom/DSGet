@@ -16,7 +16,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class NetworkMonitor {
-
     // MARK: - Properties
 
     /// Indicates if there is internet connection.
@@ -92,7 +91,7 @@ final class NetworkMonitor {
 
     /// Checks current connectivity synchronously.
     func checkConnectivity() -> Bool {
-        return isConnected
+        isConnected
     }
 
     /// Waits until connection is available.
@@ -144,7 +143,7 @@ final class NetworkMonitor {
 #if DEBUG
 extension NetworkMonitor {
     /// Testing only: forces a connection state.
-    func _setConnectionState(_ connected: Bool, type: ConnectionType = .wifi) {
+    func setConnectionStateForTesting(_ connected: Bool, type: ConnectionType = .wifi) {
         isConnected = connected
         connectionType = type
         lastStatusChange = Date()

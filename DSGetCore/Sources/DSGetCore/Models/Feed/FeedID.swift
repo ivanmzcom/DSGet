@@ -25,11 +25,11 @@ public struct FeedID: Hashable, Sendable, ExpressibleByStringLiteral, CustomStri
         Int(rawValue)
     }
 
-    public nonisolated static func == (lhs: FeedID, rhs: FeedID) -> Bool {
+    nonisolated public static func == (lhs: FeedID, rhs: FeedID) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
 
-    public nonisolated func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(rawValue)
     }
 }

@@ -30,7 +30,6 @@ public enum ConnectionType: String, Sendable, CaseIterable {
 
 /// Protocol for connectivity status.
 public protocol ConnectivityServiceProtocol: Sendable {
-
     /// Current connectivity status.
     var isConnected: Bool { get }
 

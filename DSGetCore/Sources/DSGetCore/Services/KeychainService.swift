@@ -35,7 +35,6 @@ public protocol SecureStorageProtocol: Sendable {
 
 /// Keychain-based secure storage implementation.
 public final class KeychainService: SecureStorageProtocol, @unchecked Sendable {
-
     private let service: String
     private let accessGroup: String?
 

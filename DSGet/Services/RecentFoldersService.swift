@@ -9,7 +9,6 @@ import Foundation
 
 /// Service that manages recently used destination folders for task creation.
 enum RecentFoldersService {
-
     private static let userDefaultsKey = "recentDestinationFolders"
     private static let maxRecentFolders = 10
 

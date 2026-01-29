@@ -15,7 +15,6 @@ import DSGetCore
 @MainActor
 @Observable
 final class FeedDetailViewModel: DomainErrorHandling {
-
     // MARK: - Published State
 
     /// The feed being displayed.
@@ -70,7 +69,7 @@ final class FeedDetailViewModel: DomainErrorHandling {
         feedService: FeedServiceProtocol? = nil
     ) {
         self.feed = feed
-        self.feedService = feedService ?? DI.feedService
+        self.feedService = feedService ?? DIService.feedService
     }
 
     // MARK: - Public Methods
@@ -124,7 +123,6 @@ final class FeedDetailViewModel: DomainErrorHandling {
             if fetchedCount == 0 {
                 hasMoreItems = false
             }
-
         } catch {
             handleError(error)
         }

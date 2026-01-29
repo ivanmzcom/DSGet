@@ -10,21 +10,20 @@ import UIKit
 import DSGetCore
 
 struct TaskListItemView: View {
-
     let task: DownloadTask
     var onDelete: (DownloadTask) -> Void // Callback to notify deletion
     var onTogglePause: (DownloadTask) -> Void // Callback to notify pause/resume
-    
+
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var showingErrorAlert = false
-    
+
     // MARK: - Computed Properties for Display
-    
+
     private var title: String {
         task.title
     }
-    
+
     private var status: TaskStatusPresentation {
         TaskStatusPresentation(status: task.status)
     }
@@ -143,7 +142,6 @@ struct TaskListItemView: View {
                     Label(String.localized("taskItem.action.copyURL"), systemImage: "doc.on.doc")
                 }
             }
-
         }
         .hoverEffect(.highlight)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -158,7 +156,12 @@ struct TaskListItemView: View {
                 Button {
                     Task { await handleTogglePause() }
                 } label: {
-                    Label(task.isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause"), systemImage: task.isPaused ? "play.fill" : "pause.fill")
+                    Label(
+                        task.isPaused
+                            ? String.localized("taskItem.action.resume")
+                            : String.localized("taskItem.action.pause"),
+                        systemImage: task.isPaused ? "play.fill" : "pause.fill"
+                    )
                 }
                 .tint(.orange)
                 .disabled(isLoading)
@@ -170,24 +173,24 @@ struct TaskListItemView: View {
             Text(errorMessage ?? "An unknown error occurred.")
         }
     }
-    
+
     // MARK: - Private Helper Functions
 
     private func handleDelete() async {
         isLoading = true
         errorMessage = nil
         showingErrorAlert = false
-        
+
         // Call the onDelete closure, which will handle the API call and list update
         onDelete(task)
-        
+
         // Note: The actual API call and error handling for the API call
         // will be done in TaskListView. This view just triggers the action.
         // If TaskListView needs to report an error back, it would need another callback.
-        
+
         isLoading = false
     }
-    
+
     private func handleTogglePause() async {
         isLoading = true
         errorMessage = nil

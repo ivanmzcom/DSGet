@@ -14,7 +14,7 @@ struct TaskListContentView: View {
     @Environment(AppViewModel.self) private var appViewModel
 
     var statusFilter: TaskStatusFilter = .all
-    var onStatusFilterChange: ((TaskStatusFilter) -> Void)? = nil
+    var onStatusFilterChange: ((TaskStatusFilter) -> Void)?
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -158,9 +158,11 @@ struct TaskListContentView: View {
                 guard let url = newValue else { return }
                 Task { await importTorrent(from: url) }
             }
-            .sheet(isPresented: $localIsShowingAddTask, onDismiss: {
-                preselectedTorrent = nil
-            }) { addTaskSheet() }
+            .sheet(
+                isPresented: $localIsShowingAddTask,
+                onDismiss: { preselectedTorrent = nil },
+                content: { addTaskSheet() }
+            )
             .offlineModeIndicator(isOffline: tasksVM.isOfflineMode)
     }
 

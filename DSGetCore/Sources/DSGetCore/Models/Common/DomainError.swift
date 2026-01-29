@@ -2,7 +2,6 @@ import Foundation
 
 /// Domain-specific errors with no framework dependencies.
 public enum DomainError: Error, Equatable, Sendable {
-
     // MARK: - Authentication Errors
 
     case notAuthenticated

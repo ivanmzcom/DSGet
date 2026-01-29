@@ -31,7 +31,6 @@ enum AddTaskInputMode: String, CaseIterable, Identifiable {
 @MainActor
 @Observable
 final class AddTaskViewModel: DomainErrorHandling {
-
     // MARK: - Published State
 
     /// The URL to download from.
@@ -96,7 +95,7 @@ final class AddTaskViewModel: DomainErrorHandling {
         prefilledURL: String? = nil,
         taskService: TaskServiceProtocol? = nil
     ) {
-        self.taskService = taskService ?? DI.taskService
+        self.taskService = taskService ?? DIService.taskService
         self.taskUrl = prefilledURL ?? ""
         self.recentFolders = RecentFoldersService.recentFolders
 
@@ -155,7 +154,6 @@ final class AddTaskViewModel: DomainErrorHandling {
             }
 
             onTaskCreated?()
-
         } catch {
             handleError(error)
         }

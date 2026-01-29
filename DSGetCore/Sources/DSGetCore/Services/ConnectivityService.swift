@@ -4,7 +4,6 @@ import Network
 /// NWPathMonitor-based network connectivity monitor.
 /// Simple implementation for Swift 6 strict concurrency.
 public final class ConnectivityService: Sendable {
-
     // Use actors internally for thread-safe state
     private let state = ConnectivityState()
     private let monitorActor = MonitorActor()

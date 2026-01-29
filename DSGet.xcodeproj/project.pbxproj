@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -72,7 +72,7 @@
 		22832BFA6C7D4D2D6A5280FB /* ContextMenuActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuActions.swift; sourceTree = "<group>"; };
 		26881D0F7ABB032C7E04484C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		268952A42EA45329EF139CB2 /* TaskListContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListContentView.swift; sourceTree = "<group>"; };
-		2A302067E2C9B4F5B17CC7E5 /* DSGetCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DSGetCore; path = DSGetCore; sourceTree = SOURCE_ROOT; };
+		2A302067E2C9B4F5B17CC7E5 /* DSGetCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DSGetCore; sourceTree = SOURCE_ROOT; };
 		32215ABA8EEE42911EAA2E84 /* DSGetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DSGetWidgets.entitlements; sourceTree = "<group>"; };
 		3BFB5A64D3D5F49518CEFE29 /* OTPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPService.swift; sourceTree = "<group>"; };
 		3DA45896930157E1C6DACA79 /* FeedsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsViewModel.swift; sourceTree = "<group>"; };
@@ -346,6 +346,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7DE2A6850F2D44C423CA599A /* Build configuration list for PBXNativeTarget "DSGet" */;
 			buildPhases = (
+				2CF0185B2F2BFE27009A707E /* SwiftLint */,
 				6A52F1BD3C5D8EEEFFEAF0F7 /* Sources */,
 				672D1359D12A4DBDD5573857 /* Resources */,
 				303B84A98412B298D906E7CD /* Frameworks */,
@@ -394,8 +395,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7B4BEC1BCB6B8E6817FD0AA3 /* XCLocalSwiftPackageReference "DSGetCore" */,
+				2CF018592F2BFE26009A707E /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -475,6 +476,28 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2CF0185B2F2BFE27009A707E /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if command -v swiftlint >/dev/null 2>&1; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed. Install with: brew install swiftlint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXTargetDependency section */
 		1320B69246C114EFB7087721 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -505,7 +528,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -587,7 +613,11 @@
 				CODE_SIGN_ENTITLEMENTS = DSGetWidgets/DSGetWidgets.entitlements;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -602,7 +632,11 @@
 				CODE_SIGN_ENTITLEMENTS = DSGetWidgets/DSGetWidgets.entitlements;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -679,7 +713,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -725,6 +762,17 @@
 			relativePath = DSGetCore;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2CF018592F2BFE26009A707E /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.63.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		E11F39D79D60B99D59F1BE29 /* DSGetCore */ = {

@@ -2,7 +2,6 @@ import Foundation
 
 /// Maps between Server DTOs and Domain entities.
 public struct ServerMapper: Sendable {
-
     public init() {}
 
     // MARK: - DTO to Entity
