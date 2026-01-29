@@ -86,10 +86,13 @@ extension DomainErrorHandling {
             switch error {
             case .noConnection:
                 return .network(.offline)
+
             case .timeout:
                 return .network(.timeout)
+
             case .serverUnreachable:
                 return .network(.requestFailed(reason: error.title))
+
             default:
                 return .network(.requestFailed(reason: error.localizedDescription))
             }

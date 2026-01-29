@@ -32,7 +32,7 @@ struct FolderPickerView: View {
                 Text(String.localized("folderPicker.noFolders"))
             } else {
                 ForEach(viewModel.folders) { folder in
-                    NavigationLink(destination: FolderPickerView(
+                    NavigationLink(destination: Self(
                         selectedFolderPath: $selectedFolderPath,
                         currentPath: folder.path,
                         onDismissSheet: onDismissSheet

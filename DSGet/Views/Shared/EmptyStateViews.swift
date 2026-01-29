@@ -22,57 +22,67 @@ struct IllustratedEmptyState: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            // Animated Icon
-            ZStack {
-                Circle()
-                    .fill(Color.accentColor.opacity(0.1))
-                    .frame(width: 120, height: 120)
-
-                Image(systemName: systemImage)
-                    .font(.system(size: 48, weight: .light))
-                    .foregroundStyle(Color.accentColor)
-                    .symbolEffect(.pulse.byLayer, options: reduceMotion ? .nonRepeating : .repeating)
-            }
-
-            // Text Content
-            VStack(spacing: 8) {
-                Text(title)
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(.primary)
-
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 280)
-            }
-
-            // Actions
-            if actionTitle != nil || secondaryActionTitle != nil {
-                VStack(spacing: 12) {
-                    if let actionTitle, let action {
-                        Button(action: action) {
-                            Text(actionTitle)
-                                .font(.headline)
-                                .frame(minWidth: 160)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                    }
-
-                    if let secondaryActionTitle, let secondaryAction {
-                        Button(action: secondaryAction) {
-                            Text(secondaryActionTitle)
-                                .font(.subheadline)
-                        }
-                        .buttonStyle(.borderless)
-                    }
-                }
-            }
+            iconView
+            textContentView
+            actionsView
         }
         .padding(32)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(title). \(description)"))
+    }
+
+    @ViewBuilder
+    private var iconView: some View {
+        ZStack {
+            Circle()
+                .fill(Color.accentColor.opacity(0.1))
+                .frame(width: 120, height: 120)
+
+            Image(systemName: systemImage)
+                .font(.system(size: 48, weight: .light))
+                .foregroundStyle(Color.accentColor)
+                .symbolEffect(.pulse.byLayer, options: reduceMotion ? .nonRepeating : .repeating)
+        }
+    }
+
+    @ViewBuilder
+    private var textContentView: some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.primary)
+
+            Text(description)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 280)
+        }
+    }
+
+    @ViewBuilder
+    private var actionsView: some View {
+        if actionTitle != nil || secondaryActionTitle != nil {
+            VStack(spacing: 12) {
+                if let actionTitle, let action {
+                    Button(action: action) {
+                        Text(actionTitle)
+                            .font(.headline)
+                            .frame(minWidth: 160)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                }
+
+                if let secondaryActionTitle, let secondaryAction {
+                    Button(action: secondaryAction) {
+                        Text(secondaryActionTitle)
+                            .font(.subheadline)
+                    }
+                    .buttonStyle(.borderless)
+                }
+            }
+        }
     }
 }
 

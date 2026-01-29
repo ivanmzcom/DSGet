@@ -42,7 +42,7 @@ public struct DownloadTask: Equatable, Sendable, Identifiable, Hashable {
 
     /// Download progress as a fraction from 0.0 to 1.0.
     public var progress: Double {
-        guard let transfer = transfer, size.bytes > 0 else { return 0 }
+        guard let transfer, size.bytes > 0 else { return 0 }
         return transfer.progress(totalSize: size)
     }
 

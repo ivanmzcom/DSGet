@@ -64,16 +64,38 @@ struct TaskListItemView: View {
     }
 
     var body: some View {
+        taskContent
+            .padding(.vertical, 8)
+            .contentShape(Rectangle())
+            .taskAccessibility(task)
+            .taskRotorActions(
+                onPause: { Task { await handleTogglePause() } },
+                onResume: { Task { await handleTogglePause() } },
+                onDelete: { Task { await handleDelete() } },
+                isPaused: task.isPaused
+            )
+            .contextMenu { contextMenuContent }
+            .hoverEffect(.highlight)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) { swipeActionsContent }
+            .alert(String.localized("taskItem.status.error"), isPresented: $showingErrorAlert) {
+                Button(String.localized("general.ok")) { }
+            } message: {
+                Text(errorMessage ?? "An unknown error occurred.")
+            }
+    }
+
+    // MARK: - Subviews
+
+    @ViewBuilder
+    private var taskContent: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
-                // Title
                 Text(title)
                     .font(.body)
                     .lineLimit(2)
                     .foregroundStyle(.primary)
                     .minimumScaleFactor(0.9)
 
-                // Status + percentage + size
                 HStack(spacing: 8) {
                     StatusDot(color: status.color)
                     Text(status.text)
@@ -85,92 +107,82 @@ struct TaskListItemView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-                // Progress bar
                 ProgressBar(progress: progress, color: status.color)
                     .frame(height: 6)
 
-                // Speeds / ETA
-                HStack(spacing: 10) {
-                    if let downloadSpeed {
-                        SpeedBadge(systemName: "arrow.down", value: downloadSpeed, color: .blue)
-                    }
-                    if let uploadSpeed {
-                        SpeedBadge(systemName: "arrow.up", value: uploadSpeed, color: .purple)
-                    }
-                    if let etaText {
-                        Text("ETA \(etaText)")
-                            .font(.caption2)
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer(minLength: 0)
-                }
+                speedsRow
             }
         }
-        .padding(.vertical, 8)
-        .contentShape(Rectangle())
-        // Accessibility
-        .taskAccessibility(task)
-        .taskRotorActions(
-            onPause: { Task { await handleTogglePause() } },
-            onResume: { Task { await handleTogglePause() } },
-            onDelete: { Task { await handleDelete() } },
-            isPaused: task.isPaused
-        )
-        // Context Menu
-        .contextMenu {
+    }
+
+    @ViewBuilder
+    private var speedsRow: some View {
+        HStack(spacing: 10) {
+            if let downloadSpeed {
+                SpeedBadge(systemName: "arrow.down", value: downloadSpeed, color: .blue)
+            }
+            if let uploadSpeed {
+                SpeedBadge(systemName: "arrow.up", value: uploadSpeed, color: .purple)
+            }
+            if let etaText {
+                Text("ETA \(etaText)")
+                    .font(.caption2)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+        }
+    }
+
+    @ViewBuilder
+    private var contextMenuContent: some View {
+        Button {
+            Task { await handleTogglePause() }
+        } label: {
+            Label(task.isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause"),
+                  systemImage: task.isPaused ? "play.fill" : "pause.fill")
+        }
+        .disabled(task.type == .emule && task.isCompleted)
+
+        Button(role: .destructive) {
+            Task { await handleDelete() }
+        } label: {
+            Label(String.localized("taskItem.action.delete"), systemImage: "trash")
+        }
+
+        Divider()
+
+        if let uri = task.detail?.uri, !uri.isEmpty {
+            Button {
+                copyToClipboard(uri)
+            } label: {
+                Label(String.localized("taskItem.action.copyURL"), systemImage: "doc.on.doc")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var swipeActionsContent: some View {
+        Button(role: .destructive) {
+            Task { await handleDelete() }
+        } label: {
+            Label(String.localized("taskItem.action.delete"), systemImage: "trash")
+        }
+        .disabled(isLoading)
+
+        if !(task.type == .emule && task.isCompleted) {
             Button {
                 Task { await handleTogglePause() }
             } label: {
-                Label(task.isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause"),
-                      systemImage: task.isPaused ? "play.fill" : "pause.fill")
+                Label(
+                    task.isPaused
+                        ? String.localized("taskItem.action.resume")
+                        : String.localized("taskItem.action.pause"),
+                    systemImage: task.isPaused ? "play.fill" : "pause.fill"
+                )
             }
-            .disabled(task.type == .emule && task.isCompleted)
-
-            Button(role: .destructive) {
-                Task { await handleDelete() }
-            } label: {
-                Label(String.localized("taskItem.action.delete"), systemImage: "trash")
-            }
-
-            Divider()
-
-            if let uri = task.detail?.uri, !uri.isEmpty {
-                Button {
-                    copyToClipboard(uri)
-                } label: {
-                    Label(String.localized("taskItem.action.copyURL"), systemImage: "doc.on.doc")
-                }
-            }
-        }
-        .hoverEffect(.highlight)
-        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-            Button(role: .destructive) {
-                Task { await handleDelete() }
-            } label: {
-                Label(String.localized("taskItem.action.delete"), systemImage: "trash")
-            }
+            .tint(.orange)
             .disabled(isLoading)
-
-            if !(task.type == .emule && task.isCompleted) {
-                Button {
-                    Task { await handleTogglePause() }
-                } label: {
-                    Label(
-                        task.isPaused
-                            ? String.localized("taskItem.action.resume")
-                            : String.localized("taskItem.action.pause"),
-                        systemImage: task.isPaused ? "play.fill" : "pause.fill"
-                    )
-                }
-                .tint(.orange)
-                .disabled(isLoading)
-            }
-        }
-        .alert(String.localized("taskItem.status.error"), isPresented: $showingErrorAlert) {
-            Button(String.localized("general.ok")) { }
-        } message: {
-            Text(errorMessage ?? "An unknown error occurred.")
         }
     }
 

@@ -20,18 +20,23 @@ struct TaskStatusPresentation {
         case .downloading:
             text = String.localized("taskItem.status.downloading")
             color = .blue
+
         case .seeding, .finished:
             text = String.localized("taskItem.status.completed")
             color = .green
+
         case .paused:
             text = String.localized("taskItem.status.paused")
             color = .orange
+
         case .waiting:
             text = String.localized("taskItem.status.waiting")
             color = .gray
+
         case .error:
             text = String.localized("taskItem.status.error")
             color = .red
+
         default:
             text = status.displayName
             color = .purple
@@ -258,8 +263,10 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
         switch taskTypeFilter {
         case .all:
             return true
+
         case .bt:
             return task.type == .bt
+
         case .e2k:
             return task.type == .emule
         }
@@ -269,10 +276,13 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
         switch statusFilter {
         case .all:
             return true
+
         case .downloading:
             return task.isDownloading
+
         case .paused:
             return task.status == .paused
+
         case .completed:
             return task.isCompleted
         }

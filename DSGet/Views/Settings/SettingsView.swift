@@ -13,57 +13,69 @@ struct SettingsView: View {
 
     var body: some View {
         List {
-            // MARK: - Server Section
-            Section(String.localized("settings.section.server")) {
-                if let server = appViewModel.currentServer {
-                    HStack {
-                        Image(systemName: "server.rack")
-                            .foregroundStyle(.secondary)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(server.displayName)
-                                .font(.body)
-                            Text(server.configuration.displayName)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                } else {
-                    HStack {
-                        Image(systemName: "server.rack")
-                            .foregroundStyle(.secondary)
-                        Text(String.localized("settings.server.noServer"))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-
-            // MARK: - About Section
-            Section(String.localized("settings.section.about")) {
-                HStack {
-                    Text(String.localized("settings.about.version"))
-                    Spacer()
-                    Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            // MARK: - Logout Section
-            Section {
-                Button(role: .destructive) {
-                    Task { await logout() }
-                } label: {
-                    HStack {
-                        if isLoggingOut {
-                            ProgressView()
-                        }
-                        Text(String.localized("settings.logout.button"))
-                    }
-                }
-                .disabled(isLoggingOut)
-            }
+            serverSection
+            aboutSection
+            logoutSection
         }
         .navigationTitle(String.localized("settings.title"))
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    // MARK: - Sections
+
+    @ViewBuilder
+    private var serverSection: some View {
+        Section(String.localized("settings.section.server")) {
+            if let server = appViewModel.currentServer {
+                HStack {
+                    Image(systemName: "server.rack")
+                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(server.displayName)
+                            .font(.body)
+                        Text(server.configuration.displayName)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } else {
+                HStack {
+                    Image(systemName: "server.rack")
+                        .foregroundStyle(.secondary)
+                    Text(String.localized("settings.server.noServer"))
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var aboutSection: some View {
+        Section(String.localized("settings.section.about")) {
+            HStack {
+                Text(String.localized("settings.about.version"))
+                Spacer()
+                Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var logoutSection: some View {
+        Section {
+            Button(role: .destructive) {
+                Task { await logout() }
+            } label: {
+                HStack {
+                    if isLoggingOut {
+                        ProgressView()
+                    }
+                    Text(String.localized("settings.logout.button"))
+                }
+            }
+            .disabled(isLoggingOut)
+        }
     }
 
     private func logout() async {

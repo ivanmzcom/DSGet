@@ -39,13 +39,13 @@ public struct ServerConfiguration: Equatable, Sendable, Hashable, Codable {
     public static let defaultHTTPPort = 5000
 
     /// Creates configuration with default HTTPS port.
-    public static func https(host: String, port: Int = defaultHTTPSPort) -> ServerConfiguration {
-        ServerConfiguration(host: host, port: port, useHTTPS: true)
+    public static func https(host: String, port: Int = defaultHTTPSPort) -> Self {
+        Self(host: host, port: port, useHTTPS: true)
     }
 
     /// Creates configuration with default HTTP port.
-    public static func http(host: String, port: Int = defaultHTTPPort) -> ServerConfiguration {
-        ServerConfiguration(host: host, port: port, useHTTPS: false)
+    public static func http(host: String, port: Int = defaultHTTPPort) -> Self {
+        Self(host: host, port: port, useHTTPS: false)
     }
 }
 

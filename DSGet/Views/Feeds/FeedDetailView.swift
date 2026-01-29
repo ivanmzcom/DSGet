@@ -45,7 +45,7 @@ struct FeedDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.feed.title)
         .toolbar {
-            if let onClose = onClose, horizontalSizeClass != .compact {
+            if let onClose, horizontalSizeClass != .compact {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(String.localized("general.close")) { onClose() }
                 }

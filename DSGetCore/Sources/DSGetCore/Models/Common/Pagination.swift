@@ -10,16 +10,16 @@ public struct PaginationRequest: Equatable, Sendable, Hashable {
         self.limit = max(1, limit)
     }
 
-    public static let `default` = PaginationRequest()
+    public static let `default` = Self()
 
     /// Creates request for the next page.
-    public func next() -> PaginationRequest {
-        PaginationRequest(offset: offset + limit, limit: limit)
+    public func next() -> Self {
+        Self(offset: offset + limit, limit: limit)
     }
 
     /// Creates request for the previous page.
-    public func previous() -> PaginationRequest {
-        PaginationRequest(offset: max(0, offset - limit), limit: limit)
+    public func previous() -> Self {
+        Self(offset: max(0, offset - limit), limit: limit)
     }
 }
 

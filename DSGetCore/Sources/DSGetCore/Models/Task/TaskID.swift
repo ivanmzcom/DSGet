@@ -17,7 +17,7 @@ public struct TaskID: Hashable, Sendable, ExpressibleByStringLiteral, CustomStri
         rawValue
     }
 
-    nonisolated public static func == (lhs: TaskID, rhs: TaskID) -> Bool {
+    nonisolated public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
 

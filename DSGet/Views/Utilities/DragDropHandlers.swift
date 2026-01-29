@@ -48,7 +48,7 @@ struct TorrentDropDelegate: DropDelegate {
         // Try file URL first (for .torrent files)
         if let item = info.itemProviders(for: [.fileURL]).first {
             _ = item.loadObject(ofClass: URL.self) { url, error in
-                guard let url = url, error == nil else { return }
+                guard let url, error == nil else { return }
 
                 if url.pathExtension.lowercased() == AppConstants.URLSchemes.torrentExtension {
                     DispatchQueue.main.async {
@@ -62,7 +62,7 @@ struct TorrentDropDelegate: DropDelegate {
         // Try URL (for magnet links or HTTP URLs)
         if let item = info.itemProviders(for: [.url]).first {
             _ = item.loadObject(ofClass: URL.self) { url, error in
-                guard let url = url, error == nil else { return }
+                guard let url, error == nil else { return }
 
                 let result = classifyURL(url)
                 DispatchQueue.main.async {
@@ -142,7 +142,7 @@ struct TorrentDropZone<Content: View>: View {
     private func handleProviders(_ providers: [NSItemProvider]) -> Bool {
         for provider in providers where provider.canLoadObject(ofClass: URL.self) {
             _ = provider.loadObject(ofClass: URL.self) { url, error in
-                guard let url = url, error == nil else { return }
+                guard let url, error == nil else { return }
 
                 if url.isFileURL {
                     if url.pathExtension.lowercased() == AppConstants.URLSchemes.torrentExtension {

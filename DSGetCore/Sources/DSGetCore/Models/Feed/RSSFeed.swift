@@ -24,7 +24,7 @@ public struct RSSFeed: Equatable, Sendable, Identifiable, Hashable {
 
     /// Time elapsed since last update.
     public var timeSinceLastUpdate: TimeInterval? {
-        guard let lastUpdate = lastUpdate else { return nil }
+        guard let lastUpdate else { return nil }
         return Date().timeIntervalSince(lastUpdate)
     }
 
@@ -41,7 +41,7 @@ public struct RSSFeed: Equatable, Sendable, Identifiable, Hashable {
 
     /// Formatted last update string.
     public var lastUpdateFormatted: String? {
-        guard let lastUpdate = lastUpdate else { return nil }
+        guard let lastUpdate else { return nil }
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: lastUpdate, relativeTo: Date())

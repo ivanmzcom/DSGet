@@ -41,11 +41,13 @@ public final class TaskService: TaskServiceProtocol, @unchecked Sendable {
 
     public func createTask(request: CreateTaskRequest) async throws {
         switch request {
-        case .url(let url, let destination):
+        case let .url(url, destination):
             try await createTaskFromURL(url.absoluteString, destination: destination)
-        case .magnetLink(let magnetLink, let destination):
+
+        case let .magnetLink(magnetLink, destination):
             try await createTaskFromURL(magnetLink, destination: destination)
-        case .torrentFile(let data, let fileName, let destination):
+
+        case let .torrentFile(data, fileName, destination):
             try await createTaskFromTorrent(data: data, fileName: fileName, destination: destination)
         }
     }

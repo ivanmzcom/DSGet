@@ -20,8 +20,10 @@ enum QuickActionType: String {
         switch self {
         case .addTask:
             return String.localized("quickAction.addTask")
+
         case .viewDownloads:
             return String.localized("quickAction.viewDownloads")
+
         case .refresh:
             return String.localized("quickAction.refresh")
         }
@@ -31,8 +33,10 @@ enum QuickActionType: String {
         switch self {
         case .addTask:
             return "plus.circle.fill"
+
         case .viewDownloads:
             return "arrow.down.circle.fill"
+
         case .refresh:
             return "arrow.clockwise"
         }

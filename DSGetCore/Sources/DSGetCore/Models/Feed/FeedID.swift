@@ -25,7 +25,7 @@ public struct FeedID: Hashable, Sendable, ExpressibleByStringLiteral, CustomStri
         Int(rawValue)
     }
 
-    nonisolated public static func == (lhs: FeedID, rhs: FeedID) -> Bool {
+    nonisolated public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
 

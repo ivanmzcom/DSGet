@@ -52,13 +52,13 @@ public struct Credentials: Equatable, Sendable {
     }
 
     /// Creates new credentials with OTP code.
-    public func withOTP(_ code: String) -> Credentials {
-        Credentials(username: username, password: password, otpCode: code)
+    public func withOTP(_ code: String) -> Self {
+        Self(username: username, password: password, otpCode: code)
     }
 
     /// Creates new credentials without OTP code.
-    public func withoutOTP() -> Credentials {
-        Credentials(username: username, password: password, otpCode: nil)
+    public func withoutOTP() -> Self {
+        Self(username: username, password: password, otpCode: nil)
     }
 }
 

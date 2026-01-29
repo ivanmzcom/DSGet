@@ -75,5 +75,5 @@ public struct TaskDetail: Equatable, Sendable, Hashable {
     }
 
     /// Default empty detail.
-    public static let empty = TaskDetail()
+    public static let empty = Self()
 }

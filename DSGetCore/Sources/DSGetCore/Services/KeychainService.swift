@@ -13,10 +13,13 @@ public enum KeychainError: Error, LocalizedError {
         switch self {
         case .itemNotFound:
             return "Item not found in Keychain."
+
         case .duplicateItem:
             return "Item already exists in Keychain."
+
         case .invalidItemFormat:
             return "Invalid data format."
+
         case .unexpectedStatus(let status):
             return "Unexpected Keychain error: \(SecCopyErrorMessageString(status, nil) ?? "Unknown error code" as CFString)"
         }
@@ -124,7 +127,7 @@ public final class KeychainService: SecureStorageProtocol, @unchecked Sendable {
             kSecAttrAccount as String: key
         ]
 
-        if let accessGroup = accessGroup {
+        if let accessGroup {
             query[kSecAttrAccessGroup as String] = accessGroup
         }
 

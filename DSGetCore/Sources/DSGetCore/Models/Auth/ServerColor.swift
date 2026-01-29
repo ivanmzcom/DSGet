@@ -27,7 +27,7 @@ public enum ServerColor: String, CaseIterable, Sendable, Codable, Hashable {
     }
 
     /// Default color for new servers.
-    public static var `default`: ServerColor {
+    public static var `default`: Self {
         .blue
     }
 }

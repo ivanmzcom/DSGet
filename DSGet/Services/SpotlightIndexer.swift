@@ -28,7 +28,7 @@ final class SpotlightIndexer {
 
         searchableIndex.indexSearchableItems(items) { error in
             #if DEBUG
-            if let error = error {
+            if let error {
                 print("Spotlight indexing error: \(error.localizedDescription)")
             }
             #endif
@@ -41,7 +41,7 @@ final class SpotlightIndexer {
 
         searchableIndex.indexSearchableItems([item]) { error in
             #if DEBUG
-            if let error = error {
+            if let error {
                 print("Spotlight indexing error: \(error.localizedDescription)")
             }
             #endif
@@ -52,7 +52,7 @@ final class SpotlightIndexer {
     func removeTask(_ task: DownloadTask) {
         searchableIndex.deleteSearchableItems(withIdentifiers: [task.id.rawValue]) { error in
             #if DEBUG
-            if let error = error {
+            if let error {
                 print("Spotlight delete error: \(error.localizedDescription)")
             }
             #endif
@@ -63,7 +63,7 @@ final class SpotlightIndexer {
     func removeAllItems() {
         searchableIndex.deleteSearchableItems(withDomainIdentifiers: [domainIdentifier]) { error in
             #if DEBUG
-            if let error = error {
+            if let error {
                 print("Spotlight delete all error: \(error.localizedDescription)")
             }
             #endif

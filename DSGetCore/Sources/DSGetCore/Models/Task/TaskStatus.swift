@@ -53,6 +53,7 @@ public enum TaskStatus: Equatable, Sendable, Hashable {
         switch self {
         case .downloading, .seeding, .finishing, .extracting:
             return true
+
         default:
             return false
         }
@@ -63,6 +64,7 @@ public enum TaskStatus: Equatable, Sendable, Hashable {
         switch self {
         case .downloading, .waiting, .seeding:
             return true
+
         default:
             return false
         }
@@ -78,6 +80,7 @@ public enum TaskStatus: Equatable, Sendable, Hashable {
         switch self {
         case .finished, .seeding:
             return true
+
         default:
             return false
         }

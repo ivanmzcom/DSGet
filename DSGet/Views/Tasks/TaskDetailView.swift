@@ -44,18 +44,12 @@ struct TaskDetailView: View {
 
     private var statusTextAndColor: (text: String, color: Color) {
         switch viewModel.effectiveStatus {
-        case "downloading":
-            return ("Downloading", .blue)
-        case "seeding", "finished":
-            return ("Completed", .green)
-        case "paused":
-            return ("Paused", .orange)
-        case "waiting":
-            return ("Waiting", .gray)
-        case "error":
-            return ("Error", .red)
-        default:
-            return (viewModel.effectiveStatus.capitalized, .purple)
+        case "downloading": return ("Downloading", .blue)
+        case "seeding", "finished": return ("Completed", .green)
+        case "paused": return ("Paused", .orange)
+        case "waiting": return ("Waiting", .gray)
+        case "error": return ("Error", .red)
+        default: return (viewModel.effectiveStatus.capitalized, .purple)
         }
     }
 
@@ -98,10 +92,7 @@ struct TaskDetailView: View {
     private var shareableURI: String? {
         guard let uri = viewModel.task.detail?.uri else { return nil }
         let rawURI = uri.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        guard !rawURI.isEmpty else {
-            return nil
-        }
-
+        guard !rawURI.isEmpty else { return nil }
         let scheme: String?
         if let url = URL(string: rawURI), let parsedScheme = url.scheme {
             scheme = parsedScheme.lowercased()
@@ -110,9 +101,7 @@ struct TaskDetailView: View {
         } else {
             scheme = nil
         }
-
         guard let scheme, !scheme.isEmpty else { return nil }
-
         let allowedSchemes: Set<String> = ["http", "https", "magnet", "ftp", "sftp", "ed2k"]
         return allowedSchemes.contains(scheme) ? rawURI : nil
     }
@@ -171,12 +160,16 @@ struct TaskDetailView: View {
                 switch selectedTab {
                 case .general:
                     generalTabContent
+
                 case .transfer:
                     transferTabContent
+
                 case .trackers:
                     trackersTabContent
+
                 case .peers:
                     peersTabContent
+
                 case .files:
                     filesTabContent
                 }
@@ -185,41 +178,7 @@ struct TaskDetailView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.task.title)
-        .toolbar {
-            if horizontalSizeClass != .compact {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String.localized("taskDetail.button.close")) {
-                        onClose?()
-                        dismiss()
-                    }
-                }
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button(
-                    viewModel.isTaskPaused
-                        ? String.localized("taskDetail.button.resume")
-                        : String.localized("taskDetail.button.pause")
-                ) {
-                    Task { await viewModel.togglePauseResume() }
-                }
-                .disabled(!viewModel.canTogglePause)
-            }
-            ToolbarItem(placement: .destructiveAction) {
-                Button(
-                    String.localized("taskDetail.button.delete"),
-                    systemImage: "trash",
-                    role: .destructive
-                ) {
-                    viewModel.showingDeleteConfirmation = true
-                }
-                .disabled(viewModel.isProcessingAction)
-            }
-            ToolbarItem(placement: .principal) {
-                if viewModel.isProcessingAction {
-                    ProgressView()
-                }
-            }
-        }
+        .toolbar { toolbarContent }
         .confirmationDialog(
             String.localized("taskDetail.delete.confirmTitle"),
             isPresented: $viewModel.showingDeleteConfirmation,
@@ -246,6 +205,45 @@ struct TaskDetailView: View {
             Button("OK") { }
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
+        }
+    }
+
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        if horizontalSizeClass != .compact {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(String.localized("taskDetail.button.close")) {
+                    onClose?()
+                    dismiss()
+                }
+            }
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button(
+                viewModel.isTaskPaused
+                    ? String.localized("taskDetail.button.resume")
+                    : String.localized("taskDetail.button.pause")
+            ) {
+                Task { await viewModel.togglePauseResume() }
+            }
+            .disabled(!viewModel.canTogglePause)
+        }
+        ToolbarItem(placement: .destructiveAction) {
+            Button(
+                String.localized("taskDetail.button.delete"),
+                systemImage: "trash",
+                role: .destructive
+            ) {
+                viewModel.showingDeleteConfirmation = true
+            }
+            .disabled(viewModel.isProcessingAction)
+        }
+        ToolbarItem(placement: .principal) {
+            if viewModel.isProcessingAction {
+                ProgressView()
+            }
         }
     }
 
@@ -331,13 +329,13 @@ private extension TaskDetailView {
     @ViewBuilder
     var transferSection: some View {
         Section(String.localized("taskDetail.transferDetails")) {
-            if let downloadSpeed = downloadSpeed {
+            if let downloadSpeed {
                 LabeledContent(String.localized("taskDetail.downloadSpeed")) { Text(downloadSpeed) }
             }
-            if let uploadSpeed = uploadSpeed {
+            if let uploadSpeed {
                 LabeledContent(String.localized("taskDetail.uploadSpeed")) { Text(uploadSpeed) }
             }
-            if let etaText = etaText {
+            if let etaText {
                 LabeledContent(String.localized("taskDetail.timeRemaining")) { Text(etaText) }
             }
             if let seedElapsed = viewModel.task.detail?.seedElapsed, seedElapsed > 0 {
@@ -394,7 +392,7 @@ private extension TaskDetailView {
     @ViewBuilder
     var uriRow: some View {
         if let rawURI = viewModel.task.detail?.uri {
-            if let shareableURI = shareableURI {
+            if let shareableURI {
                 ShareLink(item: shareableURI) {
                     HStack {
                         Text("URI")

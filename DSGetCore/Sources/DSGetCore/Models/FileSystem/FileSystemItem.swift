@@ -60,16 +60,22 @@ public struct FileSystemItem: Equatable, Sendable, Identifiable, Hashable {
         switch fileExtension {
         case "torrent":
             return "arrow.down.circle.fill"
+
         case "zip", "rar", "7z", "tar", "gz":
             return "doc.zipper"
+
         case "mp4", "mkv", "avi", "mov":
             return "film"
+
         case "mp3", "flac", "aac", "wav":
             return "music.note"
+
         case "jpg", "jpeg", "png", "gif":
             return "photo"
+
         case "pdf":
             return "doc.fill"
+
         default:
             return "doc"
         }

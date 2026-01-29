@@ -198,8 +198,10 @@ final class AppViewModel {
                 prefilledAddTaskURL = urlParam
                 isShowingAddTask = true
             }
+
         case AppConstants.DeepLinkHosts.settings:
             isShowingSettings = true
+
         default:
             break
         }

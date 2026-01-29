@@ -96,12 +96,16 @@ public final class WidgetDataSyncService {
         switch task.status {
         case .downloading:
             status = .downloading
+
         case .paused:
             status = .paused
+
         case .finished, .seeding:
             status = .completed
+
         case .error:
             status = .failed
+
         case .waiting, .finishing, .hashChecking, .filehostingWaiting, .extracting, .unknown:
             status = .pending
         }

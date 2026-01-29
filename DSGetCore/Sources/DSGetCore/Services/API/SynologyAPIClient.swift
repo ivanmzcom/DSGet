@@ -115,7 +115,7 @@ public final class SynologyAPIClient: Sendable {
         )
         #endif
 
-        guard let baseURL = baseURL else {
+        guard let baseURL else {
             #if DEBUG
             print("[SynologyAPIClient] ERROR: Not authenticated (no baseURL)")
             #endif
@@ -143,7 +143,7 @@ public final class SynologyAPIClient: Sendable {
     ) async throws -> SynoResponseDTO<T> {
         let (baseURL, sessionID) = await config.getConfig()
 
-        guard let baseURL = baseURL else {
+        guard let baseURL else {
             throw DataError.notAuthenticated
         }
 
@@ -182,7 +182,7 @@ public final class SynologyAPIClient: Sendable {
         body: [String: String] = [:]
     ) async throws -> SynoResponseDTO<T> {
         let (baseURL, sessionID) = await config.getConfig()
-        guard let baseURL = baseURL else {
+        guard let baseURL else {
             throw DataError.notAuthenticated
         }
 
@@ -207,7 +207,7 @@ public final class SynologyAPIClient: Sendable {
         file: FileUpload
     ) async throws -> SynoResponseDTO<T> {
         let (baseURL, sessionID) = await config.getConfig()
-        guard let baseURL = baseURL else {
+        guard let baseURL else {
             throw DataError.notAuthenticated
         }
 
@@ -241,7 +241,7 @@ public final class SynologyAPIClient: Sendable {
         fields: [String: String] = [:]
     ) async throws -> SynoResponseDTO<T> {
         let (baseURL, sessionID) = await config.getConfig()
-        guard let baseURL = baseURL else {
+        guard let baseURL else {
             throw DataError.notAuthenticated
         }
 
@@ -335,7 +335,7 @@ public final class SynologyAPIClient: Sendable {
         progress: DownloadProgressCallback?
     ) async throws -> Data {
         let (baseURL, sessionID) = await config.getConfig()
-        guard let baseURL = baseURL else {
+        guard let baseURL else {
             throw DataError.notAuthenticated
         }
 

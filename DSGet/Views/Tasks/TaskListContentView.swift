@@ -28,7 +28,7 @@ struct TaskListContentView: View {
 
     @ViewBuilder
     private func statusFilterMenu() -> some View {
-        if let onStatusFilterChange = onStatusFilterChange {
+        if let onStatusFilterChange {
             Menu {
                 ForEach(TaskStatusFilter.allCases) { filter in
                     Button {

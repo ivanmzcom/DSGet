@@ -79,6 +79,7 @@ final class AddTaskViewModel: DomainErrorHandling {
         switch inputMode {
         case .url:
             return !taskUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+
         case .file:
             return selectedTorrentData != nil
         }
@@ -178,6 +179,7 @@ final class AddTaskViewModel: DomainErrorHandling {
                 currentError = DSGetError.from(error)
                 showingError = true
             }
+
         case .failure(let error):
             currentError = DSGetError.from(error)
             showingError = true

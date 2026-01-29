@@ -126,6 +126,7 @@ struct AddTaskView: View {
         switch viewModel.inputMode {
         case .url:
             urlInputRow
+
         case .file:
             fileInputRow
         }

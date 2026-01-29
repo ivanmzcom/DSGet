@@ -60,7 +60,7 @@ public struct TaskTransferInfo: Equatable, Sendable, Hashable {
     }
 
     /// Default empty transfer info.
-    public static let empty = TaskTransferInfo(
+    public static let empty = Self(
         downloaded: .zero,
         uploaded: .zero,
         downloadSpeed: .zero,

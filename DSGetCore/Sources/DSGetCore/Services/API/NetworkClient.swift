@@ -41,7 +41,7 @@ public final class NetworkClient: NetworkClientProtocol, @unchecked Sendable {
         public let timeoutInterval: TimeInterval
         public let cachePolicy: URLRequest.CachePolicy
 
-        public static let `default` = Configuration(
+        public static let `default` = Self(
             timeoutInterval: 30,
             cachePolicy: .reloadIgnoringLocalCacheData
         )

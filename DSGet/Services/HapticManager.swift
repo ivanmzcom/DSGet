@@ -121,10 +121,13 @@ struct HapticButtonStyle: ButtonStyle {
         switch hapticType {
         case .light:
             HapticManager.shared.lightImpact()
+
         case .medium:
             HapticManager.shared.mediumImpact()
+
         case .heavy:
             HapticManager.shared.heavyImpact()
+
         case .selection:
             HapticManager.shared.selectionChanged()
         }

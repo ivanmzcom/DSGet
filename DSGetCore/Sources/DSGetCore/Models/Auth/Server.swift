@@ -37,7 +37,7 @@ public struct Server: Equatable, Sendable, Identifiable, Hashable {
     }
 
     /// Creates a copy with updated connection timestamp.
-    public func withUpdatedConnection() -> Server {
+    public func withUpdatedConnection() -> Self {
         var copy = self
         copy.lastConnectedAt = Date()
         return copy

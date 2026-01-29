@@ -14,33 +14,43 @@ public enum NetworkError: Error, LocalizedError, Sendable {
         switch self {
         case .invalidURL:
             return "Invalid URL"
+
         case .invalidResponse:
             return "Invalid server response"
+
         case .httpError(let code):
             return "HTTP error: \(code)"
+
         case .timeout:
             return "Request timed out"
+
         case .noConnection:
             return "No internet connection"
+
         case .sslError(let message):
             return "SSL error: \(message)"
+
         case .cancelled:
             return "Request was cancelled"
         }
     }
 
     /// Creates NetworkError from URLError.
-    public static func from(_ urlError: URLError) -> NetworkError {
+    public static func from(_ urlError: URLError) -> Self {
         switch urlError.code {
         case .notConnectedToInternet, .networkConnectionLost:
             return .noConnection
+
         case .timedOut:
             return .timeout
+
         case .cancelled:
             return .cancelled
+
         case .serverCertificateUntrusted, .serverCertificateHasBadDate,
              .serverCertificateNotYetValid, .serverCertificateHasUnknownRoot:
             return .sslError(urlError.localizedDescription)
+
         default:
             return .httpError(statusCode: urlError.errorCode)
         }
