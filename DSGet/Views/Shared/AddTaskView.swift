@@ -50,25 +50,25 @@ struct AddTaskView: View {
             recentFoldersSection
             createButtonSection
         }
-        .navigationTitle("Add New Task")
+        .navigationTitle(String.localized("addTask.title"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $viewModel.showingFolderPicker) {
             folderPickerSheet
         }
         .fileImporter(isPresented: $isShowingFilePicker, allowedContentTypes: [UTType(filenameExtension: "torrent") ?? .data], onCompletion: handleFileImport)
-        .alert("Task Created", isPresented: $viewModel.showingSuccessAlert) {
+        .alert(String.localized("addTask.alert.success"), isPresented: $viewModel.showingSuccessAlert) {
             Button("OK") { dismiss() }
         } message: {
-            Text("Your download task has been successfully created.")
+            Text(String.localized("addTask.alert.success.message"))
         }
-        .alert("Error", isPresented: $viewModel.showingError) {
+        .alert(String.localized("addTask.alert.error"), isPresented: $viewModel.showingError) {
             Button("OK") { }
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Close") { dismiss() }
+                Button(String.localized("addTask.button.close")) { dismiss() }
             }
         }
     }
@@ -78,20 +78,20 @@ struct AddTaskView: View {
     @ViewBuilder
     private var headerSection: some View {
         if let itemTitle = feedItemTitle, provieneFeed {
-            Section("Feed item") {
+            Section(String.localized("addTask.section.feedItem")) {
                 Text(itemTitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.leading)
             }
         } else if isFromSearch {
-            Section("Search result") {
-                Text("Download from search")
+            Section(String.localized("addTask.section.searchResult")) {
+                Text(String.localized("addTask.search.downloadFromSearch"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
         } else {
-            Section {
+            Section(String.localized("addTask.section.input")) {
                 Picker("Input", selection: $viewModel.inputMode) {
                     ForEach(AddTaskInputMode.allCases) { mode in
                         Text(mode.title).tag(mode)
@@ -106,7 +106,7 @@ struct AddTaskView: View {
 
     @ViewBuilder
     private var inputSection: some View {
-        Section {
+        Section(String.localized("addTask.section.input")) {
             inputContent
             folderPickerButton
         }
@@ -150,7 +150,7 @@ struct AddTaskView: View {
                         Text(selectedTorrentName)
                             .foregroundStyle(.primary)
                     } else {
-                        Text("Select .torrent file...")
+                        Text(String.localized("addTask.placeholder.selectTorrent"))
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
@@ -163,7 +163,7 @@ struct AddTaskView: View {
                 Button(role: .destructive) {
                     viewModel.removeTorrentFile()
                 } label: {
-                    Text("Remove selected file")
+                    Text(String.localized("addTask.button.removeFile"))
                 }
                 .buttonStyle(.borderless)
                 .font(.footnote)
@@ -191,7 +191,7 @@ struct AddTaskView: View {
     @ViewBuilder
     private var recentFoldersSection: some View {
         if !viewModel.recentFolders.isEmpty {
-            Section("Recent Folders") {
+            Section(String.localized("addTask.section.recentFolders")) {
                 ForEach(viewModel.recentFolders, id: \.self) { folder in
                     recentFolderRow(folder)
                 }
@@ -222,7 +222,7 @@ struct AddTaskView: View {
 
     @ViewBuilder
     private var createButtonSection: some View {
-        Section {
+        Section(String.localized("addTask.section.input")) {
             Button(action: {
                 Task { await viewModel.createTask() }
             }) {
@@ -231,7 +231,7 @@ struct AddTaskView: View {
                     if viewModel.isLoading {
                         ProgressView()
                     } else {
-                        Text("Create Task")
+                        Text(String.localized("addTask.button.createTask"))
                     }
                     Spacer()
                 }

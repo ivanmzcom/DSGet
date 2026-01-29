@@ -19,11 +19,11 @@ enum QuickActionType: String {
     var title: String {
         switch self {
         case .addTask:
-            return "Add New Task"
+            return String.localized("quickAction.addTask")
         case .viewDownloads:
-            return "View Downloads"
+            return String.localized("quickAction.viewDownloads")
         case .refresh:
-            return "Refresh All"
+            return String.localized("quickAction.refresh")
         }
     }
 

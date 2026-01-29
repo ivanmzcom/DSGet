@@ -84,6 +84,7 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
     // MARK: - Injected Dependencies
 
     private let taskService: TaskServiceProtocol
+    private let widgetSyncService: WidgetDataSyncService
 
     // MARK: - Auto-refresh
 
@@ -92,8 +93,9 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
 
     // MARK: - Initialization
 
-    init(taskService: TaskServiceProtocol? = nil) {
+    init(taskService: TaskServiceProtocol? = nil, widgetSyncService: WidgetDataSyncService? = nil) {
         self.taskService = taskService ?? DI.taskService
+        self.widgetSyncService = widgetSyncService ?? WidgetDataSyncService.shared
     }
 
     // MARK: - Public Methods
@@ -110,7 +112,15 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
             tasks = result.tasks.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
             isOfflineMode = result.isFromCache
             updateCounts()
+            
+            // Sincronizar con App Groups para el widget
+            widgetSyncService.syncDownloads(tasks)
 
+        } catch let error as DomainError where error == .noConnection {
+            // Error de conexión: informar al widget
+            isOfflineMode = true
+            widgetSyncService.setConnectionError()
+            handleError(error)
         } catch {
             handleError(error)
         }
@@ -171,6 +181,9 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
                 selectedTask = nil
             }
             updateCounts()
+            
+            // Sincronizar después de eliminar
+            widgetSyncService.syncDownloads(tasks)
 
         } catch {
             handleError(error)

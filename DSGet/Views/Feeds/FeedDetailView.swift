@@ -48,7 +48,7 @@ struct FeedDetailView: View {
         .toolbar {
             if let onClose = onClose, horizontalSizeClass != .compact {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { onClose() }
+                    Button(String.localized("general.close")) { onClose() }
                 }
             }
             ToolbarItem(placement: .principal) {
@@ -59,8 +59,8 @@ struct FeedDetailView: View {
         }
         .task { await viewModel.loadItems(reset: true) }
         .refreshable { await viewModel.loadItems(reset: true) }
-        .alert("Error", isPresented: $viewModel.showingError) {
-            Button("OK", role: .cancel) { }
+        .alert(String.localized("error.title"), isPresented: $viewModel.showingError) {
+            Button(String.localized("general.ok"), role: .cancel) { }
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
         }
@@ -71,10 +71,9 @@ struct FeedDetailView: View {
                     .controlSize(.large)
                     .tint(Color.accentColor)
             } else if !viewModel.isLoading && viewModel.items.isEmpty {
-                ContentUnavailableView(
-                    "No Items",
+                ContentUnavailableView(String.localized("feed.detail.noItems"),
                     systemImage: "doc.plaintext",
-                    description: Text("Pull down to refresh this feed.")
+                    description: Text(String.localized("feed.detail.noItems.description"))
                 )
             }
         }
@@ -115,7 +114,7 @@ struct FeedItemRow: View {
                         .foregroundStyle(item.canDownload ? .primary : .secondary)
 
                     if item.isNew {
-                        Text("NEW")
+                        Text(String.localized("feed.item.new"))
                             .font(.caption2)
                             .fontWeight(.semibold)
                             .padding(.horizontal, 6)

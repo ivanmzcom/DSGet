@@ -28,15 +28,15 @@ struct TaskListItemView: View {
     private var status: (text: String, color: Color) {
         switch task.status {
         case .downloading:
-            return ("Downloading", .blue)
+            return (String.localized("taskItem.status.downloading"), .blue)
         case .seeding, .finished:
-            return ("Completed", .green)
+            return (String.localized("taskItem.status.completed"), .green)
         case .paused:
-            return ("Paused", .orange)
+            return (String.localized("taskItem.status.paused"), .orange)
         case .waiting:
-            return ("Waiting", .gray)
+            return (String.localized("taskItem.status.waiting"), .gray)
         case .error:
-            return ("Error", .red)
+            return (String.localized("taskItem.status.error"), .red)
         default:
             return (task.status.displayName, .purple)
         }
@@ -136,7 +136,7 @@ struct TaskListItemView: View {
             Button {
                 Task { await handleTogglePause() }
             } label: {
-                Label(task.isPaused ? "Resume" : "Pause",
+                Label(task.isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause"),
                       systemImage: task.isPaused ? "play.fill" : "pause.fill")
             }
             .disabled(task.type == .emule && task.isCompleted)
@@ -144,7 +144,7 @@ struct TaskListItemView: View {
             Button(role: .destructive) {
                 Task { await handleDelete() }
             } label: {
-                Label("Delete", systemImage: "trash")
+                Label(String.localized("taskItem.action.delete"), systemImage: "trash")
             }
 
             Divider()
@@ -153,7 +153,7 @@ struct TaskListItemView: View {
                 Button {
                     copyToClipboard(uri)
                 } label: {
-                    Label("Copy URL", systemImage: "doc.on.doc")
+                    Label(String.localized("taskItem.action.copyURL"), systemImage: "doc.on.doc")
                 }
             }
 
@@ -163,7 +163,7 @@ struct TaskListItemView: View {
             Button(role: .destructive) {
                 Task { await handleDelete() }
             } label: {
-                Label("Delete", systemImage: "trash")
+                Label(String.localized("taskItem.action.delete"), systemImage: "trash")
             }
             .disabled(isLoading)
 
@@ -171,14 +171,14 @@ struct TaskListItemView: View {
                 Button {
                     Task { await handleTogglePause() }
                 } label: {
-                    Label(task.isPaused ? "Resume" : "Pause", systemImage: task.isPaused ? "play.fill" : "pause.fill")
+                    Label(task.isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause"), systemImage: task.isPaused ? "play.fill" : "pause.fill")
                 }
                 .tint(.orange)
                 .disabled(isLoading)
             }
         }
-        .alert("Error", isPresented: $showingErrorAlert) {
-            Button("OK") { }
+        .alert(String.localized("taskItem.status.error"), isPresented: $showingErrorAlert) {
+            Button(String.localized("general.ok")) { }
         } message: {
             Text(errorMessage ?? "An unknown error occurred.")
         }

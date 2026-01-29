@@ -14,7 +14,7 @@ struct SettingsView: View {
     var body: some View {
         List {
             // MARK: - Server Section
-            Section("Server") {
+            Section(String.localized("settings.section.server")) {
                 if let server = appViewModel.currentServer {
                     HStack {
                         Image(systemName: "server.rack")
@@ -31,16 +31,16 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "server.rack")
                             .foregroundStyle(.secondary)
-                        Text("No server")
+                        Text(String.localized("settings.server.noServer"))
                             .foregroundStyle(.secondary)
                     }
                 }
             }
 
             // MARK: - About Section
-            Section("About") {
+            Section(String.localized("settings.section.about")) {
                 HStack {
-                    Text("Version")
+                    Text(String.localized("settings.about.version"))
                     Spacer()
                     Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
                         .foregroundStyle(.secondary)
@@ -56,13 +56,13 @@ struct SettingsView: View {
                         if isLoggingOut {
                             ProgressView()
                         }
-                        Text("Logout")
+                        Text(String.localized("settings.logout.button"))
                     }
                 }
                 .disabled(isLoggingOut)
             }
         }
-        .navigationTitle("Settings")
+        .navigationTitle(String.localized("settings.title"))
         .navigationBarTitleDisplayMode(.inline)
     }
 

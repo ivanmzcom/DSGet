@@ -15,15 +15,15 @@ struct ContentView: View {
         NavigationStack {
             Group {
                 if viewModel.isLoading && viewModel.tasks.isEmpty {
-                    ProgressView("Loading...")
+                    ProgressView(NSLocalizedString("watch.loading", comment: "Loading indicator"))
                 } else if viewModel.tasks.isEmpty {
                     VStack(spacing: 8) {
                         Image(systemName: "arrow.down.circle")
                             .font(.largeTitle)
                             .foregroundStyle(.secondary)
-                        Text("No Downloads")
+                        Text(NSLocalizedString("watch.no_downloads", comment: "Empty state title"))
                             .font(.headline)
-                        Text("Add tasks from your iPhone")
+                        Text(NSLocalizedString("watch.add_tasks_hint", comment: "Empty state hint"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -33,7 +33,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationTitle("Downloads")
+            .navigationTitle(NSLocalizedString("watch.downloads_title", comment: "Navigation title"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

@@ -17,9 +17,9 @@ enum AppTab: Hashable {
 
     var label: String {
         switch self {
-        case .downloads: return "Downloads"
-        case .feeds: return "Feeds"
-        case .settings: return "Settings"
+        case .downloads: return String.localized("tab.downloads")
+        case .feeds: return String.localized("tab.feeds")
+        case .settings: return String.localized("tab.settings")
         }
     }
 
@@ -131,7 +131,7 @@ struct DownloadsTabView: View {
             })
             .id(task.id)
         } else {
-            ContentUnavailableView("Select a Task", systemImage: "arrow.down.circle")
+            ContentUnavailableView(String.localized("tasks.selectTask"), systemImage: "arrow.down.circle")
         }
     }
 
@@ -140,7 +140,7 @@ struct DownloadsTabView: View {
         if !appViewModel.isOnline {
             HStack {
                 Image(systemName: "wifi.slash")
-                Text("Offline Mode")
+                Text(String.localized("offline.mode"))
             }
             .font(.caption)
             .padding(.horizontal, 12)
@@ -186,7 +186,7 @@ struct FeedsTabView: View {
             })
             .id(feed.id)
         } else {
-            ContentUnavailableView("Select a Feed", systemImage: "dot.radiowaves.left.and.right")
+            ContentUnavailableView(String.localized("feeds.selectFeed"), systemImage: "dot.radiowaves.left.and.right")
         }
     }
 
@@ -195,7 +195,7 @@ struct FeedsTabView: View {
         if !appViewModel.isOnline {
             HStack {
                 Image(systemName: "wifi.slash")
-                Text("Offline Mode")
+                Text(String.localized("offline.mode"))
             }
             .font(.caption)
             .padding(.horizontal, 12)

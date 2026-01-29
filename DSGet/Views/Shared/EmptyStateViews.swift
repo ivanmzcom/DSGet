@@ -83,10 +83,10 @@ extension IllustratedEmptyState {
     /// Empty state for no downloads.
     static func noDownloads(onAdd: @escaping () -> Void) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "No Downloads",
-            description: "Add a torrent file or magnet link to start downloading.",
+            title: String.localized(EmptyStateText.noDownloadsTitle),
+            description: String.localized(EmptyStateText.noDownloadsDescription),
             systemImage: "arrow.down.circle.dotted",
-            actionTitle: "Add Task",
+            actionTitle: String.localized(EmptyStateText.noDownloadsAction),
             action: onAdd
         )
     }
@@ -94,10 +94,10 @@ extension IllustratedEmptyState {
     /// Empty state for no feeds.
     static func noFeeds(onRefresh: @escaping () -> Void) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "No Feeds",
-            description: "Your RSS feeds will appear here. Add feeds in Download Station.",
+            title: String.localized(EmptyStateText.noFeedsTitle),
+            description: String.localized(EmptyStateText.noFeedsDescription),
             systemImage: "dot.radiowaves.right",
-            actionTitle: "Refresh",
+            actionTitle: String.localized(EmptyStateText.noFeedsAction),
             action: onRefresh
         )
     }
@@ -105,8 +105,8 @@ extension IllustratedEmptyState {
     /// Empty state for search.
     static var searchPrompt: IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "Search Torrents",
-            description: "Enter a search term to find torrents from enabled search modules.",
+            title: String.localized(EmptyStateText.searchPromptTitle),
+            description: String.localized(EmptyStateText.searchPromptDescription),
             systemImage: "magnifyingglass"
         )
     }
@@ -114,7 +114,7 @@ extension IllustratedEmptyState {
     /// Empty state for no search results.
     static func noSearchResults(query: String) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "No Results",
+            title: String.localized("empty.search.noResults"),
             description: "No torrents found for \"\(query)\". Try a different search term.",
             systemImage: "magnifyingglass"
         )
@@ -123,10 +123,10 @@ extension IllustratedEmptyState {
     /// Empty state for offline mode.
     static func offline(onRetry: @escaping () -> Void) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "You're Offline",
-            description: "Check your internet connection and try again.",
+            title: String.localized(EmptyStateText.offlineTitle),
+            description: String.localized(EmptyStateText.offlineDescription),
             systemImage: "wifi.slash",
-            actionTitle: "Retry",
+            actionTitle: String.localized(EmptyStateText.offlineAction),
             action: onRetry
         )
     }
@@ -134,10 +134,10 @@ extension IllustratedEmptyState {
     /// Empty state for error.
     static func error(message: String, onRetry: @escaping () -> Void) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "Something Went Wrong",
+            title: String.localized(EmptyStateText.errorTitle),
             description: message,
             systemImage: "exclamationmark.triangle",
-            actionTitle: "Try Again",
+            actionTitle: String.localized(EmptyStateText.errorAction),
             action: onRetry
         )
     }
@@ -145,10 +145,10 @@ extension IllustratedEmptyState {
     /// Empty state for not logged in.
     static func notLoggedIn(onLogin: @escaping () -> Void) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "Not Connected",
-            description: "Log in to your Synology NAS to manage downloads.",
+            title: String.localized(EmptyStateText.notConnectedTitle),
+            description: String.localized(EmptyStateText.notConnectedDescription),
             systemImage: "server.rack",
-            actionTitle: "Log In",
+            actionTitle: String.localized(EmptyStateText.notConnectedAction),
             action: onLogin
         )
     }
@@ -156,7 +156,7 @@ extension IllustratedEmptyState {
     /// Empty state for feed items.
     static func noFeedItems(feedTitle: String) -> IllustratedEmptyState {
         IllustratedEmptyState(
-            title: "No Items",
+            title: String.localized("feed.detail.noItems"),
             description: "\"\(feedTitle)\" doesn't have any items yet.",
             systemImage: "doc.text"
         )
@@ -259,6 +259,6 @@ extension View {
 }
 
 #Preview("Loading") {
-    LoadingEmptyState(title: "Loading Tasks...", subtitle: "Please wait")
+    LoadingEmptyState(title: "Loading Tasks...", subtitle: String.localized(EmptyStateText.loadingSubtitle))
 }
 #endif

@@ -22,15 +22,15 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Server Details")) {
-                    TextField("Server Name (optional)", text: $viewModel.serverName)
+                Section(header: Text(String.localized("auth.login.section.serverDetails"))) {
+                    TextField(String.localized("auth.login.placeholder.serverName"), text: $viewModel.serverName)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.words)
                         .focused($focusedField, equals: .serverName)
                         .submitLabel(.next)
                         .onSubmit { focusedField = .host }
 
-                    TextField("IP or address", text: $viewModel.host)
+                    TextField(String.localized("auth.login.placeholder.ipAddress"), text: $viewModel.host)
                         .textContentType(.URL)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
@@ -40,8 +40,8 @@ struct LoginView: View {
                         .onSubmit { focusedField = .port }
 
                     HStack {
-                        Toggle("Use HTTPS", isOn: $viewModel.useHTTPS)
-                        TextField("Port", text: Binding(
+                        Toggle(String.localized("auth.login.toggle.https"), isOn: $viewModel.useHTTPS)
+                        TextField(String.localized("auth.login.placeholder.port"), text: Binding(
                             get: { viewModel.portString },
                             set: { viewModel.portString = $0 }
                         ))
@@ -52,8 +52,8 @@ struct LoginView: View {
                     }
                 }
 
-                Section(header: Text("Credentials")) {
-                    TextField("Username", text: $viewModel.username)
+                Section(header: Text(String.localized("auth.login.section.credentials"))) {
+                    TextField(String.localized("auth.login.placeholder.username"), text: $viewModel.username)
                         .textContentType(.username)
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
@@ -61,13 +61,13 @@ struct LoginView: View {
                         .submitLabel(.next)
                         .onSubmit { focusedField = .password }
 
-                    SecureField("Password", text: $viewModel.password)
+                    SecureField(String.localized("auth.login.placeholder.password"), text: $viewModel.password)
                         .textContentType(.password)
                         .focused($focusedField, equals: .password)
                         .submitLabel(.next)
                         .onSubmit { focusedField = .otp }
 
-                    SecureField("OTP (if enabled)", text: $viewModel.otpCode)
+                    SecureField(String.localized("auth.login.placeholder.otp"), text: $viewModel.otpCode)
                         .textContentType(.oneTimeCode)
                         .keyboardType(.numberPad)
                         .focused($focusedField, equals: .otp)
@@ -83,7 +83,7 @@ struct LoginView: View {
                                 ProgressView()
                                     .progressViewStyle(.circular)
                             } else {
-                                Text("Login")
+                                Text(String.localized("auth.login.button.login"))
                                     .fontWeight(.semibold)
                             }
                             Spacer()
@@ -95,7 +95,7 @@ struct LoginView: View {
                 Section {
                     HStack {
                         Spacer()
-                        Text("Connect to your Synology Download Station")
+                        Text(String.localized("auth.login.subtitle"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -103,12 +103,12 @@ struct LoginView: View {
                     }
                 }
             }
-            .navigationTitle("DSGet")
+            .navigationTitle(String.localized("auth.login.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .alert("Login Failed", isPresented: $viewModel.showingError) {
-                Button("OK", role: .cancel) { }
+            .alert(String.localized("auth.login.error.title"), isPresented: $viewModel.showingError) {
+                Button(String.localized("general.ok"), role: .cancel) { }
             } message: {
-                Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
+                Text(viewModel.currentError?.localizedDescription ?? String.localized("auth.login.error.unknown"))
             }
         }
     }

@@ -16,10 +16,10 @@ struct ErrorAlertModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .alert("Error", isPresented: $isPresented) {
-                Button("OK", role: .cancel) { }
+            .alert(String.localized("error.title"), isPresented: $isPresented) {
+                Button(String.localized("general.ok"), role: .cancel) { }
             } message: {
-                Text(error?.localizedDescription ?? "An unknown error occurred.")
+                Text(error?.localizedDescription ?? String.localized("error.unknown"))
             }
     }
 }
@@ -85,7 +85,7 @@ struct OfflineModeOverlay: ViewModifier {
                 if isOffline {
                     HStack {
                         Image(systemName: "wifi.slash")
-                        Text("Showing cached data")
+                        Text(String.localized("offline.cachedData"))
                     }
                     .font(.caption)
                     .padding(.horizontal, 12)

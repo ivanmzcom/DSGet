@@ -158,59 +158,59 @@ struct TaskDetailView: View {
 
     @ViewBuilder
     private var overviewSection: some View {
-        Section("Overview") {
-            LabeledContent("Title") {
+        Section(String.localized("taskDetail.overview")) {
+            LabeledContent(String.localized("taskDetail.title")) {
                 Text(viewModel.task.title)
                     .multilineTextAlignment(.trailing)
             }
-            LabeledContent("Status") {
+            LabeledContent(String.localized("taskDetail.status")) {
                 Text(statusTextAndColor.text)
                     .foregroundStyle(statusTextAndColor.color)
             }
-            LabeledContent("Progress") {
+            LabeledContent(String.localized("taskDetail.progress")) {
                 Text(progressPercentage)
             }
             ProgressView(value: progressValue)
                 .tint(statusTextAndColor.color)
-            LabeledContent("Total Size") { Text(viewModel.task.size.formatted) }
-            LabeledContent("Downloaded") { Text(viewModel.task.downloadedSize.formatted) }
-            LabeledContent("Uploaded") { Text(viewModel.task.uploadedSize.formatted) }
+            LabeledContent(String.localized("taskDetail.totalSize")) { Text(viewModel.task.size.formatted) }
+            LabeledContent(String.localized("taskDetail.downloaded")) { Text(viewModel.task.downloadedSize.formatted) }
+            LabeledContent(String.localized("taskDetail.uploaded")) { Text(viewModel.task.uploadedSize.formatted) }
         }
     }
 
     @ViewBuilder
     private var transferSection: some View {
-        Section("Transfer Details") {
+        Section(String.localized("taskDetail.transferDetails")) {
             if let downloadSpeed = downloadSpeed {
-                LabeledContent("Download Speed") { Text(downloadSpeed) }
+                LabeledContent(String.localized("taskDetail.downloadSpeed")) { Text(downloadSpeed) }
             }
             if let uploadSpeed = uploadSpeed {
-                LabeledContent("Upload Speed") { Text(uploadSpeed) }
+                LabeledContent(String.localized("taskDetail.uploadSpeed")) { Text(uploadSpeed) }
             }
             if let etaText = etaText {
-                LabeledContent("Time Remaining") { Text(etaText) }
+                LabeledContent(String.localized("taskDetail.timeRemaining")) { Text(etaText) }
             }
             if let seedElapsed = viewModel.task.detail?.seedElapsed, seedElapsed > 0 {
-                LabeledContent("Seeding Time") { Text(formatTimeInterval(seedElapsed)) }
+                LabeledContent(String.localized("taskDetail.seedingTime")) { Text(formatTimeInterval(seedElapsed)) }
             }
             if !hasTransferDetails {
-                ContentUnavailableView("No transfer data", systemImage: "arrow.down.arrow.up", description: Text("No transfer information available"))
+                ContentUnavailableView(String.localized("taskDetail.noTransferData"), systemImage: "arrow.down.arrow.up", description: Text(String.localized("taskDetail.noTransferData.description")))
             }
         }
     }
 
     @ViewBuilder
     private var taskInfoSection: some View {
-        Section("Task Info") {
-            LabeledContent("Type") { Text(viewModel.task.type.displayName) }
+        Section(String.localized("taskDetail.taskInfo")) {
+            LabeledContent(String.localized("taskDetail.type")) { Text(viewModel.task.type.displayName) }
             if let createTime = viewModel.task.detail?.createTime {
-                LabeledContent("Created") { Text(formatDate(createTime)) }
+                LabeledContent(String.localized("taskDetail.created")) { Text(formatDate(createTime)) }
             }
             if let startTime = viewModel.task.detail?.startedTime {
-                LabeledContent("Started") { Text(formatDate(startTime)) }
+                LabeledContent(String.localized("taskDetail.started")) { Text(formatDate(startTime)) }
             }
             if let completedTime = viewModel.task.detail?.completedTime {
-                LabeledContent("Completed") { Text(formatDate(completedTime)) }
+                LabeledContent(String.localized("taskDetail.completed")) { Text(formatDate(completedTime)) }
             }
             destinationRow
             uriRow
@@ -224,7 +224,7 @@ struct TaskDetailView: View {
             Button {
                 viewModel.showingEditDestination = true
             } label: {
-                LabeledContent("Destination") {
+                LabeledContent(String.localized("taskDetail.destination")) {
                     HStack {
                         Text(destination)
                         Image(systemName: "chevron.right")
@@ -251,7 +251,7 @@ struct TaskDetailView: View {
                     }
                 }
             } else {
-                LabeledContent("URI") {
+                LabeledContent(String.localized("taskDetail.uri")) {
                     Text(rawURI)
                         .font(.caption)
                         .lineLimit(2)
@@ -263,14 +263,14 @@ struct TaskDetailView: View {
 
     @ViewBuilder
     private var connectionSection: some View {
-        Section("Connection Info") {
+        Section(String.localized("taskDetail.connectionInfo")) {
             if let detail = viewModel.task.detail, detail.hasPeerInfo {
-                LabeledContent("Connected Peers") { Text("\(detail.connectedPeers)") }
-                LabeledContent("Connected Seeders") { Text("\(detail.connectedSeeders)") }
-                LabeledContent("Connected Leechers") { Text("\(detail.connectedLeechers)") }
-                LabeledContent("Total Peers") { Text("\(detail.totalPeers)") }
+                LabeledContent(String.localized("taskDetail.connectedPeers")) { Text("\(detail.connectedPeers)") }
+                LabeledContent(String.localized("taskDetail.connectedSeeders")) { Text("\(detail.connectedSeeders)") }
+                LabeledContent(String.localized("taskDetail.connectedLeechers")) { Text("\(detail.connectedLeechers)") }
+                LabeledContent(String.localized("taskDetail.totalPeers")) { Text("\(detail.totalPeers)") }
             } else {
-                ContentUnavailableView("No peer information", systemImage: "person.2", description: Text("No peer information available"))
+                ContentUnavailableView(String.localized("taskDetail.noPeerInfo"), systemImage: "person.2", description: Text(String.localized("taskDetail.noPeerInfo.description")))
             }
         }
     }
@@ -278,13 +278,13 @@ struct TaskDetailView: View {
     @ViewBuilder
     private var filesSection: some View {
         if !viewModel.task.files.isEmpty {
-            Section("Files (\(viewModel.task.files.count))") {
+            Section(String.localized("taskDetail.filesCount").replacingOccurrences(of: "%d", with: "\(viewModel.task.files.count)")) {
                 ForEach(viewModel.task.files) { file in
                     fileRow(file)
                 }
             }
         } else {
-            ContentUnavailableView("No files", systemImage: "doc.on.doc", description: Text("No file information available"))
+            ContentUnavailableView(String.localized("taskDetail.noFiles"), systemImage: "doc.on.doc", description: Text(String.localized("taskDetail.noFiles.description")))
         }
     }
 
@@ -306,13 +306,13 @@ struct TaskDetailView: View {
     @ViewBuilder
     private var trackersSection: some View {
         if !viewModel.task.trackers.isEmpty {
-            Section("Trackers (\(viewModel.task.trackers.count))") {
+            Section(String.localized("taskDetail.trackersCount").replacingOccurrences(of: "%d", with: "\(viewModel.task.trackers.count)")) {
                 ForEach(viewModel.task.trackers) { tracker in
                     trackerRow(tracker)
                 }
             }
         } else {
-            ContentUnavailableView("No trackers", systemImage: "antenna.radiowaves.left.and.right", description: Text("No tracker information available"))
+            ContentUnavailableView(String.localized("taskDetail.noTrackers"), systemImage: "antenna.radiowaves.left.and.right", description: Text(String.localized("taskDetail.noTrackers.description")))
         }
     }
 
@@ -370,20 +370,20 @@ struct TaskDetailView: View {
         .toolbar {
             if horizontalSizeClass != .compact {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
+                    Button(String.localized("taskDetail.button.close")) {
                         onClose?()
                         dismiss()
                     }
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(viewModel.isTaskPaused ? "Resume" : "Pause") {
+                Button(viewModel.isTaskPaused ? String.localized("taskDetail.button.resume") : String.localized("taskDetail.button.pause")) {
                     Task { await viewModel.togglePauseResume() }
                 }
                 .disabled(!viewModel.canTogglePause)
             }
             ToolbarItem(placement: .destructiveAction) {
-                Button("Delete", systemImage: "trash", role: .destructive) {
+                Button(String.localized("taskDetail.button.delete"), systemImage: "trash", role: .destructive) {
                     viewModel.showingDeleteConfirmation = true
                 }
                 .disabled(viewModel.isProcessingAction)
@@ -394,14 +394,14 @@ struct TaskDetailView: View {
                 }
             }
         }
-        .confirmationDialog("Delete Task", isPresented: $viewModel.showingDeleteConfirmation, titleVisibility: .visible) {
-            Button("Delete Task", role: .destructive) {
+        .confirmationDialog(String.localized("taskDetail.delete.confirmTitle"), isPresented: $viewModel.showingDeleteConfirmation, titleVisibility: .visible) {
+            Button(String.localized("taskDetail.delete.confirmButton"), role: .destructive) {
                 Task {
                     await viewModel.deleteTask()
                     dismiss()
                 }
             }
-            Button("Cancel", role: .cancel) { }
+            Button(String.localized("general.cancel"), role: .cancel) { }
         } message: {
             Text("Are you sure you want to delete \"\(viewModel.task.title)\"?")
         }
@@ -412,7 +412,7 @@ struct TaskDetailView: View {
                 viewModel.showingEditDestination = false
             })
         }
-        .alert("Error", isPresented: $viewModel.showingError) {
+        .alert(String.localized("error.title"), isPresented: $viewModel.showingError) {
             Button("OK") { }
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")

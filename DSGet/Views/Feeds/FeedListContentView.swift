@@ -48,7 +48,7 @@ struct FeedListContentView: View {
                 Button {
                     Task { await feedsVM.refreshFeed(feed) }
                 } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label(String.localized("feed.action.refresh"), systemImage: "arrow.clockwise")
                 }
 
                 Button {
@@ -66,7 +66,7 @@ struct FeedListContentView: View {
                     Button {
                         ClipboardUtility.copy(feedURL.absoluteString)
                     } label: {
-                        Label("Copy Feed URL", systemImage: "doc.on.doc")
+                        Label(String.localized("feed.action.copyFeedURL"), systemImage: "doc.on.doc")
                     }
                 }
             }
@@ -86,9 +86,9 @@ struct FeedListContentView: View {
             onToggleFavorite?(feed)
         } label: {
             if isFavorite {
-                Label("Unfavorite", systemImage: "star.slash")
+                Label(String.localized("feed.action.unfavorite"), systemImage: "star.slash")
             } else {
-                Label("Favorite", systemImage: "star.fill")
+                Label(String.localized("feed.action.favorite"), systemImage: "star.fill")
             }
         }
         .tint(.yellow)
@@ -101,9 +101,9 @@ struct FeedListContentView: View {
             Task { await feedsVM.refreshFeed(feed) }
         } label: {
             if feedIsRefreshing {
-                Label("Refreshing", systemImage: "hourglass")
+                Label(String.localized("feed.action.refreshing"), systemImage: "hourglass")
             } else {
-                Label("Refresh", systemImage: "arrow.clockwise")
+                Label(String.localized("feed.action.refresh"), systemImage: "arrow.clockwise")
             }
         }
         .disabled(feedIsRefreshing)
@@ -114,7 +114,7 @@ struct FeedListContentView: View {
     private func shareButton(for feed: RSSFeed) -> some View {
         if let url = shareURL(for: feed) {
             ShareLink(item: url) {
-                Label("Share", systemImage: "square.and.arrow.up")
+                Label(String.localized("feed.action.share"), systemImage: "square.and.arrow.up")
             }
             .tint(.accentColor)
         }
@@ -134,7 +134,7 @@ struct FeedListContentView: View {
         @Bindable var vm = feedsVM
 
         feedListContent()
-            .navigationTitle("Feeds")
+            .navigationTitle(String.localized("feeds.title"))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 Task { await feedsVM.fetchFeedsIfNeeded() }
@@ -144,9 +144,9 @@ struct FeedListContentView: View {
             .loadingOverlay(
                 isLoading: feedsVM.isLoading,
                 isEmpty: feedsVM.feeds.isEmpty,
-                title: "No Feeds",
+                title: String.localized("feeds.empty.noFeeds"),
                 systemImage: "dot.radiowaves.right",
-                description: "Pull down to refresh your Download Station feeds."
+                description: String.localized("feeds.empty.noFeeds.description")
             )
             .offlineModeIndicator(isOffline: feedsVM.isOfflineMode)
     }

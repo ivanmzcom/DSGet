@@ -74,26 +74,26 @@ struct OTPSheetView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("OTP Required")) {
-                    Text("Your session has expired and OTP is required to re-authenticate.")
-                    SecureField("OTP Code", text: $otpCode)
+                Section(header: Text(String.localized("otp.required.title"))) {
+                    Text(String.localized("otp.required"))
+                    SecureField(String.localized("otp.placeholder"), text: $otpCode)
                         .textContentType(.oneTimeCode)
                 }
                 Section {
-                    Button("Submit") {
+                    Button(String.localized("otp.button.submit")) {
                         if !otpCode.isEmpty {
                             otpService.submit(otp: otpCode)
                             otpCode = ""
                         }
                     }
                     .disabled(otpCode.isEmpty)
-                    Button("Cancel", role: .cancel) {
+                    Button(String.localized("otp.button.cancel"), role: .cancel) {
                         otpService.cancel()
                         otpCode = ""
                     }
                 }
             }
-            .navigationTitle("Enter OTP")
+            .navigationTitle(String.localized("otp.title"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }

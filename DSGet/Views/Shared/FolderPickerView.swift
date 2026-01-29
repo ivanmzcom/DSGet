@@ -29,7 +29,7 @@ struct FolderPickerView: View {
             if viewModel.isLoading && viewModel.folders.isEmpty {
                 ProgressView()
             } else if viewModel.folders.isEmpty && viewModel.currentError == nil && !viewModel.isLoading {
-                Text("No folders found.")
+                Text(String.localized("folderPicker.noFolders"))
             } else {
                 ForEach(viewModel.folders) { folder in
                     NavigationLink(destination: FolderPickerView(
@@ -50,17 +50,17 @@ struct FolderPickerView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem {
-                Button("Cancel") { onDismissSheet() }
+                Button(String.localized("folderPicker.button.cancel")) { onDismissSheet() }
             }
             ToolbarItemGroup {
                 Button {
                     viewModel.showingCreateFolder = true
                 } label: {
-                    Label("New Folder", systemImage: "folder.badge.plus")
+                    Label(String.localized("folderPicker.button.newFolder"), systemImage: "folder.badge.plus")
                 }
                 .disabled(!viewModel.canCreateFolder)
 
-                Button("Select") {
+                Button(String.localized("folderPicker.button.select")) {
                     handleSelectFolder()
                 }
                 .disabled(!viewModel.canSelectCurrentFolder)
@@ -69,28 +69,28 @@ struct FolderPickerView: View {
         .task {
             await viewModel.loadFolders()
         }
-        .alert("Error", isPresented: $viewModel.showingError) {
-            Button("OK") { }
+        .alert(String.localized("error.title"), isPresented: $viewModel.showingError) {
+            Button(String.localized("general.ok")) { }
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
         }
         .sheet(isPresented: $viewModel.showingCreateFolder) {
             NavigationStack {
                 Form {
-                    Section(header: Text("Folder Name")) {
-                        TextField("Name", text: $viewModel.newFolderName)
+                    Section(header: Text(String.localized("folderPicker.createFolder.header"))) {
+                        TextField(String.localized("folderPicker.createFolder.placeholder"), text: $viewModel.newFolderName)
                             .disableAutocorrection(true)
                     }
                 }
-                .navigationTitle("New Folder")
+                .navigationTitle(String.localized("folderPicker.createFolder.title"))
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
+                        Button(String.localized("folderPicker.button.cancel")) {
                             viewModel.dismissCreateFolderSheet()
                         }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Create") {
+                        Button(String.localized("folderPicker.createFolder.button.create")) {
                             Task { await viewModel.createFolder() }
                         }
                         .disabled(viewModel.trimmedNewFolderName.isEmpty || viewModel.isCreatingFolder)

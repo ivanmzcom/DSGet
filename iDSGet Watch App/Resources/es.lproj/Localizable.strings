@@ -1,0 +1,5 @@
+/* Watch App - ContentView */
+"watch.loading" = "Cargando...";
+"watch.no_downloads" = "Sin descargas";
+"watch.add_tasks_hint" = "Añade tareas desde tu iPhone";
+"watch.downloads_title" = "Descargas";

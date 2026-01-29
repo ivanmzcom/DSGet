@@ -51,7 +51,7 @@ struct TaskContextMenu: View {
             Button(role: .destructive) {
                 onDelete()
             } label: {
-                Label("Delete", systemImage: "trash")
+                Label(String.localized("taskItem.action.delete"), systemImage: "trash")
             }
 
             Divider()
@@ -61,7 +61,7 @@ struct TaskContextMenu: View {
                 Button {
                     ClipboardUtility.copy(uri)
                 } label: {
-                    Label("Copy URL", systemImage: "doc.on.doc")
+                    Label(String.localized("taskItem.action.copyURL"), systemImage: "doc.on.doc")
                 }
             }
         }
@@ -131,7 +131,7 @@ struct FeedItemContextMenu: View {
             Button {
                 onDownload()
             } label: {
-                Label("Download", systemImage: "arrow.down.circle")
+                Label(String.localized("feed.action.download"), systemImage: "arrow.down.circle")
             }
 
             Divider()
@@ -140,7 +140,7 @@ struct FeedItemContextMenu: View {
             Button {
                 ClipboardUtility.copy(item.title)
             } label: {
-                Label("Copy Title", systemImage: "doc.on.doc")
+                Label(String.localized("feed.action.copyTitle"), systemImage: "doc.on.doc")
             }
 
             // Copy Download URL
@@ -148,7 +148,7 @@ struct FeedItemContextMenu: View {
                 Button {
                     ClipboardUtility.copy(downloadURL.absoluteString)
                 } label: {
-                    Label("Copy Download URL", systemImage: "link")
+                    Label(String.localized("feed.action.copyDownloadURL"), systemImage: "link")
                 }
             }
         }

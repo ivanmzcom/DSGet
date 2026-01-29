@@ -1,0 +1,225 @@
+//
+//  Localizable.strings (English)
+//  DSGet iOS App
+//
+
+// MARK: - Authentication
+"auth.login.title" = "DSGet";
+"auth.login.section.serverDetails" = "Server Details";
+"auth.login.placeholder.serverName" = "Server Name (optional)";
+"auth.login.placeholder.ipAddress" = "IP or address";
+"auth.login.toggle.https" = "Use HTTPS";
+"auth.login.placeholder.port" = "Port";
+"auth.login.section.credentials" = "Credentials";
+"auth.login.placeholder.username" = "Username";
+"auth.login.placeholder.password" = "Password";
+"auth.login.placeholder.otp" = "OTP (if enabled)";
+"auth.login.button.login" = "Login";
+"auth.login.subtitle" = "Connect to your Synology Download Station";
+"auth.login.error.title" = "Login Failed";
+"auth.login.error.unknown" = "An unknown error occurred.";
+"auth.login.error.invalidPort" = "Port must be a valid number between 1 and 65535.";
+
+// MARK: - Main Tabs
+"tab.downloads" = "Downloads";
+"tab.feeds" = "Feeds";
+"tab.settings" = "Settings";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.section.server" = "Server";
+"settings.server.noServer" = "No server";
+"settings.section.about" = "About";
+"settings.about.version" = "Version";
+"settings.section.logout" = "Logout";
+"settings.logout.button" = "Logout";
+
+// MARK: - Add Task
+"addTask.title" = "Add New Task";
+"addTask.alert.success" = "Task Created";
+"addTask.alert.success.message" = "Your download task has been successfully created.";
+"addTask.alert.error" = "Error";
+"addTask.button.close" = "Close";
+"addTask.section.feedItem" = "Feed item";
+"addTask.section.searchResult" = "Search result";
+"addTask.search.downloadFromSearch" = "Download from search";
+"addTask.section.input" = "Input";
+"addTask.input.url" = "URL";
+"addTask.input.file" = ".torrent";
+"addTask.placeholder.url" = "URL";
+"addTask.placeholder.selectTorrent" = "Select .torrent file...";
+"addTask.button.removeFile" = "Remove selected file";
+"addTask.placeholder.selectFolder" = "Select folder...";
+"addTask.section.recentFolders" = "Recent Folders";
+"addTask.button.createTask" = "Create Task";
+"addTask.error.selectTorrentFile" = "Select a .torrent file before creating the task.";
+
+// MARK: - Empty States
+"empty.downloads.title" = "No Downloads";
+"empty.downloads.description" = "Add a torrent file or magnet link to start downloading.";
+"empty.downloads.action" = "Add Task";
+"empty.feeds.title" = "No Feeds";
+"empty.feeds.description" = "Your RSS feeds will appear here. Add feeds in Download Station.";
+"empty.feeds.action" = "Refresh";
+"empty.search.title" = "Search Torrents";
+"empty.search.description" = "Enter a search term to find torrents from enabled search modules.";
+"empty.search.noResults" = "No Results";
+"empty.search.noResults.description" = "No torrents found for \"%@\". Try a different search term.";
+"empty.offline.title" = "You're Offline";
+"empty.offline.description" = "Check your internet connection and try again.";
+"empty.offline.action" = "Retry";
+"empty.error.title" = "Something Went Wrong";
+"empty.error.action" = "Try Again";
+"empty.notConnected.title" = "Not Connected";
+"empty.notConnected.description" = "Log in to your Synology NAS to manage downloads.";
+"empty.notConnected.action" = "Log In";
+"empty.noFeedItems.title" = "No Items";
+"empty.noFeedItems.description" = "\"%@\" doesn't have any items yet.";
+"empty.loading.title" = "Loading...";
+"empty.loading.subtitle" = "Please wait";
+"empty.noTasks.title" = "No Tasks";
+"empty.noTasks.description" = "Add a new download task using the + button.";
+"empty.noFolders" = "No folders found.";
+
+// MARK: - Task List
+"tasks.title" = "Downloads";
+"tasks.filter.all" = "All";
+"tasks.filter.downloading" = "Downloading";
+"tasks.filter.paused" = "Paused";
+"tasks.filter.completed" = "Completed";
+"tasks.type.all" = "BT/E2K";
+"tasks.type.bt" = "BT";
+"tasks.type.e2k" = "E2K";
+"tasks.search.prompt" = "Filter";
+"tasks.search.clear" = "Clear Search";
+"tasks.sort.by" = "Sort By";
+"tasks.sort.date" = "Date";
+"tasks.sort.name" = "Name";
+"tasks.sort.downloadSpeed" = "Download Speed";
+"tasks.sort.uploadSpeed" = "Upload Speed";
+"tasks.sort.ascending" = "Ascending";
+"tasks.sort.descending" = "Descending";
+"tasks.button.addTask" = "Add Task";
+
+// MARK: - Task Detail
+"taskDetail.title" = "General";
+"taskDetail.tab.transfer" = "Transfer";
+"taskDetail.tab.trackers" = "Trackers";
+"taskDetail.tab.peers" = "Peers";
+"taskDetail.tab.files" = "Files";
+"taskDetail.overview" = "Overview";
+"taskDetail.status.downloading" = "Downloading";
+"taskDetail.status.completed" = "Completed";
+"taskDetail.status.paused" = "Paused";
+"taskDetail.status.waiting" = "Waiting";
+"taskDetail.status.error" = "Error";
+"taskDetail.progress" = "Progress";
+"taskDetail.totalSize" = "Total Size";
+"taskDetail.downloaded" = "Downloaded";
+"taskDetail.uploaded" = "Uploaded";
+"taskDetail.transferDetails" = "Transfer Details";
+"taskDetail.downloadSpeed" = "Download Speed";
+"taskDetail.uploadSpeed" = "Upload Speed";
+"taskDetail.timeRemaining" = "Time Remaining";
+"taskDetail.seedingTime" = "Seeding Time";
+"taskDetail.taskInfo" = "Task Info";
+"taskDetail.type" = "Type";
+"taskDetail.created" = "Created";
+"taskDetail.started" = "Started";
+"taskDetail.completed" = "Completed";
+"taskDetail.destination" = "Destination";
+"taskDetail.uri" = "URI";
+"taskDetail.connectionInfo" = "Connection Info";
+"taskDetail.connectedPeers" = "Connected Peers";
+"taskDetail.connectedSeeders" = "Connected Seeders";
+"taskDetail.connectedLeechers" = "Connected Leechers";
+"taskDetail.totalPeers" = "Total Peers";
+"taskDetail.filesCount" = "Files (%d)";
+"taskDetail.noTransferData" = "No transfer data";
+"taskDetail.noPeerInfo" = "No peer information";
+"taskDetail.noFiles" = "No files";
+"taskDetail.noTrackers" = "No trackers";
+"taskDetail.trackerUpdateInterval" = "Update interval: %ds";
+"taskDetail.button.pause" = "Pause";
+"taskDetail.button.resume" = "Resume";
+"taskDetail.button.delete" = "Delete";
+"taskDetail.button.close" = "Close";
+"taskDetail.delete.confirmTitle" = "Delete Task";
+"taskDetail.delete.confirmMessage" = "Are you sure you want to delete \"%@\"?";
+
+// MARK: - Task List Item
+"taskItem.status.downloading" = "Downloading";
+"taskItem.status.completed" = "Completed";
+"taskItem.status.paused" = "Paused";
+"taskItem.status.waiting" = "Waiting";
+"taskItem.status.error" = "Error";
+"taskItem.eta" = "ETA %@";
+"taskItem.action.pause" = "Pause";
+"taskItem.action.resume" = "Resume";
+"taskItem.action.delete" = "Delete";
+"taskItem.action.copyURL" = "Copy URL";
+
+// MARK: - Feeds
+"feeds.title" = "Feeds";
+"feeds.empty.noFeeds" = "No Feeds";
+"feeds.empty.noFeeds.description" = "Pull down to refresh your Download Station feeds.";
+"feed.detail.noItems" = "No Items";
+"feed.detail.noItems.description" = "Pull down to refresh this feed.";
+"feed.item.new" = "NEW";
+"feed.item.updated" = "Updated %@";
+"feed.action.refresh" = "Refresh";
+"feed.action.favorite" = "Favorite";
+"feed.action.unfavorite" = "Unfavorite";
+"feed.action.addToFavorites" = "Add to Favorites";
+"feed.action.removeFromFavorites" = "Remove from Favorites";
+"feed.action.copyFeedURL" = "Copy Feed URL";
+"feed.action.share" = "Share";
+"feed.action.delete" = "Delete Feed";
+"feed.action.refreshing" = "Refreshing";
+
+// MARK: - Folder Picker
+"folderPicker.title.sharedFolders" = "Shared Folders";
+"folderPicker.button.cancel" = "Cancel";
+"folderPicker.button.select" = "Select";
+"folderPicker.button.newFolder" = "New Folder";
+"folderPicker.createFolder.title" = "New Folder";
+"folderPicker.createFolder.header" = "Folder Name";
+"folderPicker.createFolder.placeholder" = "Name";
+"folderPicker.createFolder.button.cancel" = "Cancel";
+"folderPicker.createFolder.button.create" = "Create";
+"folderPicker.error.createRoot" = "Creating folders at the root is not supported.";
+"folderPicker.noFolders" = "No folders found.";
+
+// MARK: - Offline Mode
+"offline.mode" = "Offline Mode";
+"offline.cachedData" = "Showing cached data";
+
+// MARK: - Errors
+"error.title" = "Error";
+"error.unknown" = "An unknown error occurred.";
+"error.network" = "Connection error";
+"error.invalidURL" = "Invalid download URL";
+"error.noDownloadURL" = "No download URL available";
+
+// MARK: - Quick Actions
+"quickAction.addTask" = "Add New Task";
+"quickAction.viewDownloads" = "View Downloads";
+"quickAction.refresh" = "Refresh All";
+"quickAction.activeDownloads" = "%d active";
+
+// MARK: - OTP
+"otp.title" = "Enter OTP";
+"otp.required" = "Your session has expired and OTP is required to re-authenticate.";
+"otp.placeholder" = "OTP Code";
+"otp.button.submit" = "Submit";
+"otp.button.cancel" = "Cancel";
+
+// MARK: - General
+"general.ok" = "OK";
+"general.cancel" = "Cancel";
+"general.delete" = "Delete";
+"general.close" = "Close";
+"general.create" = "Create";
+"general.copy" = "Copy";
+"general.share" = "Share";
+"general.select" = "Select";

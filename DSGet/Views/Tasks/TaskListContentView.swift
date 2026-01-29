@@ -57,13 +57,13 @@ struct TaskListContentView: View {
     private func taskTypeMenu() -> some View {
         @Bindable var vm = tasksVM
         Menu {
-            Picker("Task Type", selection: $vm.taskTypeFilter) {
+            Picker(String.localized("tasks.type.filter"), selection: $vm.taskTypeFilter) {
                 ForEach(TaskTypeFilter.allCases) { type in
                     Text(type.rawValue).tag(type)
                 }
             }
             if !tasksVM.searchText.isEmpty {
-                Button("Clear Search", systemImage: "xmark.circle") {
+                Button(String.localized("tasks.search.clear"), systemImage: "xmark.circle") {
                     tasksVM.searchText = ""
                 }
             }
@@ -76,12 +76,12 @@ struct TaskListContentView: View {
     private func sortMenu() -> some View {
         @Bindable var vm = tasksVM
         Menu {
-            Picker("Sort By", selection: $vm.sortKey) {
+            Picker(String.localized("tasks.sort.by"), selection: $vm.sortKey) {
                 ForEach(TaskSortKey.allCases) { key in
                     Text(key.label).tag(key)
                 }
             }
-            Picker("Order", selection: $vm.sortDirection) {
+            Picker(String.localized("tasks.sort.order"), selection: $vm.sortDirection) {
                 ForEach(TaskSortDirection.allCases) { direction in
                     Label(direction.rawValue, systemImage: direction.symbol).tag(direction)
                 }
@@ -116,9 +116,9 @@ struct TaskListContentView: View {
         @Bindable var vm = tasksVM
 
         taskListContent()
-            .navigationTitle(statusFilter.label)
+            .navigationTitle(String.localized("tasks.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $vm.searchText, prompt: "Filter")
+            .searchable(text: $vm.searchText, prompt: String.localized("tasks.search.prompt"))
             .toolbar {
                 if horizontalSizeClass == .compact {
                     ToolbarItem(placement: .principal) {
@@ -132,7 +132,7 @@ struct TaskListContentView: View {
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Add Task", systemImage: "plus") {
+                    Button(String.localized("tasks.button.addTask"), systemImage: "plus") {
                         preselectedTorrent = nil
                         appViewModel.prefilledAddTaskURL = nil
                         appViewModel.isShowingAddTask = true
@@ -149,7 +149,7 @@ struct TaskListContentView: View {
             .loadingOverlay(
                 isLoading: tasksVM.isLoading,
                 isEmpty: tasksVM.visibleTasks.isEmpty,
-                title: "No Tasks",
+                title: String.localized(EmptyStateText.noTasksTitle),
                 systemImage: "checklist",
                 description: "Add a new download task using the + button."
             )
