@@ -40,7 +40,10 @@ public final class KeychainService: SecureStorageProtocol, @unchecked Sendable {
     private let accessGroup: String?
 
     public static let shared: KeychainService = {
-        KeychainService(service: "es.ncrd.DSGet")
+        KeychainService(
+            service: "es.ncrd.DSGet",
+            accessGroup: "group.es.ncrd.DSGet"
+        )
     }()
 
     public init(service: String, accessGroup: String? = nil) {
