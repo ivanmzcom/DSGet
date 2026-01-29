@@ -25,21 +25,8 @@ struct TaskListItemView: View {
         task.title
     }
     
-    private var status: (text: String, color: Color) {
-        switch task.status {
-        case .downloading:
-            return (String.localized("taskItem.status.downloading"), .blue)
-        case .seeding, .finished:
-            return (String.localized("taskItem.status.completed"), .green)
-        case .paused:
-            return (String.localized("taskItem.status.paused"), .orange)
-        case .waiting:
-            return (String.localized("taskItem.status.waiting"), .gray)
-        case .error:
-            return (String.localized("taskItem.status.error"), .red)
-        default:
-            return (task.status.displayName, .purple)
-        }
+    private var status: TaskStatusPresentation {
+        TaskStatusPresentation(status: task.status)
     }
 
     private var progress: Double {

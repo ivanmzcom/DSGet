@@ -9,6 +9,36 @@ import Foundation
 import SwiftUI
 import DSGetCore
 
+// MARK: - Task Status Presentation
+
+struct TaskStatusPresentation {
+    let text: String
+    let color: Color
+
+    init(status: TaskStatus) {
+        switch status {
+        case .downloading:
+            text = String.localized("taskItem.status.downloading")
+            color = .blue
+        case .seeding, .finished:
+            text = String.localized("taskItem.status.completed")
+            color = .green
+        case .paused:
+            text = String.localized("taskItem.status.paused")
+            color = .orange
+        case .waiting:
+            text = String.localized("taskItem.status.waiting")
+            color = .gray
+        case .error:
+            text = String.localized("taskItem.status.error")
+            color = .red
+        default:
+            text = status.displayName
+            color = .purple
+        }
+    }
+}
+
 // MARK: - TasksViewModel
 
 /// ViewModel that centralizes state and logic for download tasks.
@@ -290,5 +320,17 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
             return ascending ? lhs.id.rawValue < rhs.id.rawValue : lhs.id.rawValue > rhs.id.rawValue
         }
         return ascending ? comparison != .orderedDescending : comparison == .orderedDescending
+    }
+
+    /// Reads a torrent file from a security-scoped URL.
+    func importTorrentFile(from url: URL) throws -> AddTaskPreselectedTorrent {
+        let securityScoped = url.startAccessingSecurityScopedResource()
+        defer {
+            if securityScoped {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+        let data = try Data(contentsOf: url)
+        return AddTaskPreselectedTorrent(name: url.lastPathComponent, data: data)
     }
 }

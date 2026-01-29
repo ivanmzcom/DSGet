@@ -254,24 +254,6 @@ struct AddTaskView: View {
     // MARK: - File Import Handler
 
     private func handleFileImport(_ result: Result<URL, Error>) {
-        switch result {
-        case .success(let url):
-            do {
-                let securityScoped = url.startAccessingSecurityScopedResource()
-                defer {
-                    if securityScoped {
-                        url.stopAccessingSecurityScopedResource()
-                    }
-                }
-                let data = try Data(contentsOf: url)
-                viewModel.selectTorrentFile(data: data, name: url.lastPathComponent)
-            } catch {
-                viewModel.currentError = DSGetError.from(error)
-                viewModel.showingError = true
-            }
-        case .failure(let error):
-            viewModel.currentError = DSGetError.from(error)
-            viewModel.showingError = true
-        }
+        viewModel.handleFileImport(result)
     }
 }

@@ -187,16 +187,8 @@ struct TaskListContentView: View {
     }
 
     private func importTorrent(from url: URL) async {
-        let securityScoped = url.startAccessingSecurityScopedResource()
-        defer {
-            if securityScoped {
-                url.stopAccessingSecurityScopedResource()
-            }
-        }
-
         do {
-            let data = try Data(contentsOf: url)
-            let attachment = AddTaskPreselectedTorrent(name: url.lastPathComponent, data: data)
+            let attachment = try tasksVM.importTorrentFile(from: url)
 
             await MainActor.run {
                 preselectedTorrent = attachment

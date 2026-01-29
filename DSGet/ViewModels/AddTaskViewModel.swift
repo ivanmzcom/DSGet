@@ -163,6 +163,29 @@ final class AddTaskViewModel: DomainErrorHandling {
         isLoading = false
     }
 
+    /// Handles the result of a file import dialog, reading the file data.
+    func handleFileImport(_ result: Result<URL, Error>) {
+        switch result {
+        case .success(let url):
+            do {
+                let securityScoped = url.startAccessingSecurityScopedResource()
+                defer {
+                    if securityScoped {
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                }
+                let data = try Data(contentsOf: url)
+                selectTorrentFile(data: data, name: url.lastPathComponent)
+            } catch {
+                currentError = DSGetError.from(error)
+                showingError = true
+            }
+        case .failure(let error):
+            currentError = DSGetError.from(error)
+            showingError = true
+        }
+    }
+
     /// Selects a torrent file.
     func selectTorrentFile(data: Data, name: String) {
         selectedTorrentData = data
