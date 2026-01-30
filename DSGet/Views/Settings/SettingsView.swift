@@ -33,6 +33,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(server.displayName)
                             .font(.body)
+                            .accessibilityIdentifier(AccessibilityID.Settings.serverName)
                         Text(server.configuration.displayName)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -74,6 +75,7 @@ struct SettingsView: View {
                     Text(String.localized("settings.logout.button"))
                 }
             }
+            .accessibilityIdentifier(AccessibilityID.Settings.logoutButton)
             .disabled(isLoggingOut)
         }
     }

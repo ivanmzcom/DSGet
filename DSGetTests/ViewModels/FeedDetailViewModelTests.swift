@@ -240,4 +240,67 @@ final class FeedDetailViewModelTests: XCTestCase {
 
         XCTAssertNil(sut.shareURL(for: item))
     }
+
+    // MARK: - loadMoreIfNeeded Guards
+
+    func testLoadMoreIfNeededGuardNoMoreItems() async {
+        sut = makeSUT()
+        let items = [makeFeedItem(id: "1")]
+        mockFeedService.getFeedItemsResult = .success(PaginatedResult(items: items, total: 1))
+        await sut.loadItems(reset: true)
+        mockFeedService.getFeedItemsCalled = false
+
+        // hasMoreItems is false
+        await sut.loadMoreIfNeeded(currentItem: sut.items.first!)
+
+        XCTAssertFalse(mockFeedService.getFeedItemsCalled)
+    }
+
+    // MARK: - loadItems Zero Fetch Case
+
+    func testLoadItemsZeroFetchStopsMore() async {
+        sut = makeSUT()
+        // First load returns items
+        let items = [makeFeedItem(id: "1")]
+        mockFeedService.getFeedItemsResult = .success(PaginatedResult(items: items, total: 10))
+        await sut.loadItems(reset: true)
+
+        // Second load returns zero items
+        mockFeedService.getFeedItemsResult = .success(PaginatedResult(items: [], total: 10))
+        await sut.loadItems(reset: false)
+
+        XCTAssertFalse(sut.hasMoreItems)
+    }
+
+    // MARK: - shareURL Nil Path
+
+    func testShareURLNilForItemWithNoURLs() {
+        sut = makeSUT()
+        let item = RSSFeedItem(
+            id: FeedItemID("1"),
+            title: "No URLs",
+            downloadURL: nil,
+            externalURL: nil,
+            size: nil,
+            publishedDate: nil,
+            isNew: false
+        )
+
+        XCTAssertNil(sut.shareURL(for: item))
+    }
+
+    func testShareURLReturnsExternalWhenNoDownload() {
+        sut = makeSUT()
+        let item = RSSFeedItem(
+            id: FeedItemID("1"),
+            title: "External Only",
+            downloadURL: nil,
+            externalURL: URL(string: "https://example.com"),
+            size: nil,
+            publishedDate: nil,
+            isNew: false
+        )
+
+        XCTAssertNotNil(sut.shareURL(for: item))
+    }
 }

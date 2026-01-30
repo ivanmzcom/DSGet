@@ -220,4 +220,44 @@ final class TaskDetailViewModelTests: XCTestCase {
         sut.statusOverride = "paused"
         XCTAssertTrue(sut.isTaskPaused)
     }
+
+    // MARK: - canTogglePause eMule Completed
+
+    func testCanTogglePauseEmuleFinished() {
+        sut = makeSUT(status: .finished, type: .emule)
+        XCTAssertFalse(sut.canTogglePause)
+    }
+
+    func testCanTogglePauseEmuleSeeding() {
+        sut = makeSUT(status: .seeding, type: .emule)
+        XCTAssertFalse(sut.canTogglePause)
+    }
+
+    func testCanTogglePauseBTSeeding() {
+        sut = makeSUT(status: .seeding, type: .bt)
+        XCTAssertTrue(sut.canTogglePause)
+    }
+
+    func testCanTogglePauseWaiting() {
+        sut = makeSUT(status: .waiting, type: .bt)
+        XCTAssertTrue(sut.canTogglePause)
+    }
+
+    // MARK: - Showing State Properties
+
+    func testShowingDeleteConfirmationState() {
+        sut = makeSUT()
+        XCTAssertFalse(sut.showingDeleteConfirmation)
+
+        sut.showingDeleteConfirmation = true
+        XCTAssertTrue(sut.showingDeleteConfirmation)
+    }
+
+    func testShowingEditDestinationState() {
+        sut = makeSUT()
+        XCTAssertFalse(sut.showingEditDestination)
+
+        sut.showingEditDestination = true
+        XCTAssertTrue(sut.showingEditDestination)
+    }
 }

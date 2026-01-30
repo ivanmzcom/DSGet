@@ -10,11 +10,21 @@ import SwiftUI
 @main
 struct DSGetApp: App {
     /// Main application ViewModel.
-    @State private var appViewModel = AppViewModel()
+    @State private var appViewModel: AppViewModel
 
     /// Tracks whether the login sheet should be shown.
     /// Using a separate State prevents SwiftUI binding issues with computed properties.
     @State private var showLoginSheet = false
+
+    init() {
+        #if DEBUG
+        if CommandLine.arguments.contains("--uitesting") {
+            let loggedOut = CommandLine.arguments.contains("--uitesting-logged-out")
+            DIContainer.shared.configureForTesting(loggedOut: loggedOut)
+        }
+        #endif
+        _appViewModel = State(initialValue: AppViewModel())
+    }
 
     var body: some Scene {
         WindowGroup {

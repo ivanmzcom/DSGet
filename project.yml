@@ -123,7 +123,39 @@ targets:
         com.apple.security.application-groups:
           - group.es.ncrd.DSGet
     dependencies:
-      - target: DSGetCore
+      - package: DSGetCore
+
+  DSGetTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: DSGetTests
+        excludes:
+          - "**/.DS_Store"
+    dependencies:
+      - target: DSGet
+      - package: DSGetCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetTests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/DSGet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DSGet"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        GENERATE_INFOPLIST_FILE: YES
+
+  DSGetUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: DSGetUITests
+        excludes:
+          - "**/.DS_Store"
+    dependencies:
+      - target: DSGet
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetUITests
+        TEST_TARGET_NAME: DSGet
+        GENERATE_INFOPLIST_FILE: YES
 
 schemes:
   DSGet:
@@ -131,10 +163,17 @@ schemes:
       targets:
         DSGet: all
         DSGetWidgets: all
+        DSGetTests:
+          - testing
+        DSGetUITests:
+          - testing
     run:
       config: Debug
     test:
       config: Debug
+      targets:
+        - DSGetTests
+        - DSGetUITests
     profile:
       config: Release
     analyze:

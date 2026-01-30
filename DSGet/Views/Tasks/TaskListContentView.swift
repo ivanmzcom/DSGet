@@ -108,8 +108,10 @@ struct TaskListContentView: View {
         List(tasksVM.visibleTasks, selection: $vm.selectedTask) { task in
             TaskListItemView(task: task, onDelete: handleDeleteTask, onTogglePause: handleTogglePause)
                 .tag(task)
+                .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
         }
         .listStyle(.sidebar)
+        .accessibilityIdentifier(AccessibilityID.TaskList.list)
     }
 
     var body: some View {
@@ -137,6 +139,7 @@ struct TaskListContentView: View {
                         appViewModel.prefilledAddTaskURL = nil
                         appViewModel.isShowingAddTask = true
                     }
+                    .accessibilityIdentifier(AccessibilityID.TaskList.addButton)
                 }
             }
             .task {

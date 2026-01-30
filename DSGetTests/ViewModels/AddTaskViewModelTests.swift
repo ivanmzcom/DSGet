@@ -314,4 +314,26 @@ final class AddTaskViewModelTests: XCTestCase {
         XCTAssertNil(sut.selectedTorrentName)
         XCTAssertFalse(sut.showingError)
     }
+
+    // MARK: - Handle File Import Non-File Error
+
+    func testHandleFileImportWithNonFileError() {
+        sut = makeSUT()
+        let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
+
+        sut.handleFileImport(.failure(error))
+
+        XCTAssertNotNil(sut.currentError)
+        XCTAssertTrue(sut.showingError)
+    }
+
+    func testHandleFileImportWithURLError() {
+        sut = makeSUT()
+        let error = URLError(.notConnectedToInternet)
+
+        sut.handleFileImport(.failure(error))
+
+        XCTAssertNotNil(sut.currentError)
+        XCTAssertTrue(sut.showingError)
+    }
 }

@@ -70,6 +70,23 @@ final class DIContainer {
 
     /// Recent folders service.
     lazy var recentFoldersService: RecentFoldersManaging = RecentFoldersService.shared
+
+    // MARK: - Testing Configuration
+
+    #if DEBUG
+    /// Replaces all services with stub implementations for UI testing.
+    func configureForTesting(loggedOut: Bool = false) {
+        connectivityService = StubConnectivityService()
+        taskService = StubTaskService()
+        authService = StubAuthService(loggedOut: loggedOut)
+        feedService = StubFeedService()
+        fileService = StubFileService()
+        widgetSyncService = StubWidgetDataSync()
+        spotlightIndexer = StubSpotlightIndexer()
+        hapticManager = StubHapticManager()
+        recentFoldersService = StubRecentFoldersService()
+    }
+    #endif
 }
 
 // MARK: - Convenience Accessors

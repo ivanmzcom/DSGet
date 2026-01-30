@@ -78,6 +78,7 @@ struct AddTaskView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(String.localized("addTask.button.close")) { dismiss() }
+                    .accessibilityIdentifier(AccessibilityID.AddTask.cancelButton)
             }
         }
     }
@@ -106,6 +107,7 @@ struct AddTaskView: View {
                         Text(mode.title).tag(mode)
                     }
                 }
+                .accessibilityIdentifier(AccessibilityID.AddTask.modePicker)
                 .pickerStyle(.segmented)
             }
         }
@@ -136,6 +138,7 @@ struct AddTaskView: View {
     private var urlInputRow: some View {
         HStack {
             TextField("URL", text: $viewModel.taskUrl)
+                .accessibilityIdentifier(AccessibilityID.AddTask.urlField)
                 .autocorrectionDisabled(true)
                 .disabled(shouldHideModePicker)
             if !shouldHideModePicker {
@@ -246,6 +249,7 @@ struct AddTaskView: View {
                     Spacer()
                 }
             })
+            .accessibilityIdentifier(AccessibilityID.AddTask.createButton)
             .disabled(viewModel.isLoading || !viewModel.canCreateTask)
         }
     }

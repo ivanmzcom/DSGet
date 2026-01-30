@@ -234,4 +234,32 @@ final class FolderPickerViewModelTests: XCTestCase {
 
         XCTAssertEqual(subVM.currentPath, "/volume1/downloads")
     }
+
+    // MARK: - Trimmed New Folder Name
+
+    func testTrimmedNewFolderNameTrimsWhitespace() {
+        sut = makeSUT()
+        sut.newFolderName = "  My Folder  "
+
+        XCTAssertEqual(sut.trimmedNewFolderName, "My Folder")
+    }
+
+    func testTrimmedNewFolderNameEmpty() {
+        sut = makeSUT()
+        sut.newFolderName = "   "
+
+        XCTAssertEqual(sut.trimmedNewFolderName, "")
+    }
+
+    // MARK: - viewModelForSubfolder Service Injection
+
+    func testViewModelForSubfolderUsesCorrectPath() {
+        sut = makeSUT(currentPath: "/volume1")
+        let folder = makeFolder(name: "media", path: "/volume1/media")
+
+        let subVM = sut.viewModelForSubfolder(folder)
+
+        XCTAssertEqual(subVM.currentPath, "/volume1/media")
+        XCTAssertFalse(subVM.isAtRoot)
+    }
 }

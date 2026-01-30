@@ -23,6 +23,34 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "522B67A0CD339CDBA72C6445"
+               BuildableName = "DSGetTests.xctest"
+               BlueprintName = "DSGetTests"
+               ReferencedContainer = "container:DSGet.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7EE25531AE37694575383F48"
+               BuildableName = "DSGetUITests.xctest"
+               BlueprintName = "DSGetUITests"
+               ReferencedContainer = "container:DSGet.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -54,12 +82,24 @@
       </MacroExpansion>
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B0077356AE92857F1847127C"
+               BlueprintIdentifier = "522B67A0CD339CDBA72C6445"
                BuildableName = "DSGetTests.xctest"
                BlueprintName = "DSGetTests"
+               ReferencedContainer = "container:DSGet.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7EE25531AE37694575383F48"
+               BuildableName = "DSGetUITests.xctest"
+               BlueprintName = "DSGetUITests"
                ReferencedContainer = "container:DSGet.xcodeproj">
             </BuildableReference>
          </TestableReference>

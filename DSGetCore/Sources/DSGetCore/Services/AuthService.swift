@@ -34,7 +34,8 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     // MARK: - AuthServiceProtocol - Authentication
 
     public func login(request: LoginRequest) async throws -> Session {
-        guard let baseURL = request.configuration.baseURL else {
+        guard !request.configuration.host.isEmpty,
+              let baseURL = request.configuration.baseURL else {
             throw DomainError.invalidServerConfiguration
         }
 
@@ -259,15 +260,7 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
 
     private func decodeLoginResponse(_ data: Data) throws -> SynoResponseDTO<LoginResponseDTO> {
         do {
-            let response = try decoder.decode(SynoResponseDTO<LoginResponseDTO>.self, from: data)
-            if !response.success, let error = response.error {
-                throw DataError.apiError(error)
-            }
-            return response
-        } catch let error as DataError {
-            throw error
-        } catch let error as DomainError {
-            throw error
+            return try decoder.decode(SynoResponseDTO<LoginResponseDTO>.self, from: data)
         } catch {
             throw DataError.decodingFailed(error)
         }

@@ -251,4 +251,64 @@ final class AppViewModelTests: XCTestCase {
         XCTAssertFalse(sut.showingGlobalError)
     }
 
+    // MARK: - Refresh All Concurrent Execution
+
+    func testRefreshAllCallsBothViewModels() async {
+        sut = makeSUT()
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [], isFromCache: false))
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [], isFromCache: false))
+
+        await sut.refreshAll()
+
+        // Both ViewModels should have been refreshed
+        XCTAssertFalse(sut.tasksViewModel.isLoading)
+        XCTAssertFalse(sut.feedsViewModel.isLoading)
+    }
+
+    // MARK: - Authentication Observer
+
+    func testAuthenticationRequiredNotificationSetsLoggedOut() async {
+        sut = makeSUT()
+        mockAuthService.validateSessionResult = makeSession()
+        await sut.checkLoginStatus()
+        XCTAssertTrue(sut.isLoggedIn)
+
+        NotificationCenter.default.post(name: .authenticationRequired, object: nil)
+
+        // Allow notification to process
+        await Task.yield()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        XCTAssertFalse(sut.isLoggedIn)
+    }
+
+    func testAuthenticationRequiredIgnoredWhenAlreadyLoggedOut() async {
+        sut = makeSUT()
+        sut.isLoggedIn = false
+
+        NotificationCenter.default.post(name: .authenticationRequired, object: nil)
+
+        await Task.yield()
+
+        // Should remain false, no crash
+        XCTAssertFalse(sut.isLoggedIn)
+    }
+
+    // MARK: - Server Name Computed Property
+
+    func testServerNameReturnsDisplayName() async {
+        sut = makeSUT()
+        let server = Server.create(name: "My NAS", host: "nas.local", port: 5001, useHTTPS: true)
+        mockAuthService.getServerResult = server
+
+        await sut.loadServer()
+
+        XCTAssertEqual(sut.serverName, server.displayName)
+    }
+
+    func testServerNameNilWhenNoServer() {
+        sut = makeSUT()
+        XCTAssertNil(sut.serverName)
+    }
+
 }

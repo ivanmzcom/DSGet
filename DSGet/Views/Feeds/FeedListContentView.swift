@@ -125,8 +125,10 @@ struct FeedListContentView: View {
         @Bindable var vm = feedsVM
         List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
             feedRowView(for: feed)
+                .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
         }
         .listStyle(.sidebar)
+        .accessibilityIdentifier(AccessibilityID.FeedList.list)
     }
 
     @ViewBuilder

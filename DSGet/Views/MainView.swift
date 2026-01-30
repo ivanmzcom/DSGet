@@ -47,16 +47,19 @@ struct MainView: View {
                 DownloadsTabView()
                     .environment(appViewModel)
             }
+            .accessibilityIdentifier(AccessibilityID.Tab.downloads)
 
             Tab(AppTab.feeds.label, systemImage: AppTab.feeds.icon, value: .feeds) {
                 FeedsTabView()
                     .environment(appViewModel)
             }
+            .accessibilityIdentifier(AccessibilityID.Tab.feeds)
 
             Tab(AppTab.settings.label, systemImage: AppTab.settings.icon, value: .settings) {
                 SettingsTabView()
                     .environment(appViewModel)
             }
+            .accessibilityIdentifier(AccessibilityID.Tab.settings)
         }
         .sheet(
             isPresented: $appVM.isShowingAddTask,

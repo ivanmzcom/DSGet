@@ -517,4 +517,123 @@ final class TasksViewModelTests: XCTestCase {
         // Double stop should be safe
         sut.stopAutoRefresh()
     }
+
+    // MARK: - Task Type Filter
+
+    func testVisibleTasksBTFilter() async {
+        sut = makeSUT()
+        let btTask = makeSampleTask(id: "1", title: "BT Task")
+        let emuleTask = DownloadTask(
+            id: TaskID("2"), title: "eMule Task", size: .zero, status: .downloading,
+            type: .emule, username: "admin"
+        )
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [btTask, emuleTask], isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.taskTypeFilter = .bt
+
+        XCTAssertEqual(sut.visibleTasks.count, 1)
+        XCTAssertEqual(sut.visibleTasks.first?.title, "BT Task")
+    }
+
+    func testVisibleTasksE2KFilter() async {
+        sut = makeSUT()
+        let btTask = makeSampleTask(id: "1", title: "BT Task")
+        let emuleTask = DownloadTask(
+            id: TaskID("2"), title: "eMule Task", size: .zero, status: .downloading,
+            type: .emule, username: "admin"
+        )
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [btTask, emuleTask], isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.taskTypeFilter = .e2k
+
+        XCTAssertEqual(sut.visibleTasks.count, 1)
+        XCTAssertEqual(sut.visibleTasks.first?.title, "eMule Task")
+    }
+
+    // MARK: - Sort Direction Toggle
+
+    func testSortDirectionAscending() async {
+        sut = makeSUT()
+        let tasks = [
+            makeSampleTask(id: "1", title: "Zebra"),
+            makeSampleTask(id: "2", title: "Apple")
+        ]
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: tasks, isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.sortKey = .name
+        sut.sortDirection = .ascending
+
+        XCTAssertEqual(sut.visibleTasks.first?.title, "Apple")
+    }
+
+    func testSortDirectionDescending() async {
+        sut = makeSUT()
+        let tasks = [
+            makeSampleTask(id: "1", title: "Zebra"),
+            makeSampleTask(id: "2", title: "Apple")
+        ]
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: tasks, isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.sortKey = .name
+        sut.sortDirection = .descending
+
+        XCTAssertEqual(sut.visibleTasks.first?.title, "Zebra")
+    }
+
+    // MARK: - Combined Filters
+
+    func testVisibleTasksCombinedFilters() async {
+        sut = makeSUT()
+        let tasks = [
+            makeSampleTask(id: "1", title: "Alpha Download", status: .downloading),
+            makeSampleTask(id: "2", title: "Beta Download", status: .downloading),
+            makeSampleTask(id: "3", title: "Alpha Paused", status: .paused),
+            DownloadTask(id: TaskID("4"), title: "eMule Task", size: .zero, status: .downloading, type: .emule, username: "admin")
+        ]
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: tasks, isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.searchText = "Alpha"
+        sut.statusFilter = .downloading
+        sut.taskTypeFilter = .bt
+
+        XCTAssertEqual(sut.visibleTasks.count, 1)
+        XCTAssertEqual(sut.visibleTasks.first?.title, "Alpha Download")
+    }
+
+    // MARK: - matchesType/matchesStatus edge cases
+
+    func testMatchesTypeHTTPTask() async {
+        sut = makeSUT()
+        let httpTask = DownloadTask(
+            id: TaskID("1"), title: "HTTP Task", size: .zero, status: .downloading,
+            type: .http, username: "admin"
+        )
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [httpTask], isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.taskTypeFilter = .bt
+        XCTAssertEqual(sut.visibleTasks.count, 0)
+
+        sut.taskTypeFilter = .e2k
+        XCTAssertEqual(sut.visibleTasks.count, 0)
+
+        sut.taskTypeFilter = .all
+        XCTAssertEqual(sut.visibleTasks.count, 1)
+    }
+
+    func testMatchesStatusSeedingAsCompleted() async {
+        sut = makeSUT()
+        let task = makeSampleTask(id: "1", status: .seeding)
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [task], isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.statusFilter = .completed
+
+        XCTAssertEqual(sut.visibleTasks.count, 1)
+    }
 }

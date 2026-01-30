@@ -43,6 +43,7 @@ struct LoginView: View {
     private var serverDetailsSection: some View {
         Section(header: Text(String.localized("auth.login.section.serverDetails"))) {
             TextField(String.localized("auth.login.placeholder.serverName"), text: $viewModel.serverName)
+                .accessibilityIdentifier(AccessibilityID.Login.serverNameField)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.words)
                 .focused($focusedField, equals: .serverName)
@@ -50,6 +51,7 @@ struct LoginView: View {
                 .onSubmit { focusedField = .host }
 
             TextField(String.localized("auth.login.placeholder.ipAddress"), text: $viewModel.host)
+                .accessibilityIdentifier(AccessibilityID.Login.hostField)
                 .textContentType(.URL)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -60,10 +62,12 @@ struct LoginView: View {
 
             HStack {
                 Toggle(String.localized("auth.login.toggle.https"), isOn: $viewModel.useHTTPS)
+                    .accessibilityIdentifier(AccessibilityID.Login.httpsToggle)
                 TextField(String.localized("auth.login.placeholder.port"), text: Binding(
                     get: { viewModel.portString },
                     set: { viewModel.portString = $0 }
                 ))
+                    .accessibilityIdentifier(AccessibilityID.Login.portField)
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .keyboardType(.numberPad)
@@ -76,6 +80,7 @@ struct LoginView: View {
     private var credentialsSection: some View {
         Section(header: Text(String.localized("auth.login.section.credentials"))) {
             TextField(String.localized("auth.login.placeholder.username"), text: $viewModel.username)
+                .accessibilityIdentifier(AccessibilityID.Login.usernameField)
                 .textContentType(.username)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -84,12 +89,14 @@ struct LoginView: View {
                 .onSubmit { focusedField = .password }
 
             SecureField(String.localized("auth.login.placeholder.password"), text: $viewModel.password)
+                .accessibilityIdentifier(AccessibilityID.Login.passwordField)
                 .textContentType(.password)
                 .focused($focusedField, equals: .password)
                 .submitLabel(.next)
                 .onSubmit { focusedField = .otp }
 
             SecureField(String.localized("auth.login.placeholder.otp"), text: $viewModel.otpCode)
+                .accessibilityIdentifier(AccessibilityID.Login.otpField)
                 .textContentType(.oneTimeCode)
                 .keyboardType(.numberPad)
                 .focused($focusedField, equals: .otp)
@@ -114,6 +121,7 @@ struct LoginView: View {
                     Spacer()
                 }
             })
+            .accessibilityIdentifier(AccessibilityID.Login.loginButton)
             .disabled(viewModel.isLoading || !viewModel.isFormValid)
         }
     }

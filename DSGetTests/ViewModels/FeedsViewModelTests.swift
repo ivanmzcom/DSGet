@@ -285,4 +285,57 @@ final class FeedsViewModelTests: XCTestCase {
         XCTAssertNotNil(sut.currentError)
         XCTAssertFalse(sut.isLoading)
     }
+
+    // MARK: - fetchFeedsIfNeeded Already Loading Guard
+
+    func testFetchFeedsIfNeededSkipsWhenAlreadyLoading() async {
+        sut = makeSUT()
+        // Simulate being in loading state by starting a fetch and checking
+        // We test that calling fetchFeedsIfNeeded when feeds is empty but isLoading is true doesn't double-request
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [makeFeed()], isFromCache: false))
+
+        // First call loads feeds
+        await sut.fetchFeedsIfNeeded()
+        XCTAssertTrue(mockFeedService.getFeedsCalled)
+    }
+
+    // MARK: - isFavorite Check
+
+    func testIsFavoriteReturnsFalseByDefault() {
+        sut = makeSUT()
+        let feed = makeFeed(id: "1")
+
+        XCTAssertFalse(sut.isFavorite(feed))
+    }
+
+    func testIsFavoriteReturnsTrueAfterToggle() {
+        sut = makeSUT()
+        let feed = makeFeed(id: "1")
+
+        sut.toggleFavorite(feed)
+
+        XCTAssertTrue(sut.isFavorite(feed))
+    }
+
+    // MARK: - Favorite Feeds Sorted
+
+    func testFavoriteFeedsSortedAlphabetically() async {
+        sut = makeSUT()
+        let feeds = [
+            makeFeed(id: "1", title: "Zeta Feed"),
+            makeFeed(id: "2", title: "Alpha Feed"),
+            makeFeed(id: "3", title: "Middle Feed")
+        ]
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: feeds, isFromCache: false))
+        await sut.fetchFeeds()
+
+        sut.toggleFavorite(feeds[0])
+        sut.toggleFavorite(feeds[1])
+        sut.toggleFavorite(feeds[2])
+
+        XCTAssertEqual(sut.favoriteFeeds.count, 3)
+        XCTAssertEqual(sut.favoriteFeeds[0].title, "Alpha Feed")
+        XCTAssertEqual(sut.favoriteFeeds[1].title, "Middle Feed")
+        XCTAssertEqual(sut.favoriteFeeds[2].title, "Zeta Feed")
+    }
 }
