@@ -88,17 +88,20 @@ final class AddTaskViewModel: DomainErrorHandling {
     // MARK: - Dependencies
 
     private let taskService: TaskServiceProtocol
+    private let recentFoldersService: RecentFoldersManaging
 
     // MARK: - Initialization
 
     init(
         preselectedTorrent: AddTaskPreselectedTorrent? = nil,
         prefilledURL: String? = nil,
-        taskService: TaskServiceProtocol? = nil
+        taskService: TaskServiceProtocol? = nil,
+        recentFoldersService: RecentFoldersManaging? = nil
     ) {
         self.taskService = taskService ?? DIService.taskService
+        self.recentFoldersService = recentFoldersService ?? DIService.recentFoldersService
         self.taskUrl = prefilledURL ?? ""
-        self.recentFolders = RecentFoldersService.recentFolders
+        self.recentFolders = self.recentFoldersService.recentFolders
 
         if let preselectedTorrent {
             self.inputMode = .file
@@ -144,8 +147,8 @@ final class AddTaskViewModel: DomainErrorHandling {
             }
 
             // Success - save folder to recent list
-            RecentFoldersService.addRecentFolder(destinationFolderPath)
-            recentFolders = RecentFoldersService.recentFolders
+            recentFoldersService.addRecentFolder(destinationFolderPath)
+            recentFolders = recentFoldersService.recentFolders
 
             showingSuccessAlert = true
 

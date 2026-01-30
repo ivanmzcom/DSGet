@@ -8,18 +8,26 @@
 import Foundation
 
 /// Service that manages recently used destination folders for task creation.
-enum RecentFoldersService {
-    private static let userDefaultsKey = "recentDestinationFolders"
-    private static let maxRecentFolders = 10
+@MainActor
+final class RecentFoldersService: RecentFoldersManaging {
+    static let shared = RecentFoldersService()
+
+    private let userDefaultsKey = "recentDestinationFolders"
+    private let maxRecentFolders = 10
+    private let userDefaults: UserDefaults
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+    }
 
     /// Returns the list of recent folders (most recent first).
-    static var recentFolders: [String] {
-        UserDefaults.standard.stringArray(forKey: userDefaultsKey) ?? []
+    var recentFolders: [String] {
+        userDefaults.stringArray(forKey: userDefaultsKey) ?? []
     }
 
     /// Adds a folder path to the recent list.
     /// - Parameter path: The folder path to add.
-    static func addRecentFolder(_ path: String) {
+    func addRecentFolder(_ path: String) {
         guard !path.isEmpty else { return }
 
         var folders = recentFolders
@@ -35,11 +43,11 @@ enum RecentFoldersService {
             folders = Array(folders.prefix(maxRecentFolders))
         }
 
-        UserDefaults.standard.set(folders, forKey: userDefaultsKey)
+        userDefaults.set(folders, forKey: userDefaultsKey)
     }
 
     /// Clears all recent folders.
-    static func clearRecentFolders() {
-        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+    func clearRecentFolders() {
+        userDefaults.removeObject(forKey: userDefaultsKey)
     }
 }

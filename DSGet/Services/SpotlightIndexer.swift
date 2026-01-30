@@ -12,7 +12,7 @@ import DSGetCore
 // MARK: - Spotlight Indexer
 
 @MainActor
-final class SpotlightIndexer {
+final class SpotlightIndexer: SpotlightIndexing {
     static let shared = SpotlightIndexer()
 
     private let domainIdentifier = "com.dsget.tasks"

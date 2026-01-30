@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Haptic Manager
 
 @MainActor
-final class HapticManager {
+final class HapticManager: HapticManaging {
     static let shared = HapticManager()
 
     private init() {}

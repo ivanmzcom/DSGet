@@ -2,12 +2,12 @@ import Foundation
 
 /// Task service implementation for download operations.
 public final class TaskService: TaskServiceProtocol, @unchecked Sendable {
-    private let apiClient: SynologyAPIClient
+    private let apiClient: any SynologyAPIClientProtocol
     private let connectivityService: ConnectivityServiceProtocol
     private let mapper: TaskMapper
 
     public init(
-        apiClient: SynologyAPIClient,
+        apiClient: any SynologyAPIClientProtocol,
         connectivityService: ConnectivityServiceProtocol,
         mapper: TaskMapper = TaskMapper()
     ) {

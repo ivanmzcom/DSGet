@@ -118,7 +118,7 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
     // MARK: - Injected Dependencies
 
     private let taskService: TaskServiceProtocol
-    private let widgetSyncService: WidgetDataSyncService
+    private let widgetSyncService: WidgetDataSyncProtocol
 
     // MARK: - Auto-refresh
 
@@ -127,9 +127,9 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
 
     // MARK: - Initialization
 
-    init(taskService: TaskServiceProtocol? = nil, widgetSyncService: WidgetDataSyncService? = nil) {
+    init(taskService: TaskServiceProtocol? = nil, widgetSyncService: WidgetDataSyncProtocol? = nil) {
         self.taskService = taskService ?? DIService.taskService
-        self.widgetSyncService = widgetSyncService ?? WidgetDataSyncService.shared
+        self.widgetSyncService = widgetSyncService ?? DIService.widgetSyncService
     }
 
     // MARK: - Public Methods

@@ -53,6 +53,16 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B0077356AE92857F1847127C"
+               BuildableName = "DSGetTests.xctest"
+               BlueprintName = "DSGetTests"
+               ReferencedContainer = "container:DSGet.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

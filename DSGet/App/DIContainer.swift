@@ -31,7 +31,7 @@ final class DIContainer {
     lazy var secureStorage: SecureStorageProtocol = KeychainService.shared
 
     /// Synology API client.
-    lazy var synologyAPIClient = SynologyAPIClient(networkClient: networkClient)
+    lazy var synologyAPIClient: SynologyAPIClientProtocol = SynologyAPIClient(networkClient: networkClient)
 
     // MARK: - Services
 
@@ -56,6 +56,20 @@ final class DIContainer {
 
     /// File service for FileStation operations.
     lazy var fileService: FileServiceProtocol = FileService(apiClient: synologyAPIClient)
+
+    // MARK: - iOS Services
+
+    /// Widget data sync service.
+    lazy var widgetSyncService: WidgetDataSyncProtocol = WidgetDataSyncService.shared
+
+    /// Spotlight indexer.
+    lazy var spotlightIndexer: SpotlightIndexing = SpotlightIndexer.shared
+
+    /// Haptic manager.
+    lazy var hapticManager: HapticManaging = HapticManager.shared
+
+    /// Recent folders service.
+    lazy var recentFoldersService: RecentFoldersManaging = RecentFoldersService.shared
 }
 
 // MARK: - Convenience Accessors
@@ -73,4 +87,10 @@ enum DIService {
 
     // Infrastructure (for direct access when needed)
     static var connectivityService: ConnectivityServiceProtocol { container.connectivityService }
+
+    // iOS Services
+    static var widgetSyncService: WidgetDataSyncProtocol { container.widgetSyncService }
+    static var spotlightIndexer: SpotlightIndexing { container.spotlightIndexer }
+    static var hapticManager: HapticManaging { container.hapticManager }
+    static var recentFoldersService: RecentFoldersManaging { container.recentFoldersService }
 }

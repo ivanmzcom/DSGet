@@ -2,11 +2,11 @@ import Foundation
 
 /// File service implementation for FileStation operations.
 public final class FileService: FileServiceProtocol, @unchecked Sendable {
-    private let apiClient: SynologyAPIClient
+    private let apiClient: any SynologyAPIClientProtocol
     private let mapper: FileMapper
 
     public init(
-        apiClient: SynologyAPIClient,
+        apiClient: any SynologyAPIClientProtocol,
         mapper: FileMapper = FileMapper()
     ) {
         self.apiClient = apiClient

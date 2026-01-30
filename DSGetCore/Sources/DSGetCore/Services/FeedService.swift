@@ -2,12 +2,12 @@ import Foundation
 
 /// Feed service implementation for RSS operations.
 public final class FeedService: FeedServiceProtocol, @unchecked Sendable {
-    private let apiClient: SynologyAPIClient
+    private let apiClient: any SynologyAPIClientProtocol
     private let connectivityService: ConnectivityServiceProtocol
     private let mapper: FeedMapper
 
     public init(
-        apiClient: SynologyAPIClient,
+        apiClient: any SynologyAPIClientProtocol,
         connectivityService: ConnectivityServiceProtocol,
         mapper: FeedMapper = FeedMapper()
     ) {

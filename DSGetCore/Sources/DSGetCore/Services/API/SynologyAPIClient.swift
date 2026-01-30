@@ -46,7 +46,7 @@ public struct FileUpload: Sendable {
 
 /// Base client for Synology API communication.
 /// Thread-safe through actor-isolated configuration.
-public final class SynologyAPIClient: Sendable {
+public final class SynologyAPIClient: SynologyAPIClientProtocol {
     private let networkClient: NetworkClientProtocol
     private let decoder: JSONDecoder
     private let config: APIConfigurationStorage

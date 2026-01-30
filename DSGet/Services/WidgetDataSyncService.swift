@@ -10,7 +10,7 @@ import Foundation
 import DSGetCore
 
 /// Servicio que sincroniza datos de tareas con App Groups para el widget.
-public final class WidgetDataSyncService {
+public final class WidgetDataSyncService: WidgetDataSyncProtocol {
     public static let shared = WidgetDataSyncService()
 
     private let suiteName = "group.es.ncrd.DSGet"
