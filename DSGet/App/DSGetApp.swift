@@ -12,9 +12,19 @@ struct DSGetApp: App {
     /// Main application ViewModel.
     @State private var appViewModel: AppViewModel
 
-    /// Tracks whether the login sheet should be shown.
-    /// Using a separate State prevents SwiftUI binding issues with computed properties.
-    @State private var showLoginSheet = false
+    /// Computed binding that shows login only when not authenticated and not checking.
+    /// Dismissal is only allowed when the user has actually logged in.
+    private var showLoginSheet: Binding<Bool> {
+        Binding(
+            get: { !appViewModel.isLoggedIn && !appViewModel.isCheckingAuth },
+            set: { newValue in
+                if !newValue && !appViewModel.isLoggedIn {
+                    // Prevent dismissal unless actually logged in
+                    return
+                }
+            }
+        )
+    }
 
     init() {
         #if DEBUG
@@ -29,24 +39,14 @@ struct DSGetApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                MainView()
-                    .environment(appViewModel)
-
-                if appViewModel.isCheckingAuth {
+                if appViewModel.isLoggedIn {
+                    MainView()
+                        .environment(appViewModel)
+                } else if appViewModel.isCheckingAuth {
                     loadingOverlay
                 }
             }
-            .onChange(of: appViewModel.isLoggedIn) { _, isLoggedIn in
-                showLoginSheet = !isLoggedIn && !appViewModel.isCheckingAuth
-            }
-            .onChange(of: appViewModel.isCheckingAuth) { _, isCheckingAuth in
-                showLoginSheet = !appViewModel.isLoggedIn && !isCheckingAuth
-            }
-            .onAppear {
-                // Initial state check
-                showLoginSheet = !appViewModel.isLoggedIn && !appViewModel.isCheckingAuth
-            }
-            .sheet(isPresented: $showLoginSheet) {
+            .sheet(isPresented: showLoginSheet) {
                 LoginView(isLoggedIn: $appViewModel.isLoggedIn)
                 .interactiveDismissDisabled(true)
             }
