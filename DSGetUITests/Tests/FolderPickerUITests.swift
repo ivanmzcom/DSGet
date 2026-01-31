@@ -6,11 +6,7 @@ final class FolderPickerUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to downloads section
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
-        downloads.tap()
+        // Downloads is the default section — auto-navigates on compact
 
         // Open add task sheet
         let taskListPage = TaskListPage(app: app)

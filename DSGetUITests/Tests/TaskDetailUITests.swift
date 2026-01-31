@@ -6,11 +6,7 @@ final class TaskDetailUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to downloads section
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
-        downloads.tap()
+        // Downloads is the default section — auto-navigates on compact
     }
 
     func testTaskDetailAppearsOnTap() {
@@ -40,12 +36,8 @@ final class TaskDetailUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 10))
         app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].tap()
 
-        // Navigate back to sidebar and switch to feeds
-        app.navigationBars.buttons.element(boundBy: 0).tap()
-        app.navigationBars.buttons.element(boundBy: 0).tap()
-        let feeds = app.cells["sidebar.feeds"]
-        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
-        feeds.tap()
+        // Navigate back and switch to feeds
+        app.navigateToSection("sidebar.feeds")
 
         let feedListPage = FeedListPage(app: app)
         XCTAssertTrue(feedListPage.list.waitForExistence(timeout: 5))

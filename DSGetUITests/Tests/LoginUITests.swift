@@ -35,9 +35,13 @@ final class LoginUITests: XCTestCase {
         XCTAssertTrue(loginPage.loginButton.isEnabled)
         loginPage.loginButton.tap()
 
-        // After login, the sidebar should appear
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 10))
+        // After login, the sidebar or downloads list should appear
+        let downloads = app.sidebarItem("sidebar.downloads")
+        let taskList = TaskListPage(app: app)
+        // Either sidebar or auto-navigated task list should be visible
+        let sidebarFound = downloads.waitForExistence(timeout: 10)
+        let listFound = taskList.list.waitForExistence(timeout: 2)
+        XCTAssertTrue(sidebarFound || listFound)
     }
 
     func testLoginButtonDisabledWithPartialForm() {
@@ -46,7 +50,6 @@ final class LoginUITests: XCTestCase {
         loginPage.hostField.tap()
         loginPage.hostField.typeText("192.168.1.1")
 
-        // Only host filled, button should still be disabled
         XCTAssertFalse(loginPage.loginButton.isEnabled)
     }
 
@@ -56,8 +59,6 @@ final class LoginUITests: XCTestCase {
 
     func testOTPFieldNotVisibleByDefault() {
         XCTAssertTrue(loginPage.hostField.waitForExistence(timeout: 5))
-        // OTP field should not be visible until needed
-        // It may be hidden by default
         XCTAssertFalse(loginPage.otpField.exists)
     }
 }

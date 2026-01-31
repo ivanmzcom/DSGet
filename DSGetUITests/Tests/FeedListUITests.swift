@@ -12,18 +12,12 @@ final class FeedListUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to feeds section
-        let feeds = app.cells["sidebar.feeds"]
-        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
-        feeds.tap()
-
+        app.navigateToSection("sidebar.feeds")
         feedListPage = FeedListPage(app: app)
     }
 
     func testShowsStubFeeds() {
         XCTAssertTrue(feedListPage.list.waitForExistence(timeout: 5))
-
         XCTAssertTrue(app.staticTexts["Linux ISOs"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Open Source Software"].exists)
     }

@@ -12,12 +12,7 @@ final class TaskListUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to downloads section
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
-        downloads.tap()
-
+        // Downloads is the default section — on compact it auto-navigates there
         taskListPage = TaskListPage(app: app)
     }
 
@@ -40,28 +35,23 @@ final class TaskListUITests: XCTestCase {
 
     func testSearchFiltersResults() {
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
-        // Verify tasks are loaded first
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 10))
 
-        // Swipe down to reveal search, then search
         taskListPage.list.swipeDown()
 
         let searchField = taskListPage.searchField
         guard searchField.waitForExistence(timeout: 5) else {
-            // Search field may not appear on all layouts — skip gracefully
             return
         }
         searchField.tap()
         searchField.typeText("Ubuntu")
 
-        // Ubuntu task should still be visible
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 5))
     }
 
     func testEmptyStateNotShownWithTasks() {
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 10))
-        // Empty state should not be visible when tasks exist
         XCTAssertFalse(app.staticTexts["No Downloads"].exists)
     }
 

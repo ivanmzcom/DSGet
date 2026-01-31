@@ -6,11 +6,7 @@ final class FeedDetailUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to feeds section
-        let feeds = app.cells["sidebar.feeds"]
-        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
-        feeds.tap()
+        app.navigateToSection("sidebar.feeds")
     }
 
     func testFeedDetailAppearsOnTap() {

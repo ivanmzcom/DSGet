@@ -14,9 +14,12 @@ final class NavigationUITests: XCTestCase {
     }
 
     func testSidebarHasThreeSections() {
-        let downloads = app.cells["sidebar.downloads"]
-        let feeds = app.cells["sidebar.feeds"]
-        let settings = app.cells["sidebar.settings"]
+        // Go back to sidebar from auto-navigated downloads
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+
+        let downloads = app.sidebarItem("sidebar.downloads")
+        let feeds = app.sidebarItem("sidebar.feeds")
+        let settings = app.sidebarItem("sidebar.settings")
 
         XCTAssertTrue(downloads.waitForExistence(timeout: 5))
         XCTAssertTrue(feeds.exists)
@@ -24,18 +27,14 @@ final class NavigationUITests: XCTestCase {
     }
 
     func testSwitchToFeedsSection() {
-        let feeds = app.cells["sidebar.feeds"]
-        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
-        feeds.tap()
+        app.navigateToSection("sidebar.feeds")
 
         let feedListPage = FeedListPage(app: app)
         XCTAssertTrue(feedListPage.list.waitForExistence(timeout: 5))
     }
 
     func testSwitchToSettingsSection() {
-        let settings = app.cells["sidebar.settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 5))
-        settings.tap()
+        app.navigateToSection("sidebar.settings")
 
         let settingsPage = SettingsPage(app: app)
         XCTAssertTrue(settingsPage.logoutButton.waitForExistence(timeout: 5))
@@ -43,26 +42,17 @@ final class NavigationUITests: XCTestCase {
 
     func testSwitchBackToDownloadsSection() {
         // Go to settings first
-        let settings = app.cells["sidebar.settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 5))
-        settings.tap()
+        app.navigateToSection("sidebar.settings")
 
-        // Navigate back to sidebar and switch to downloads
-        app.navigationBars.buttons.element(boundBy: 0).tap()
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
-        downloads.tap()
+        // Switch back to downloads
+        app.navigateToSection("sidebar.downloads")
 
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
     }
 
     func testAddTaskSheetFromDownloads() {
-        // Navigate to downloads content
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
-        downloads.tap()
-
+        // Downloads is auto-selected
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.addButton.waitForExistence(timeout: 5))
         taskListPage.addButton.tap()

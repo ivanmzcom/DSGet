@@ -12,12 +12,7 @@ final class SettingsUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to settings section
-        let settings = app.cells["sidebar.settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 5))
-        settings.tap()
-
+        app.navigateToSection("sidebar.settings")
         settingsPage = SettingsPage(app: app)
     }
 
@@ -35,7 +30,6 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settingsPage.logoutButton.waitForExistence(timeout: 5))
         settingsPage.logoutButton.tap()
 
-        // After logout, login view should appear
         let loginPage = LoginPage(app: app)
         XCTAssertTrue(loginPage.hostField.waitForExistence(timeout: 10))
     }

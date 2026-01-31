@@ -12,11 +12,7 @@ final class AddTaskUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
-
-        // Navigate to downloads section
-        let downloads = app.cells["sidebar.downloads"]
-        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
-        downloads.tap()
+        // Downloads is the default section — auto-navigates on compact
 
         // Open add task sheet
         let taskListPage = TaskListPage(app: app)
@@ -39,7 +35,6 @@ final class AddTaskUITests: XCTestCase {
         XCTAssertTrue(addTaskPage.cancelButton.waitForExistence(timeout: 5))
         addTaskPage.cancelButton.tap()
 
-        // Sheet should be dismissed, task list visible again
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
     }
@@ -50,7 +45,6 @@ final class AddTaskUITests: XCTestCase {
 
     func testModePickerHasSegments() {
         XCTAssertTrue(addTaskPage.modePicker.waitForExistence(timeout: 5))
-        // Should have URL and .torrent segments
         XCTAssertTrue(addTaskPage.modePicker.buttons["URL"].exists)
         XCTAssertTrue(addTaskPage.modePicker.buttons[".torrent"].exists)
     }
@@ -59,8 +53,6 @@ final class AddTaskUITests: XCTestCase {
         XCTAssertTrue(addTaskPage.modePicker.waitForExistence(timeout: 5))
         addTaskPage.modePicker.buttons[".torrent"].tap()
 
-        // URL field should no longer be visible or file picker should appear
-        // The mode has changed
         XCTAssertTrue(addTaskPage.modePicker.buttons[".torrent"].isSelected)
     }
 }

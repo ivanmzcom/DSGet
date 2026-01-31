@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -158,7 +158,7 @@
 		26881D0F7ABB032C7E04484C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		268952A42EA45329EF139CB2 /* TaskListContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListContentView.swift; sourceTree = "<group>"; };
 		2937EE5B391C1D0F22F82D68 /* SpotlightIndexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexerTests.swift; sourceTree = "<group>"; };
-		2A302067E2C9B4F5B17CC7E5 /* DSGetCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DSGetCore; path = DSGetCore; sourceTree = SOURCE_ROOT; };
+		2A302067E2C9B4F5B17CC7E5 /* DSGetCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DSGetCore; sourceTree = SOURCE_ROOT; };
 		2F544DF1B5165C43F867DE46 /* TaskListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListPage.swift; sourceTree = "<group>"; };
 		32215ABA8EEE42911EAA2E84 /* DSGetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DSGetWidgets.entitlements; sourceTree = "<group>"; };
 		324317124B8FF902A983DD3F /* DomainErrorHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainErrorHandlingTests.swift; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 		844A5EE60E6D2435A0A9C589 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		84B9F0D78041108F63A30BC8 /* WatchDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDIContainer.swift; sourceTree = "<group>"; };
 		85798B0D56BD199AF8F5D644 /* SpotlightIndexing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexing.swift; sourceTree = "<group>"; };
-		8F1C1EB842516E619AC6D047 /* DSGet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DSGet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F1C1EB842516E619AC6D047 /* DSGet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DSGet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		943CDE7B71DDE56A5BCBD9DC /* AddTaskViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModelTests.swift; sourceTree = "<group>"; };
 		9954A63F33A602E261B6B8FE /* FeedListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedListPage.swift; sourceTree = "<group>"; };
 		99D5C2189E18871BFB725C13 /* DomainErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainErrorHandling.swift; sourceTree = "<group>"; };
@@ -211,7 +211,7 @@
 		A8750E085D2666C62AEAD14C /* SettingsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUITests.swift; sourceTree = "<group>"; };
 		A8AB77BDD334E543A9C9D3DF /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		AA6A97B069EBAA43B733CD5B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		AB51BE8A5ABB9287559ABC54 /* DSGetWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DSGetWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB51BE8A5ABB9287559ABC54 /* DSGetWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DSGetWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACCD548FCE642D5F4F5EE539 /* EmptyStateViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateViews.swift; sourceTree = "<group>"; };
 		ACDE55D2AE50D3AB44F6C5BE /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 		AF0DB9F2CBFE36A809F97DBD /* XCUIApplication+Launch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+Launch.swift"; sourceTree = "<group>"; };
@@ -736,7 +736,6 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					259C0E06C099B25A51DB420B = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					522B67A0CD339CDBA72C6445 = {
@@ -744,7 +743,6 @@
 						ProvisioningStyle = Automatic;
 					};
 					66B2C8FEF5A4A2FE4462CCEA = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					7EE25531AE37694575383F48 = {
@@ -772,7 +770,6 @@
 			packageReferences = (
 				7B4BEC1BCB6B8E6817FD0AA3 /* XCLocalSwiftPackageReference "DSGetCore" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -983,9 +980,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DSGet/DSGet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -1081,9 +1082,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DSGetWidgets/DSGetWidgets.entitlements;
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1096,9 +1102,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DSGetWidgets/DSGetWidgets.entitlements;
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1113,7 +1124,10 @@
 				CODE_SIGN_ENTITLEMENTS = "iDSGet Watch App/iDSGet Watch App.entitlements";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iDSGet Watch App/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.iDSGetWatchApp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1128,7 +1142,10 @@
 				CODE_SIGN_ENTITLEMENTS = "iDSGet Watch App/iDSGet Watch App.entitlements";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iDSGet Watch App/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.iDSGetWatchApp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1236,9 +1253,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DSGet/DSGet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
