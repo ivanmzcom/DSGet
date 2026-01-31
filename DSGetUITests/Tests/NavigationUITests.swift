@@ -15,7 +15,9 @@ final class NavigationUITests: XCTestCase {
 
     func testSidebarHasThreeSections() {
         // Go back to sidebar from auto-navigated downloads
-        app.navigationBars.buttons.element(boundBy: 0).tap()
+        let backButton = app.navigationBars.buttons.element(boundBy: 0)
+        XCTAssertTrue(backButton.waitForExistence(timeout: 5))
+        backButton.tap()
 
         let downloads = app.sidebarItem("sidebar.downloads")
         let feeds = app.sidebarItem("sidebar.feeds")

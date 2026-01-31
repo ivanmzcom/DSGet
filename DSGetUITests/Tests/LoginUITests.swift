@@ -57,8 +57,8 @@ final class LoginUITests: XCTestCase {
         XCTAssertTrue(loginPage.httpsToggle.waitForExistence(timeout: 5))
     }
 
-    func testOTPFieldNotVisibleByDefault() {
+    func testOTPFieldVisibleByDefault() {
         XCTAssertTrue(loginPage.hostField.waitForExistence(timeout: 5))
-        XCTAssertFalse(loginPage.otpField.exists)
+        XCTAssertTrue(loginPage.otpField.exists)
     }
 }

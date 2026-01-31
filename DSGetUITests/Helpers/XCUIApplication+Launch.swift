@@ -22,24 +22,53 @@ extension XCUIApplication {
         return app
     }
 
-    /// Finds a sidebar item by accessibility identifier.
-    /// Works regardless of the underlying element type (cell, button, etc.).
+    /// Finds a sidebar row by accessibility identifier.
+    /// SwiftUI List rows may be exposed as cells, buttons, or other types.
     func sidebarItem(_ identifier: String) -> XCUIElement {
-        descendants(matching: .any)[identifier]
+        for query in [cells, buttons, staticTexts] {
+            let element = query[identifier]
+            if element.exists { return element }
+        }
+        return descendants(matching: .any).matching(identifier: identifier).firstMatch
+    }
+
+    /// Resolves a hittable sidebar element by trying multiple XCUITest types.
+    private func findHittableSidebarElement(_ identifier: String) -> XCUIElement? {
+        for query in [cells, buttons, staticTexts] {
+            let element = query[identifier]
+            if element.exists, element.isHittable { return element }
+        }
+        let fallback = descendants(matching: .any).matching(identifier: identifier).firstMatch
+        if fallback.exists, fallback.isHittable { return fallback }
+        return nil
     }
 
     /// Navigates to a sidebar section. On compact, this may require going back first.
     func navigateToSection(_ identifier: String, timeout: TimeInterval = 5) {
-        let item = sidebarItem(identifier)
-        if item.waitForExistence(timeout: 2) {
-            item.tap()
+        // First try: sidebar item is already visible
+        if let element = findHittableSidebarElement(identifier) {
+            element.tap()
             return
         }
-        // On compact, we may need to go back to sidebar first
-        while navigationBars.buttons.element(boundBy: 0).exists {
-            navigationBars.buttons.element(boundBy: 0).tap()
-            if item.waitForExistence(timeout: 1) {
-                item.tap()
+
+        // Wait briefly for sidebar to appear
+        _ = cells[identifier].waitForExistence(timeout: 1)
+            || buttons[identifier].waitForExistence(timeout: 1)
+        if let element = findHittableSidebarElement(identifier) {
+            element.tap()
+            return
+        }
+
+        // On compact, go back to sidebar
+        for _ in 0..<5 {
+            let backButton = navigationBars.buttons.element(boundBy: 0)
+            guard backButton.exists, backButton.isHittable else { break }
+            backButton.tap()
+            // Wait for sidebar to appear after back navigation
+            _ = cells[identifier].waitForExistence(timeout: 2)
+                || buttons[identifier].waitForExistence(timeout: 1)
+            if let element = findHittableSidebarElement(identifier) {
+                element.tap()
                 return
             }
         }
