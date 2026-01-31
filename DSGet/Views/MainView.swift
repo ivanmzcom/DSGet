@@ -8,9 +8,9 @@
 import SwiftUI
 import DSGetCore
 
-// MARK: - Tab Enum
+// MARK: - Section Enum
 
-enum AppTab: Hashable {
+enum AppSection: Hashable {
     case downloads
     case feeds
     case settings
@@ -37,38 +37,44 @@ enum AppTab: Hashable {
 struct MainView: View {
     @Environment(AppViewModel.self) private var appViewModel
 
-    @State private var selectedTab: AppTab = .downloads
+    @State private var selectedSection: AppSection? = .downloads
+    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
+    @State private var statusFilter: TaskStatusFilter = .all
+
+    private var tasksVM: TasksViewModel { appViewModel.tasksViewModel }
+    private var feedsVM: FeedsViewModel { appViewModel.feedsViewModel }
 
     var body: some View {
         @Bindable var appVM = appViewModel
 
-        TabView(selection: $selectedTab) {
-            Tab(AppTab.downloads.label, systemImage: AppTab.downloads.icon, value: .downloads) {
-                DownloadsTabView()
-                    .environment(appViewModel)
-            }
-            .accessibilityIdentifier(AccessibilityID.Tab.downloads)
-
-            Tab(AppTab.feeds.label, systemImage: AppTab.feeds.icon, value: .feeds) {
-                FeedsTabView()
-                    .environment(appViewModel)
-            }
-            .accessibilityIdentifier(AccessibilityID.Tab.feeds)
-
-            Tab(AppTab.settings.label, systemImage: AppTab.settings.icon, value: .settings) {
-                SettingsTabView()
-                    .environment(appViewModel)
-            }
-            .accessibilityIdentifier(AccessibilityID.Tab.settings)
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            sidebarColumn
+        } content: {
+            contentColumn
+        } detail: {
+            detailColumn
+        }
+        .navigationSplitViewStyle(.balanced)
+        .overlay(alignment: .top) {
+            offlineIndicator
         }
         .sheet(
             isPresented: $appVM.isShowingAddTask,
             onDismiss: { appVM.prefilledAddTaskURL = nil },
             content: { addTaskSheet }
         )
+        .onChange(of: selectedSection) { oldValue, newValue in
+            handleSectionChange(from: oldValue, to: newValue)
+        }
+        .onChange(of: appVM.isShowingSettings) { _, newValue in
+            if newValue {
+                selectedSection = .settings
+                appVM.isShowingSettings = false
+            }
+        }
         .onChange(of: appVM.incomingTorrentURL) { _, newValue in
             if newValue != nil {
-                selectedTab = .downloads
+                selectedSection = .downloads
             }
         }
         .onChange(of: appVM.incomingMagnetURL) { _, newValue in
@@ -76,8 +82,139 @@ struct MainView: View {
                 appVM.prefilledAddTaskURL = url.absoluteString
                 appVM.isShowingAddTask = true
                 appVM.incomingMagnetURL = nil
-                selectedTab = .downloads
+                selectedSection = .downloads
             }
+        }
+        .onAppear {
+            if selectedSection == .downloads {
+                tasksVM.startAutoRefresh()
+            }
+        }
+    }
+
+    // MARK: - Sidebar Column
+
+    @ViewBuilder
+    private var sidebarColumn: some View {
+        List(selection: $selectedSection) {
+            Label(AppSection.downloads.label, systemImage: AppSection.downloads.icon)
+                .tag(AppSection.downloads)
+                .accessibilityIdentifier(AccessibilityID.Sidebar.downloads)
+
+            Label(AppSection.feeds.label, systemImage: AppSection.feeds.icon)
+                .tag(AppSection.feeds)
+                .accessibilityIdentifier(AccessibilityID.Sidebar.feeds)
+
+            Label(AppSection.settings.label, systemImage: AppSection.settings.icon)
+                .tag(AppSection.settings)
+                .accessibilityIdentifier(AccessibilityID.Sidebar.settings)
+        }
+        .navigationTitle("DSGet")
+    }
+
+    // MARK: - Content Column
+
+    @ViewBuilder
+    private var contentColumn: some View {
+        switch selectedSection {
+        case .downloads:
+            TaskListContentView(
+                statusFilter: statusFilter,
+                onStatusFilterChange: { statusFilter = $0 }
+            )
+            .environment(appViewModel)
+
+        case .feeds:
+            FeedListContentView(
+                favoriteFeedIDs: feedsVM.favoriteFeedIDs,
+                onToggleFavorite: { feedsVM.toggleFavorite($0) }
+            )
+            .environment(appViewModel)
+
+        case .settings:
+            SettingsView()
+                .environment(appViewModel)
+
+        case nil:
+            ContentUnavailableView(
+                String.localized("tab.downloads"),
+                systemImage: "sidebar.left"
+            )
+        }
+    }
+
+    // MARK: - Detail Column
+
+    @ViewBuilder
+    private var detailColumn: some View {
+        switch selectedSection {
+        case .downloads:
+            if let task = tasksVM.selectedTask {
+                TaskDetailView(
+                    task: task,
+                    onTaskUpdated: { Task { await tasksVM.fetchTasks(forceRefresh: true) } },
+                    onClose: { tasksVM.selectedTask = nil }
+                )
+                .id(task.id)
+            } else {
+                ContentUnavailableView(
+                    String.localized("tasks.selectTask"),
+                    systemImage: "arrow.down.circle"
+                )
+            }
+
+        case .feeds:
+            if let feedID = feedsVM.selectedFeedID,
+               let feed = feedsVM.feeds.first(where: { $0.id == feedID }) {
+                FeedDetailView(feed: feed, onClose: {
+                    feedsVM.selectedFeedID = nil
+                })
+                .id(feed.id)
+            } else {
+                ContentUnavailableView(
+                    String.localized("feeds.selectFeed"),
+                    systemImage: "dot.radiowaves.left.and.right"
+                )
+            }
+
+        case .settings, nil:
+            ContentUnavailableView(
+                String.localized("settings.title"),
+                systemImage: "gear"
+            )
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func handleSectionChange(from oldValue: AppSection?, to newValue: AppSection?) {
+        if oldValue == .downloads {
+            tasksVM.stopAutoRefresh()
+            tasksVM.selectedTask = nil
+        }
+        if oldValue == .feeds {
+            feedsVM.selectedFeedID = nil
+        }
+        if newValue == .downloads {
+            tasksVM.startAutoRefresh()
+        }
+    }
+
+    // MARK: - Offline Indicator
+
+    @ViewBuilder
+    private var offlineIndicator: some View {
+        if !appViewModel.isOnline {
+            HStack {
+                Image(systemName: "wifi.slash")
+                Text(String.localized("offline.mode"))
+            }
+            .font(.caption)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(.ultraThinMaterial)
+            .clipShape(Capsule())
+            .padding(.top, 8)
         }
     }
 
@@ -91,138 +228,6 @@ struct MainView: View {
                 prefilledURL: appViewModel.prefilledAddTaskURL,
                 isFromSearch: appViewModel.prefilledAddTaskURL != nil
             )
-        }
-    }
-}
-
-// MARK: - Downloads Tab View
-
-struct DownloadsTabView: View {
-    @Environment(AppViewModel.self) private var appViewModel
-
-    @State private var statusFilter: TaskStatusFilter = .all
-
-    private var tasksVM: TasksViewModel { appViewModel.tasksViewModel }
-
-    var body: some View {
-        NavigationSplitView {
-            TaskListContentView(
-                statusFilter: statusFilter,
-                onStatusFilterChange: { newFilter in
-                    statusFilter = newFilter
-                }
-            )
-            .environment(appViewModel)
-        } detail: {
-            taskDetailContent
-        }
-        .navigationSplitViewStyle(.balanced)
-        .overlay(alignment: .top) {
-            offlineIndicator
-        }
-        .onAppear {
-            tasksVM.startAutoRefresh()
-        }
-        .onDisappear {
-            tasksVM.stopAutoRefresh()
-        }
-    }
-
-    @ViewBuilder
-    private var taskDetailContent: some View {
-        if let task = tasksVM.selectedTask {
-            TaskDetailView(
-                task: task,
-                onTaskUpdated: { Task { await tasksVM.fetchTasks(forceRefresh: true) } },
-                onClose: { tasksVM.selectedTask = nil }
-            )
-            .id(task.id)
-        } else {
-            ContentUnavailableView(String.localized("tasks.selectTask"), systemImage: "arrow.down.circle")
-        }
-    }
-
-    @ViewBuilder
-    private var offlineIndicator: some View {
-        if !appViewModel.isOnline {
-            HStack {
-                Image(systemName: "wifi.slash")
-                Text(String.localized("offline.mode"))
-            }
-            .font(.caption)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(.ultraThinMaterial)
-            .clipShape(Capsule())
-            .padding(.top, 8)
-        }
-    }
-}
-
-// MARK: - Feeds Tab View
-
-struct FeedsTabView: View {
-    @Environment(AppViewModel.self) private var appViewModel
-
-    private var feedsVM: FeedsViewModel { appViewModel.feedsViewModel }
-
-    var body: some View {
-        NavigationSplitView {
-            FeedListContentView(
-                favoriteFeedIDs: feedsVM.favoriteFeedIDs,
-                onToggleFavorite: { feed in
-                    feedsVM.toggleFavorite(feed)
-                }
-            )
-            .environment(appViewModel)
-        } detail: {
-            feedDetailContent
-        }
-        .navigationSplitViewStyle(.balanced)
-        .overlay(alignment: .top) {
-            offlineIndicator
-        }
-    }
-
-    @ViewBuilder
-    private var feedDetailContent: some View {
-        if let feedID = feedsVM.selectedFeedID,
-           let feed = feedsVM.feeds.first(where: { $0.id == feedID }) {
-            FeedDetailView(feed: feed, onClose: {
-                feedsVM.selectedFeedID = nil
-            })
-            .id(feed.id)
-        } else {
-            ContentUnavailableView(String.localized("feeds.selectFeed"), systemImage: "dot.radiowaves.left.and.right")
-        }
-    }
-
-    @ViewBuilder
-    private var offlineIndicator: some View {
-        if !appViewModel.isOnline {
-            HStack {
-                Image(systemName: "wifi.slash")
-                Text(String.localized("offline.mode"))
-            }
-            .font(.caption)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(.ultraThinMaterial)
-            .clipShape(Capsule())
-            .padding(.top, 8)
-        }
-    }
-}
-
-// MARK: - Settings Tab View
-
-struct SettingsTabView: View {
-    @Environment(AppViewModel.self) private var appViewModel
-
-    var body: some View {
-        NavigationStack {
-            SettingsView()
-                .environment(appViewModel)
         }
     }
 }

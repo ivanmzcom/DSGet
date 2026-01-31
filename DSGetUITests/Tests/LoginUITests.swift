@@ -35,9 +35,9 @@ final class LoginUITests: XCTestCase {
         XCTAssertTrue(loginPage.loginButton.isEnabled)
         loginPage.loginButton.tap()
 
-        // After login, the tab bar should appear
-        let downloadsTab = app.tabBars.buttons.element(boundBy: 0)
-        XCTAssertTrue(downloadsTab.waitForExistence(timeout: 10))
+        // After login, the sidebar should appear
+        let downloads = app.cells["sidebar.downloads"]
+        XCTAssertTrue(downloads.waitForExistence(timeout: 10))
     }
 
     func testLoginButtonDisabledWithPartialForm() {

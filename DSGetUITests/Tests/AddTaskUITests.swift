@@ -13,6 +13,11 @@ final class AddTaskUITests: XCTestCase {
         continueAfterFailure = false
         app = .launchForTesting()
 
+        // Navigate to downloads section
+        let downloads = app.cells["sidebar.downloads"]
+        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
+        downloads.tap()
+
         // Open add task sheet
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.addButton.waitForExistence(timeout: 5))

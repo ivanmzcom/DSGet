@@ -21,12 +21,12 @@ enum AccessibilityID {
         static let loginButton = "login.loginButton"
     }
 
-    // MARK: - Main / Tabs
+    // MARK: - Sidebar
 
-    enum Tab {
-        static let downloads = "tab.downloads"
-        static let feeds = "tab.feeds"
-        static let settings = "tab.settings"
+    enum Sidebar {
+        static let downloads = "sidebar.downloads"
+        static let feeds = "sidebar.feeds"
+        static let settings = "sidebar.settings"
     }
 
     // MARK: - Task List

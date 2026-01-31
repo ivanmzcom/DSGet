@@ -110,7 +110,7 @@ struct TaskListContentView: View {
                 .tag(task)
                 .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
         }
-        .listStyle(.sidebar)
+        .listStyle(.plain)
         .accessibilityIdentifier(AccessibilityID.TaskList.list)
     }
 

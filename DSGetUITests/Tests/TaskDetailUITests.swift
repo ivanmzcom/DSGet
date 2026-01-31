@@ -6,6 +6,11 @@ final class TaskDetailUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
+
+        // Navigate to downloads section
+        let downloads = app.cells["sidebar.downloads"]
+        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
+        downloads.tap()
     }
 
     func testTaskDetailAppearsOnTap() {
@@ -15,7 +20,6 @@ final class TaskDetailUITests: XCTestCase {
 
         app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].tap()
 
-        // Task detail should show the title
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 5))
     }
 
@@ -25,22 +29,23 @@ final class TaskDetailUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 10))
         app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].tap()
 
-        // Navigate back
         app.navigationBars.buttons.element(boundBy: 0).tap()
 
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
     }
 
-    func testTabSwitchingFromDetail() {
+    func testSectionSwitchingFromDetail() {
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].waitForExistence(timeout: 10))
         app.staticTexts["Ubuntu 24.04 LTS Desktop.iso"].tap()
 
-        // Switch to feeds tab
-        let feedsTab = app.tabBars.buttons.element(boundBy: 1)
-        XCTAssertTrue(feedsTab.waitForExistence(timeout: 5))
-        feedsTab.tap()
+        // Navigate back to sidebar and switch to feeds
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        let feeds = app.cells["sidebar.feeds"]
+        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
+        feeds.tap()
 
         let feedListPage = FeedListPage(app: app)
         XCTAssertTrue(feedListPage.list.waitForExistence(timeout: 5))

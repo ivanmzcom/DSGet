@@ -13,10 +13,10 @@ final class FeedListUITests: XCTestCase {
         continueAfterFailure = false
         app = .launchForTesting()
 
-        // Navigate to feeds tab
-        let feedsTab = app.tabBars.buttons.element(boundBy: 1)
-        XCTAssertTrue(feedsTab.waitForExistence(timeout: 5))
-        feedsTab.tap()
+        // Navigate to feeds section
+        let feeds = app.cells["sidebar.feeds"]
+        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
+        feeds.tap()
 
         feedListPage = FeedListPage(app: app)
     }
@@ -24,7 +24,6 @@ final class FeedListUITests: XCTestCase {
     func testShowsStubFeeds() {
         XCTAssertTrue(feedListPage.list.waitForExistence(timeout: 5))
 
-        // Verify stub feed titles appear
         XCTAssertTrue(app.staticTexts["Linux ISOs"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Open Source Software"].exists)
     }
@@ -41,7 +40,6 @@ final class FeedListUITests: XCTestCase {
 
         app.staticTexts["Linux ISOs"].tap()
 
-        // Feed detail should show items
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 Released"].waitForExistence(timeout: 10))
     }
 

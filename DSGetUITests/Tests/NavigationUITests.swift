@@ -13,45 +13,56 @@ final class NavigationUITests: XCTestCase {
         app = .launchForTesting()
     }
 
-    func testTabBarHasThreeTabs() {
-        let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 5))
-        XCTAssertEqual(tabBar.buttons.count, 3)
+    func testSidebarHasThreeSections() {
+        let downloads = app.cells["sidebar.downloads"]
+        let feeds = app.cells["sidebar.feeds"]
+        let settings = app.cells["sidebar.settings"]
+
+        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
+        XCTAssertTrue(feeds.exists)
+        XCTAssertTrue(settings.exists)
     }
 
-    func testSwitchToFeedsTab() {
-        let feedsTab = app.tabBars.buttons.element(boundBy: 1)
-        XCTAssertTrue(feedsTab.waitForExistence(timeout: 5))
-        feedsTab.tap()
+    func testSwitchToFeedsSection() {
+        let feeds = app.cells["sidebar.feeds"]
+        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
+        feeds.tap()
 
         let feedListPage = FeedListPage(app: app)
         XCTAssertTrue(feedListPage.list.waitForExistence(timeout: 5))
     }
 
-    func testSwitchToSettingsTab() {
-        let settingsTab = app.tabBars.buttons.element(boundBy: 2)
-        XCTAssertTrue(settingsTab.waitForExistence(timeout: 5))
-        settingsTab.tap()
+    func testSwitchToSettingsSection() {
+        let settings = app.cells["sidebar.settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 5))
+        settings.tap()
 
         let settingsPage = SettingsPage(app: app)
         XCTAssertTrue(settingsPage.logoutButton.waitForExistence(timeout: 5))
     }
 
-    func testSwitchBackToDownloadsTab() {
+    func testSwitchBackToDownloadsSection() {
         // Go to settings first
-        let settingsTab = app.tabBars.buttons.element(boundBy: 2)
-        XCTAssertTrue(settingsTab.waitForExistence(timeout: 5))
-        settingsTab.tap()
+        let settings = app.cells["sidebar.settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 5))
+        settings.tap()
 
-        // Switch back to downloads
-        let downloadsTab = app.tabBars.buttons.element(boundBy: 0)
-        downloadsTab.tap()
+        // Navigate back to sidebar and switch to downloads
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        let downloads = app.cells["sidebar.downloads"]
+        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
+        downloads.tap()
 
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
     }
 
-    func testAddTaskSheetFromTabBar() {
+    func testAddTaskSheetFromDownloads() {
+        // Navigate to downloads content
+        let downloads = app.cells["sidebar.downloads"]
+        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
+        downloads.tap()
+
         let taskListPage = TaskListPage(app: app)
         XCTAssertTrue(taskListPage.addButton.waitForExistence(timeout: 5))
         taskListPage.addButton.tap()
@@ -61,20 +72,5 @@ final class NavigationUITests: XCTestCase {
 
         addTaskPage.cancelButton.tap()
         XCTAssertTrue(taskListPage.list.waitForExistence(timeout: 5))
-    }
-
-    func testTabBarPersistsAcrossNavigation() {
-        let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 5))
-
-        // Switch through all tabs
-        app.tabBars.buttons.element(boundBy: 1).tap()
-        XCTAssertEqual(tabBar.buttons.count, 3)
-
-        app.tabBars.buttons.element(boundBy: 2).tap()
-        XCTAssertEqual(tabBar.buttons.count, 3)
-
-        app.tabBars.buttons.element(boundBy: 0).tap()
-        XCTAssertEqual(tabBar.buttons.count, 3)
     }
 }

@@ -7,17 +7,16 @@ final class FeedDetailUITests: XCTestCase {
         continueAfterFailure = false
         app = .launchForTesting()
 
-        // Navigate to feeds tab
-        let feedsTab = app.tabBars.buttons.element(boundBy: 1)
-        XCTAssertTrue(feedsTab.waitForExistence(timeout: 5))
-        feedsTab.tap()
+        // Navigate to feeds section
+        let feeds = app.cells["sidebar.feeds"]
+        XCTAssertTrue(feeds.waitForExistence(timeout: 5))
+        feeds.tap()
     }
 
     func testFeedDetailAppearsOnTap() {
         XCTAssertTrue(app.staticTexts["Linux ISOs"].waitForExistence(timeout: 10))
         app.staticTexts["Linux ISOs"].tap()
 
-        // Feed detail should show items
         XCTAssertTrue(app.staticTexts["Ubuntu 24.04 Released"].waitForExistence(timeout: 10))
     }
 

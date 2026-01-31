@@ -127,7 +127,7 @@ struct FeedListContentView: View {
             feedRowView(for: feed)
                 .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
         }
-        .listStyle(.sidebar)
+        .listStyle(.plain)
         .accessibilityIdentifier(AccessibilityID.FeedList.list)
     }
 

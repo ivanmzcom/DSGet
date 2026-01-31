@@ -13,10 +13,10 @@ final class SettingsUITests: XCTestCase {
         continueAfterFailure = false
         app = .launchForTesting()
 
-        // Navigate to settings tab
-        let settingsTab = app.tabBars.buttons.element(boundBy: 2)
-        XCTAssertTrue(settingsTab.waitForExistence(timeout: 5))
-        settingsTab.tap()
+        // Navigate to settings section
+        let settings = app.cells["sidebar.settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 5))
+        settings.tap()
 
         settingsPage = SettingsPage(app: app)
     }
@@ -41,10 +41,7 @@ final class SettingsUITests: XCTestCase {
     }
 
     func testVersionInfoExists() {
-        // Settings page should show some version-related information
-        // Look for any version text on the settings page
         XCTAssertTrue(settingsPage.serverName.waitForExistence(timeout: 5))
-        // Server name should be "My NAS" from stub
         XCTAssertEqual(settingsPage.serverName.label, "My NAS")
     }
 }

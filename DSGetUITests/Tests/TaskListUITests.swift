@@ -12,6 +12,12 @@ final class TaskListUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = .launchForTesting()
+
+        // Navigate to downloads section
+        let downloads = app.cells["sidebar.downloads"]
+        XCTAssertTrue(downloads.waitForExistence(timeout: 5))
+        downloads.tap()
+
         taskListPage = TaskListPage(app: app)
     }
 
