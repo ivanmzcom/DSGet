@@ -6,23 +6,16 @@
 //
 
 import SwiftUI
+import DSGetCore
 
 @main
 struct DSGetApp: App {
-    /// Main application ViewModel.
     @State private var appViewModel: AppViewModel
 
-    /// Computed binding that shows login only when not authenticated and not checking.
-    /// Dismissal is only allowed when the user has actually logged in.
-    private var showLoginSheet: Binding<Bool> {
+    private var loginSheetBinding: Binding<Bool> {
         Binding(
             get: { !appViewModel.isLoggedIn && !appViewModel.isCheckingAuth },
-            set: { newValue in
-                if !newValue && !appViewModel.isLoggedIn {
-                    // Prevent dismissal unless actually logged in
-                    return
-                }
-            }
+            set: { _ in }
         )
     }
 
@@ -37,17 +30,41 @@ struct DSGetApp: App {
     }
 
     var body: some Scene {
+        mainWindowScene
+        #if os(macOS)
+        WindowGroup("Task Detail", for: TaskID.self) { $taskID in
+            TaskDetailWindowView(taskID: taskID)
+                .environment(appViewModel)
+        }
+        Settings {
+            DSGetSettingsSceneView(appViewModel: appViewModel)
+        }
+        #endif
+    }
+
+    @SceneBuilder
+    private var mainWindowScene: some Scene {
+        #if os(macOS)
         WindowGroup {
-            ZStack {
-                if appViewModel.isLoggedIn {
-                    MainView()
-                        .environment(appViewModel)
-                } else if appViewModel.isCheckingAuth {
-                    loadingOverlay
+            rootContent
+        }
+        .commands {
+            DSGetCommands(appViewModel: appViewModel)
+        }
+        #else
+        WindowGroup {
+            rootContent
+        }
+        #endif
+    }
+
+    private var rootContent: some View {
+        AppRootView(appViewModel: appViewModel)
+            .environment(appViewModel)
+            .sheet(isPresented: loginSheetBinding) {
+                LoginView {
+                    appViewModel.isLoggedIn = true
                 }
-            }
-            .sheet(isPresented: showLoginSheet) {
-                LoginView(isLoggedIn: $appViewModel.isLoggedIn)
                 .interactiveDismissDisabled(true)
             }
             .onOpenURL { url in
@@ -59,51 +76,87 @@ struct DSGetApp: App {
             )) {
                 OTPSheetView(otpService: appViewModel.otpService)
             }
-        }
-    }
-
-    @ViewBuilder
-    private var loadingOverlay: some View {
-        ZStack {
-            Color(uiColor: .systemBackground)
-            ProgressView()
-                .scaleEffect(1.5)
-        }
-        .ignoresSafeArea()
     }
 }
 
-// MARK: - OTP Sheet View
+private struct AppRootView: View {
+    let appViewModel: AppViewModel
 
-/// Sheet view for OTP input.
-struct OTPSheetView: View {
+    var body: some View {
+        ZStack {
+            #if !os(macOS)
+            Color.dsgetWindowBackground
+                .ignoresSafeArea()
+            #endif
+
+            if appViewModel.isLoggedIn {
+                MainView()
+            }
+
+            if appViewModel.isCheckingAuth {
+                AppLoadingView()
+            }
+        }
+    }
+}
+
+private struct AppLoadingView: View {
+    var body: some View {
+        ProgressView()
+            .scaleEffect(1.5)
+    }
+}
+
+private struct OTPSheetView: View {
     let otpService: OTPService
+
     @State private var otpCode = ""
 
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text(String.localized("otp.required.title"))) {
+                Section(String.localized("otp.required.title")) {
                     Text(String.localized("otp.required"))
                     SecureField(String.localized("otp.placeholder"), text: $otpCode)
                         .textContentType(.oneTimeCode)
                 }
-                Section {
-                    Button(String.localized("otp.button.submit")) {
-                        if !otpCode.isEmpty {
-                            otpService.submit(otp: otpCode)
-                            otpCode = ""
-                        }
-                    }
-                    .disabled(otpCode.isEmpty)
-                    Button(String.localized("otp.button.cancel"), role: .cancel) {
-                        otpService.cancel()
-                        otpCode = ""
-                    }
-                }
+                OTPActionsSection(
+                    otpCode: $otpCode,
+                    onSubmit: submitOTP,
+                    onCancel: cancelOTP
+                )
             }
             .navigationTitle(String.localized("otp.title"))
+            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
+        }
+    }
+
+    private func submitOTP() {
+        guard !otpCode.isEmpty else { return }
+        otpService.submit(otp: otpCode)
+        otpCode = ""
+    }
+
+    private func cancelOTP() {
+        otpService.cancel()
+        otpCode = ""
+    }
+}
+
+private struct OTPActionsSection: View {
+    @Binding var otpCode: String
+
+    let onSubmit: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        Section {
+            Button(String.localized("otp.button.submit"), action: onSubmit)
+                .disabled(otpCode.isEmpty)
+
+            Button(String.localized("otp.button.cancel"), role: .cancel, action: onCancel)
         }
     }
 }

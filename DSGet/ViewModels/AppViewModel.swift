@@ -9,6 +9,15 @@ import Foundation
 import SwiftUI
 import DSGetCore
 
+struct AddTaskPresentation: Identifiable, Equatable {
+    let id = UUID()
+    let prefilledURL: String?
+
+    var isFromSearch: Bool {
+        prefilledURL != nil
+    }
+}
+
 // MARK: - AppViewModel
 
 @MainActor
@@ -51,9 +60,8 @@ final class AppViewModel {
 
     // MARK: - UI State
 
-    var isShowingAddTask: Bool = false
+    var addTaskPresentation: AddTaskPresentation?
     var isShowingSettings: Bool = false
-    var prefilledAddTaskURL: String?
 
     // MARK: - Injected Dependencies
 
@@ -180,6 +188,14 @@ final class AppViewModel {
         showingGlobalError = false
     }
 
+    func presentAddTask(prefilledURL: String? = nil) {
+        addTaskPresentation = AddTaskPresentation(prefilledURL: prefilledURL)
+    }
+
+    func dismissAddTaskPresentation() {
+        addTaskPresentation = nil
+    }
+
     /// Called after successful login to update state.
     func onLoginSuccess() async {
         await loadServer()
@@ -195,8 +211,7 @@ final class AppViewModel {
         switch components.host {
         case AppConstants.DeepLinkHosts.add:
             if let urlParam = components.queryItems?.first(where: { $0.name == "url" })?.value {
-                prefilledAddTaskURL = urlParam
-                isShowingAddTask = true
+                presentAddTask(prefilledURL: urlParam)
             }
 
         case AppConstants.DeepLinkHosts.settings:

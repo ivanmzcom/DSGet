@@ -5,7 +5,11 @@
 //  Protocol for haptic feedback management.
 //
 
-import UIKit
+enum AppHapticNotificationType {
+    case success
+    case warning
+    case error
+}
 
 /// Protocol for centralized haptic feedback.
 @MainActor
@@ -15,7 +19,7 @@ protocol HapticManaging {
     func mediumImpact()
     func heavyImpact()
     func selectionChanged()
-    func notification(_ type: UINotificationFeedbackGenerator.FeedbackType)
+    func notification(_ type: AppHapticNotificationType)
     func success()
     func warning()
     func error()

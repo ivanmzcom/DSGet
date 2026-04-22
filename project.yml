@@ -44,12 +44,6 @@ targets:
       properties:
         CFBundleDisplayName: DSGet
         UILaunchStoryboardName: LaunchScreen
-        UIApplicationSceneManifest:
-          UIApplicationSupportsMultipleScenes: false
-          UISceneConfigurations:
-            UIWindowSceneSessionRoleApplication:
-              - UISceneConfigurationName: Default Configuration
-                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -64,6 +58,25 @@ targets:
       properties:
         com.apple.security.application-groups:
           - group.es.ncrd.DSGet
+
+  DSGetMac:
+    type: application
+    platform: macOS
+    deploymentTarget:
+      macOS: "15.0"
+    sources:
+      - path: DSGet
+        excludes:
+          - "**/.DS_Store"
+    dependencies:
+      - package: DSGetCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetMac
+        GENERATE_INFOPLIST_FILE: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: true
 
   DSGetWidgets:
     type: app-extension
@@ -176,6 +189,17 @@ schemes:
         - DSGetUITests
     profile:
       config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+
+  DSGetMac:
+    build:
+      targets:
+        DSGetMac: all
+    run:
+      config: Debug
     analyze:
       config: Debug
     archive:

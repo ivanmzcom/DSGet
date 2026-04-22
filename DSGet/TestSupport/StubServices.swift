@@ -9,7 +9,6 @@
 
 import Foundation
 import DSGetCore
-import UIKit
 
 // MARK: - Stub Task Service
 
@@ -205,7 +204,7 @@ final class StubHapticManager: HapticManaging {
     func mediumImpact() {}
     func heavyImpact() {}
     func selectionChanged() {}
-    func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {}
+    func notification(_ type: AppHapticNotificationType) {}
     func success() {}
     func warning() {}
     func error() {}

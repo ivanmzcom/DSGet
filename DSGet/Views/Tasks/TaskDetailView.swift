@@ -30,7 +30,9 @@ struct TaskDetailView: View {
     @State private var viewModel: TaskDetailViewModel
     let onClose: (() -> Void)?
     @Environment(\.dismiss) var dismiss
+    #if !os(macOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
 
     @State private var selectedTab: TaskDetailTab = .general
 
@@ -143,40 +145,71 @@ struct TaskDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Tab selector
-            Picker("Tab", selection: $selectedTab) {
-                ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                    Label(tab.rawValue, systemImage: tab.icon)
-                        .tag(tab)
+        AdaptiveLayoutReader { width in
+            VStack(spacing: 0) {
+                TaskDetailHero(
+                    task: viewModel.task,
+                    statusText: statusTextAndColor.text,
+                    statusColor: statusTextAndColor.color,
+                    progressValue: progressValue,
+                    progressPercentage: progressPercentage,
+                    downloadSpeed: downloadSpeed,
+                    uploadSpeed: uploadSpeed,
+                    etaText: etaText
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+
+                if width.prefersSegmentedTabs {
+                    Picker("Tab", selection: $selectedTab) {
+                        ForEach(TaskDetailTab.allCases, id: \.self) { tab in
+                            Label(tab.rawValue, systemImage: tab.icon)
+                                .tag(tab)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                } else {
+                    Picker("Tab", selection: $selectedTab) {
+                        ForEach(TaskDetailTab.allCases, id: \.self) { tab in
+                            Label(tab.rawValue, systemImage: tab.icon)
+                                .tag(tab)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
                 }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
 
-            // Tab content
-            Group {
-                switch selectedTab {
-                case .general:
-                    generalTabContent
+                Group {
+                    switch selectedTab {
+                    case .general:
+                        generalTabContent
 
-                case .transfer:
-                    transferTabContent
+                    case .transfer:
+                        transferTabContent
 
-                case .trackers:
-                    trackersTabContent
+                    case .trackers:
+                        trackersTabContent
 
-                case .peers:
-                    peersTabContent
+                    case .peers:
+                        peersTabContent
 
-                case .files:
-                    filesTabContent
+                    case .files:
+                        filesTabContent
+                    }
                 }
+                #if os(macOS)
+                .listStyle(.inset)
+                #else
+                .listStyle(.insetGrouped)
+                #endif
             }
-            .listStyle(.insetGrouped)
         }
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .navigationTitle(viewModel.task.title)
         .toolbar { toolbarContent }
         .confirmationDialog(
@@ -212,7 +245,7 @@ struct TaskDetailView: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        if horizontalSizeClass != .compact {
+        if showsCloseButton {
             ToolbarItem(placement: .cancellationAction) {
                 Button(String.localized("taskDetail.button.close")) {
                     onClose?()
@@ -247,6 +280,14 @@ struct TaskDetailView: View {
         }
     }
 
+    private var showsCloseButton: Bool {
+        #if os(macOS)
+        true
+        #else
+        horizontalSizeClass != .compact
+        #endif
+    }
+
     // MARK: - Private Helper Functions
 
     private func formatTimeInterval(_ interval: TimeInterval) -> String {
@@ -262,6 +303,86 @@ struct TaskDetailView: View {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
+    }
+}
+
+private struct TaskDetailHero: View {
+    let task: DownloadTask
+    let statusText: String
+    let statusColor: Color
+    let progressValue: Double
+    let progressPercentage: String
+    let downloadSpeed: String?
+    let uploadSpeed: String?
+    let etaText: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill")
+                    .foregroundStyle(statusColor)
+                    .font(.title2)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(task.title)
+                        .font(.title3.weight(.semibold))
+                        .lineLimit(2)
+
+                    Text(statusText)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(statusColor)
+                }
+
+                Spacer(minLength: 0)
+
+                Text(progressPercentage)
+                    .font(.title3.monospacedDigit().weight(.semibold))
+            }
+
+            ProgressView(value: progressValue)
+                .tint(statusColor)
+
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 18) {
+                    detailMetric(title: "Downloaded", value: task.downloadedSize.formatted)
+                    detailMetric(title: "Size", value: task.size.formatted)
+                    if let downloadSpeed {
+                        detailMetric(title: "Down", value: downloadSpeed + "/s")
+                    }
+                    if let uploadSpeed {
+                        detailMetric(title: "Up", value: uploadSpeed + "/s")
+                    }
+                    if let etaText {
+                        detailMetric(title: "ETA", value: etaText)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 10) {
+                    detailMetric(title: "Downloaded", value: task.downloadedSize.formatted)
+                    detailMetric(title: "Size", value: task.size.formatted)
+                    if let downloadSpeed {
+                        detailMetric(title: "Down", value: downloadSpeed + "/s")
+                    }
+                    if let uploadSpeed {
+                        detailMetric(title: "Up", value: uploadSpeed + "/s")
+                    }
+                    if let etaText {
+                        detailMetric(title: "ETA", value: etaText)
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func detailMetric(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title.uppercased())
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.caption.monospacedDigit())
+        }
     }
 }
 

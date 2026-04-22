@@ -59,7 +59,7 @@ final class QuickActionsHandlerTests: XCTestCase {
         handler.pendingAction = .addTask
         handler.processPendingAction(appViewModel: appVM)
 
-        XCTAssertTrue(appVM.isShowingAddTask)
+        XCTAssertNotNil(appVM.addTaskPresentation)
         XCTAssertNil(handler.pendingAction)
     }
 
@@ -90,7 +90,7 @@ final class QuickActionsHandlerTests: XCTestCase {
         handler.pendingAction = nil
         handler.processPendingAction(appViewModel: appVM)
 
-        XCTAssertFalse(appVM.isShowingAddTask)
+        XCTAssertNil(appVM.addTaskPresentation)
     }
 
     // MARK: - Helpers

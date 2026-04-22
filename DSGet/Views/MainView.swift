@@ -8,184 +8,192 @@
 import SwiftUI
 import DSGetCore
 
-// MARK: - Section Enum
-
-enum AppSection: Hashable {
-    case downloads
-    case feeds
-    case settings
-
-    var label: String {
-        switch self {
-        case .downloads: return String.localized("tab.downloads")
-        case .feeds: return String.localized("tab.feeds")
-        case .settings: return String.localized("tab.settings")
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .downloads: return "arrow.down.circle"
-        case .feeds: return "dot.radiowaves.left.and.right"
-        case .settings: return "gear"
-        }
-    }
-}
-
 // MARK: - Main View
 
 struct MainView: View {
     @Environment(AppViewModel.self) private var appViewModel
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+    #if os(macOS)
+    @Environment(\.openSettings) private var openSettings
+    #endif
 
-    @State private var selectedSection: AppSection? = .downloads
+    @SceneStorage("main.selectedSection")
+    private var selectedSectionRawValue = AppSection.downloads.rawValue
     @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
     @State private var statusFilter: TaskStatusFilter = .all
 
     private var tasksVM: TasksViewModel { appViewModel.tasksViewModel }
     private var feedsVM: FeedsViewModel { appViewModel.feedsViewModel }
 
+    private var selectedSection: AppSection? {
+        AppSection(rawValue: selectedSectionRawValue) ?? .downloads
+    }
+
+    private var selectedSectionBinding: Binding<AppSection?> {
+        Binding(
+            get: { selectedSection },
+            set: { selectedSectionRawValue = $0?.rawValue ?? AppSection.downloads.rawValue }
+        )
+    }
+
     var body: some View {
         @Bindable var appVM = appViewModel
 
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            sidebarColumn
-        } content: {
-            contentColumn
+        rootContainer
+            .overlay(alignment: .top) {
+                if !appViewModel.isOnline {
+                    OfflineIndicatorView()
+                }
+            }
+            .sheet(item: addTaskPresentationBinding, content: addTaskSheet)
+            .onChange(of: selectedSection) { oldValue, newValue in
+                handleSectionChange(from: oldValue, to: newValue)
+            }
+            .onChange(of: appVM.isShowingSettings) { _, newValue in
+                if newValue {
+                    #if os(macOS)
+                    openSettings()
+                    #else
+                    selectedSectionRawValue = AppSection.settings.rawValue
+                    #endif
+                    appVM.isShowingSettings = false
+                }
+            }
+            .onChange(of: appVM.incomingTorrentURL) { _, newValue in
+                if newValue != nil {
+                    selectedSectionRawValue = AppSection.downloads.rawValue
+                }
+            }
+            .onChange(of: appVM.incomingMagnetURL) { _, newValue in
+                if let url = newValue {
+                    appVM.presentAddTask(prefilledURL: url.absoluteString)
+                    appVM.incomingMagnetURL = nil
+                    selectedSectionRawValue = AppSection.downloads.rawValue
+                }
+            }
+            .onAppear {
+                if selectedSection == .downloads {
+                    tasksVM.startAutoRefresh()
+                }
+            }
+    }
+
+    @ViewBuilder
+    private var rootContainer: some View {
+        #if os(iOS)
+        if horizontalSizeClass == .compact {
+            TabView(selection: selectedSectionBinding) {
+                NavigationStack {
+                    MainContentColumn(
+                        appViewModel: appViewModel,
+                        selectedSection: .downloads,
+                        statusFilter: $statusFilter
+                    )
+                }
+                .tabItem {
+                    Label(AppSection.downloads.label, systemImage: AppSection.downloads.icon)
+                }
+                .tag(Optional(AppSection.downloads))
+
+                NavigationStack {
+                    MainContentColumn(
+                        appViewModel: appViewModel,
+                        selectedSection: .feeds,
+                        statusFilter: $statusFilter
+                    )
+                }
+                .tabItem {
+                    Label(AppSection.feeds.label, systemImage: AppSection.feeds.icon)
+                }
+                .tag(Optional(AppSection.feeds))
+
+                NavigationStack {
+                    SettingsView()
+                }
+                .tabItem {
+                    Label(AppSection.settings.label, systemImage: AppSection.settings.icon)
+                }
+                .tag(Optional(AppSection.settings))
+            }
+        } else {
+            rootSplitView
+        }
+        #else
+        rootSplitView
+        #endif
+    }
+
+    @ViewBuilder
+    private var rootSplitView: some View {
+        #if os(macOS)
+        let splitView = NavigationSplitView(columnVisibility: $columnVisibility) {
+            MainSidebarView(selectedSection: selectedSectionBinding)
+                .navigationSplitViewColumnWidth(min: 170, ideal: 190, max: 220)
         } detail: {
-            detailColumn
+            MainContentColumn(
+                appViewModel: appViewModel,
+                selectedSection: selectedSection,
+                statusFilter: $statusFilter
+            )
+            .navigationSplitViewColumnWidth(min: 520, ideal: 760, max: .infinity)
         }
         .navigationSplitViewStyle(.balanced)
-        .overlay(alignment: .top) {
-            offlineIndicator
-        }
-        .sheet(
-            isPresented: $appVM.isShowingAddTask,
-            onDismiss: { appVM.prefilledAddTaskURL = nil },
-            content: { addTaskSheet }
-        )
-        .onChange(of: selectedSection) { oldValue, newValue in
-            handleSectionChange(from: oldValue, to: newValue)
-        }
-        .onChange(of: appVM.isShowingSettings) { _, newValue in
-            if newValue {
-                selectedSection = .settings
-                appVM.isShowingSettings = false
-            }
-        }
-        .onChange(of: appVM.incomingTorrentURL) { _, newValue in
-            if newValue != nil {
-                selectedSection = .downloads
-            }
-        }
-        .onChange(of: appVM.incomingMagnetURL) { _, newValue in
-            if let url = newValue {
-                appVM.prefilledAddTaskURL = url.absoluteString
-                appVM.isShowingAddTask = true
-                appVM.incomingMagnetURL = nil
-                selectedSection = .downloads
-            }
-        }
-        .onAppear {
-            if selectedSection == .downloads {
-                tasksVM.startAutoRefresh()
-            }
-        }
-    }
-
-    // MARK: - Sidebar Column
-
-    @ViewBuilder
-    private var sidebarColumn: some View {
-        List(selection: $selectedSection) {
-            Label(AppSection.downloads.label, systemImage: AppSection.downloads.icon)
-                .tag(AppSection.downloads)
-                .accessibilityIdentifier(AccessibilityID.Sidebar.downloads)
-
-            Label(AppSection.feeds.label, systemImage: AppSection.feeds.icon)
-                .tag(AppSection.feeds)
-                .accessibilityIdentifier(AccessibilityID.Sidebar.feeds)
-
-            Label(AppSection.settings.label, systemImage: AppSection.settings.icon)
-                .tag(AppSection.settings)
-                .accessibilityIdentifier(AccessibilityID.Sidebar.settings)
-        }
-        .navigationTitle("DSGet")
-    }
-
-    // MARK: - Content Column
-
-    @ViewBuilder
-    private var contentColumn: some View {
-        switch selectedSection {
-        case .downloads:
-            TaskListContentView(
-                statusFilter: statusFilter,
-                onStatusFilterChange: { statusFilter = $0 }
+        #else
+        let splitView = NavigationSplitView(columnVisibility: $columnVisibility) {
+            MainSidebarView(selectedSection: selectedSectionBinding)
+        } content: {
+            MainContentColumn(
+                appViewModel: appViewModel,
+                selectedSection: selectedSection,
+                statusFilter: $statusFilter
             )
-            .environment(appViewModel)
-
-        case .feeds:
-            FeedListContentView(
-                favoriteFeedIDs: feedsVM.favoriteFeedIDs,
-                onToggleFavorite: { feedsVM.toggleFavorite($0) }
-            )
-            .environment(appViewModel)
-
-        case .settings:
-            SettingsView()
-                .environment(appViewModel)
-
-        case nil:
-            ContentUnavailableView(
-                String.localized("tab.downloads"),
-                systemImage: "sidebar.left"
+        } detail: {
+            MainDetailColumn(
+                appViewModel: appViewModel,
+                selectedSection: selectedSection
             )
         }
-    }
+        .navigationSplitViewStyle(.balanced)
+        #endif
 
-    // MARK: - Detail Column
-
-    @ViewBuilder
-    private var detailColumn: some View {
-        switch selectedSection {
-        case .downloads:
-            if let task = tasksVM.selectedTask {
-                TaskDetailView(
-                    task: task,
-                    onTaskUpdated: { Task { await tasksVM.fetchTasks(forceRefresh: true) } },
-                    onClose: { tasksVM.selectedTask = nil }
+        #if os(macOS)
+        if selectedSection == .downloads {
+            splitView
+                .searchable(
+                    text: searchTextBinding,
+                    placement: .toolbar,
+                    prompt: String.localized("tasks.search.prompt")
                 )
-                .id(task.id)
-            } else {
-                ContentUnavailableView(
-                    String.localized("tasks.selectTask"),
-                    systemImage: "arrow.down.circle"
+        } else if selectedSection == .feeds {
+            splitView
+                .searchable(
+                    text: feedSearchTextBinding,
+                    placement: .toolbar,
+                    prompt: "Search feeds"
                 )
-            }
-
-        case .feeds:
-            if let feedID = feedsVM.selectedFeedID,
-               let feed = feedsVM.feeds.first(where: { $0.id == feedID }) {
-                FeedDetailView(feed: feed, onClose: {
-                    feedsVM.selectedFeedID = nil
-                })
-                .id(feed.id)
-            } else {
-                ContentUnavailableView(
-                    String.localized("feeds.selectFeed"),
-                    systemImage: "dot.radiowaves.left.and.right"
-                )
-            }
-
-        case .settings, nil:
-            ContentUnavailableView(
-                String.localized("settings.title"),
-                systemImage: "gear"
-            )
+        } else {
+            splitView
         }
+        #elseif os(iOS)
+        if selectedSection == .downloads {
+            splitView
+                .searchable(
+                    text: searchTextBinding,
+                    prompt: String.localized("tasks.search.prompt")
+                )
+        } else if selectedSection == .feeds {
+            splitView
+                .searchable(
+                    text: feedSearchTextBinding,
+                    prompt: "Search feeds"
+                )
+        } else {
+            splitView
+        }
+        #endif
     }
-
-    // MARK: - Helpers
 
     private func handleSectionChange(from oldValue: AppSection?, to newValue: AppSection?) {
         if oldValue == .downloads {
@@ -200,34 +208,34 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Offline Indicator
-
-    @ViewBuilder
-    private var offlineIndicator: some View {
-        if !appViewModel.isOnline {
-            HStack {
-                Image(systemName: "wifi.slash")
-                Text(String.localized("offline.mode"))
-            }
-            .font(.caption)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(.ultraThinMaterial)
-            .clipShape(Capsule())
-            .padding(.top, 8)
-        }
-    }
-
-    // MARK: - Sheets
-
-    @ViewBuilder
-    private var addTaskSheet: some View {
+    private func addTaskSheet(_ presentation: AddTaskPresentation) -> some View {
         NavigationStack {
             AddTaskView(
                 preselectedTorrent: nil,
-                prefilledURL: appViewModel.prefilledAddTaskURL,
-                isFromSearch: appViewModel.prefilledAddTaskURL != nil
+                prefilledURL: presentation.prefilledURL,
+                isFromSearch: presentation.isFromSearch
             )
         }
+    }
+
+    private var searchTextBinding: Binding<String> {
+        Binding(
+            get: { tasksVM.searchText },
+            set: { tasksVM.searchText = $0 }
+        )
+    }
+
+    private var feedSearchTextBinding: Binding<String> {
+        Binding(
+            get: { feedsVM.searchText },
+            set: { feedsVM.searchText = $0 }
+        )
+    }
+
+    private var addTaskPresentationBinding: Binding<AddTaskPresentation?> {
+        Binding(
+            get: { appViewModel.addTaskPresentation },
+            set: { appViewModel.addTaskPresentation = $0 }
+        )
     }
 }

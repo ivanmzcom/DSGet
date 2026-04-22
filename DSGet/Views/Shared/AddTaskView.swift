@@ -14,14 +14,16 @@ struct AddTaskPreselectedTorrent {
     let data: Data
 }
 
+extension AddTaskPreselectedTorrent: Identifiable {
+    var id: String { name }
+}
+
 struct AddTaskView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var viewModel: AddTaskViewModel
-
     private let feedItemTitle: String?
     private let isFromSearch: Bool
-
     @State private var isShowingFilePicker = false
 
     init(
@@ -32,33 +34,63 @@ struct AddTaskView: View {
     ) {
         self.feedItemTitle = feedItemTitle?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.isFromSearch = isFromSearch
-        _viewModel = State(initialValue: AddTaskViewModel(
-            preselectedTorrent: preselectedTorrent,
-            prefilledURL: prefilledURL
-        ))
+        _viewModel = State(
+            initialValue: AddTaskViewModel(
+                preselectedTorrent: preselectedTorrent,
+                prefilledURL: prefilledURL
+            )
+        )
     }
 
-    var provieneFeed: Bool {
+    private var comesFromFeed: Bool {
         feedItemTitle?.isEmpty == false
     }
 
-    var shouldHideModePicker: Bool {
-        provieneFeed || isFromSearch
+    private var shouldHideModePicker: Bool {
+        comesFromFeed || isFromSearch
     }
-
-    // MARK: - Body
 
     var body: some View {
         Form {
-            headerSection
-            inputSection
-            recentFoldersSection
-            createButtonSection
+            AddTaskHeaderSection(
+                feedItemTitle: feedItemTitle,
+                isFromSearch: isFromSearch,
+                shouldHideModePicker: shouldHideModePicker,
+                inputMode: $viewModel.inputMode
+            )
+            AddTaskInputSection(
+                viewModel: viewModel,
+                shouldHideModePicker: shouldHideModePicker,
+                isShowingFilePicker: $isShowingFilePicker,
+                showFolderPicker: showFolderPicker,
+                pasteFromClipboard: pasteFromClipboard
+            )
+            if !viewModel.recentFolders.isEmpty {
+                AddTaskRecentFoldersSection(
+                    folders: viewModel.recentFolders,
+                    selectedFolderPath: viewModel.destinationFolderPath,
+                    onSelectFolder: viewModel.selectRecentFolder
+                )
+            }
+            AddTaskCreateSection(
+                isLoading: viewModel.isLoading,
+                isEnabled: viewModel.canCreateTask,
+                createTask: createTask
+            )
         }
+        .formStyle(.grouped)
+        #if os(macOS)
+        .frame(minWidth: 560, idealWidth: 620, minHeight: 360, idealHeight: 420)
+        #endif
         .navigationTitle(String.localized("addTask.title"))
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .sheet(isPresented: $viewModel.showingFolderPicker) {
-            folderPickerSheet
+            AddTaskFolderPickerSheet(
+                selectedFolderPath: $viewModel.destinationFolderPath,
+                onClose: closeFolderPicker
+            )
         }
         .fileImporter(
             isPresented: $isShowingFilePicker,
@@ -83,13 +115,39 @@ struct AddTaskView: View {
         }
     }
 
-    // MARK: - Header Section
+    private func handleFileImport(_ result: Result<URL, Error>) {
+        viewModel.handleFileImport(result)
+    }
 
-    @ViewBuilder
-    private var headerSection: some View {
-        if let itemTitle = feedItemTitle, provieneFeed {
+    private func showFolderPicker() {
+        viewModel.showingFolderPicker = true
+    }
+
+    private func closeFolderPicker() {
+        viewModel.showingFolderPicker = false
+    }
+
+    private func pasteFromClipboard() {
+        if let pasteboardString = PlatformClipboard.string() {
+            viewModel.taskUrl = pasteboardString
+        }
+    }
+
+    private func createTask() async {
+        await viewModel.createTask()
+    }
+}
+
+private struct AddTaskHeaderSection: View {
+    let feedItemTitle: String?
+    let isFromSearch: Bool
+    let shouldHideModePicker: Bool
+    @Binding var inputMode: AddTaskInputMode
+
+    var body: some View {
+        if let feedItemTitle, shouldHideModePicker, !feedItemTitle.isEmpty {
             Section(String.localized("addTask.section.feedItem")) {
-                Text(itemTitle)
+                Text(feedItemTitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.leading)
@@ -102,7 +160,7 @@ struct AddTaskView: View {
             }
         } else {
             Section(String.localized("addTask.section.input")) {
-                Picker("Input", selection: $viewModel.inputMode) {
+                Picker("Input", selection: $inputMode) {
                     ForEach(AddTaskInputMode.allCases) { mode in
                         Text(mode.title).tag(mode)
                     }
@@ -112,70 +170,85 @@ struct AddTaskView: View {
             }
         }
     }
+}
 
-    // MARK: - Input Section
+private struct AddTaskInputSection: View {
+    let viewModel: AddTaskViewModel
+    let shouldHideModePicker: Bool
+    @Binding var isShowingFilePicker: Bool
 
-    @ViewBuilder
-    private var inputSection: some View {
+    let showFolderPicker: () -> Void
+    let pasteFromClipboard: () -> Void
+
+    var body: some View {
+        @Bindable var viewModel = viewModel
+
         Section(String.localized("addTask.section.input")) {
-            inputContent
-            folderPickerButton
+            switch viewModel.inputMode {
+            case .url:
+                AddTaskURLInputRow(
+                    taskURL: $viewModel.taskUrl,
+                    isLocked: shouldHideModePicker,
+                    pasteFromClipboard: pasteFromClipboard
+                )
+            case .file:
+                AddTaskFileInputRow(
+                    selectedTorrentName: viewModel.selectedTorrentName,
+                    removeFile: viewModel.removeTorrentFile,
+                    showFilePicker: { isShowingFilePicker = true }
+                )
+            }
+
+            AddTaskFolderButton(
+                destinationFolderPath: viewModel.destinationFolderPath,
+                showFolderPicker: showFolderPicker
+            )
         }
     }
+}
 
-    @ViewBuilder
-    private var inputContent: some View {
-        switch viewModel.inputMode {
-        case .url:
-            urlInputRow
+private struct AddTaskURLInputRow: View {
+    @Binding var taskURL: String
 
-        case .file:
-            fileInputRow
-        }
-    }
+    let isLocked: Bool
+    let pasteFromClipboard: () -> Void
 
-    @ViewBuilder
-    private var urlInputRow: some View {
+    var body: some View {
         HStack {
-            TextField("URL", text: $viewModel.taskUrl)
+            TextField("URL", text: $taskURL)
                 .accessibilityIdentifier(AccessibilityID.AddTask.urlField)
                 .autocorrectionDisabled(true)
-                .disabled(shouldHideModePicker)
-            if !shouldHideModePicker {
-                Button {
-                    if let pasteboardString = UIPasteboard.general.string {
-                        viewModel.taskUrl = pasteboardString
-                    }
-                } label: {
+                .disabled(isLocked)
+
+            if !isLocked {
+                Button(action: pasteFromClipboard) {
                     Image(systemName: "doc.on.clipboard")
                 }
                 .buttonStyle(.borderless)
             }
         }
     }
+}
 
-    @ViewBuilder
-    private var fileInputRow: some View {
+private struct AddTaskFileInputRow: View {
+    let selectedTorrentName: String?
+    let removeFile: () -> Void
+    let showFilePicker: () -> Void
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Button(action: { isShowingFilePicker = true }, label: {
+            Button(action: showFilePicker) {
                 HStack {
-                    if let selectedTorrentName = viewModel.selectedTorrentName {
-                        Text(selectedTorrentName)
-                            .foregroundStyle(.primary)
-                    } else {
-                        Text(String.localized("addTask.placeholder.selectTorrent"))
-                            .foregroundStyle(.secondary)
-                    }
+                    Text(selectedTorrentName ?? String.localized("addTask.placeholder.selectTorrent"))
+                        .foregroundStyle(selectedTorrentName == nil ? .secondary : .primary)
                     Spacer()
                     Image(systemName: "doc.badge.plus")
                         .foregroundStyle(.secondary)
                 }
-            })
+            }
 
-            if viewModel.selectedTorrentName != nil {
-                Button(role: .destructive) {
-                    viewModel.removeTorrentFile()
-                } label: {
+            if selectedTorrentName != nil {
+                Button(role: .destructive, action: removeFile) {
                     Text(String.localized("addTask.button.removeFile"))
                 }
                 .buttonStyle(.borderless)
@@ -183,91 +256,86 @@ struct AddTaskView: View {
             }
         }
     }
+}
 
-    @ViewBuilder
-    private var folderPickerButton: some View {
-        Button(action: {
-            viewModel.showingFolderPicker = true
-        }, label: {
+private struct AddTaskFolderButton: View {
+    let destinationFolderPath: String
+    let showFolderPicker: () -> Void
+
+    var body: some View {
+        Button(action: showFolderPicker) {
             HStack {
-                Text(viewModel.destinationFolderPath.isEmpty ? "Select folder..." : viewModel.destinationFolderPath)
-                    .foregroundStyle(viewModel.destinationFolderPath.isEmpty ? .secondary : .primary)
+                Text(destinationFolderPath.isEmpty ? "Select folder..." : destinationFolderPath)
+                    .foregroundStyle(destinationFolderPath.isEmpty ? .secondary : .primary)
                 Spacer()
                 Image(systemName: "folder")
                     .foregroundStyle(.secondary)
             }
-        })
+        }
     }
+}
 
-    // MARK: - Recent Folders Section
+private struct AddTaskRecentFoldersSection: View {
+    let folders: [String]
+    let selectedFolderPath: String
+    let onSelectFolder: (String) -> Void
 
-    @ViewBuilder
-    private var recentFoldersSection: some View {
-        if !viewModel.recentFolders.isEmpty {
-            Section(String.localized("addTask.section.recentFolders")) {
-                ForEach(viewModel.recentFolders, id: \.self) { folder in
-                    recentFolderRow(folder)
+    var body: some View {
+        Section(String.localized("addTask.section.recentFolders")) {
+            ForEach(folders, id: \.self) { folder in
+                Button {
+                    onSelectFolder(folder)
+                } label: {
+                    HStack {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .foregroundStyle(.secondary)
+                        Text(folder)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if selectedFolderPath == folder {
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(Color.accentColor)
+                        }
+                    }
                 }
             }
         }
     }
+}
 
-    @ViewBuilder
-    private func recentFolderRow(_ folder: String) -> some View {
-        Button {
-            viewModel.selectRecentFolder(folder)
-        } label: {
-            HStack {
-                Image(systemName: "clock.arrow.circlepath")
-                    .foregroundStyle(.secondary)
-                Text(folder)
-                    .foregroundStyle(.primary)
-                Spacer()
-                if viewModel.destinationFolderPath == folder {
-                    Image(systemName: "checkmark")
-                        .foregroundStyle(Color.accentColor)
-                }
-            }
-        }
-    }
+private struct AddTaskCreateSection: View {
+    let isLoading: Bool
+    let isEnabled: Bool
+    let createTask: () async -> Void
 
-    // MARK: - Create Button Section
-
-    @ViewBuilder
-    private var createButtonSection: some View {
+    var body: some View {
         Section(String.localized("addTask.section.input")) {
-            Button(action: {
-                Task { await viewModel.createTask() }
-            }, label: {
+            Button {
+                Task { await createTask() }
+            } label: {
                 HStack {
                     Spacer()
-                    if viewModel.isLoading {
+                    if isLoading {
                         ProgressView()
                     } else {
                         Text(String.localized("addTask.button.createTask"))
                     }
                     Spacer()
                 }
-            })
-            .accessibilityIdentifier(AccessibilityID.AddTask.createButton)
-            .disabled(viewModel.isLoading || !viewModel.canCreateTask)
-        }
-    }
-
-    // MARK: - Sheets
-
-    @ViewBuilder
-    private var folderPickerSheet: some View {
-        NavigationStack {
-            FolderPickerView(selectedFolderPath: $viewModel.destinationFolderPath) {
-                viewModel.showingFolderPicker = false
             }
+            .accessibilityIdentifier(AccessibilityID.AddTask.createButton)
+            .disabled(isLoading || !isEnabled)
         }
     }
+}
 
-    // MARK: - File Import Handler
+private struct AddTaskFolderPickerSheet: View {
+    @Binding var selectedFolderPath: String
+    let onClose: () -> Void
 
-    private func handleFileImport(_ result: Result<URL, Error>) {
-        viewModel.handleFileImport(result)
+    var body: some View {
+        NavigationStack {
+            FolderPickerView(selectedFolderPath: $selectedFolderPath, onDismissSheet: onClose)
+        }
     }
 }

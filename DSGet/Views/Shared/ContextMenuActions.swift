@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import UIKit
 import DSGetCore
 
 // MARK: - Clipboard Utilities
 
 enum ClipboardUtility {
     static func copy(_ text: String) {
-        UIPasteboard.general.string = text
+        PlatformClipboard.copy(text)
     }
 }
 

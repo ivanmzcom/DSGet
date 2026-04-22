@@ -47,7 +47,9 @@ struct FolderPickerView: View {
             }
         }
         .navigationTitle(viewModel.navigationTitle)
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
             ToolbarItem {
                 Button(String.localized("folderPicker.button.cancel")) { onDismissSheet() }

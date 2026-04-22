@@ -11,7 +11,9 @@ import DSGetCore
 struct FeedDetailView: View {
     var onClose: (() -> Void)?
 
+    #if !os(macOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
 
     @State private var viewModel: FeedDetailViewModel
 
@@ -41,11 +43,15 @@ struct FeedDetailView: View {
                 .listRowSeparator(.hidden)
             }
         }
+        #if os(macOS)
+        .listStyle(.inset)
+        #else
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .navigationTitle(viewModel.feed.title)
         .toolbar {
-            if let onClose, horizontalSizeClass != .compact {
+            if let onClose, showsCloseButton {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(String.localized("general.close")) { onClose() }
                 }
@@ -86,6 +92,14 @@ struct FeedDetailView: View {
             }
         )
     }
+
+    private var showsCloseButton: Bool {
+        #if os(macOS)
+        true
+        #else
+        horizontalSizeClass != .compact
+        #endif
+    }
 }
 
 // MARK: - FeedLink
@@ -108,8 +122,12 @@ struct FeedItemRow: View {
     let item: RSSFeedItem
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: item.canDownload ? "arrow.down.circle" : "doc.text")
+                .foregroundStyle(item.canDownload ? Color.accentColor : .secondary)
+                .frame(width: 18)
+
+            VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(item.title)
                         .font(.headline)
@@ -128,10 +146,27 @@ struct FeedItemRow: View {
                     }
                 }
 
-                if let detail = detailText {
-                    Text(detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        if let detailText {
+                            FeedItemMetaLabel(text: detailText, systemImage: "clock")
+                        }
+                        if let sizeText {
+                            FeedItemMetaLabel(text: sizeText, systemImage: "externaldrive")
+                        }
+                        if item.canDownload {
+                            FeedItemMetaLabel(text: "Ready", systemImage: "checkmark.circle", tint: .green)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        if let detailText {
+                            FeedItemMetaLabel(text: detailText, systemImage: "clock")
+                        }
+                        if let sizeText {
+                            FeedItemMetaLabel(text: sizeText, systemImage: "externaldrive")
+                        }
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -139,8 +174,25 @@ struct FeedItemRow: View {
         .padding(.vertical, 6)
     }
 
+    private var sizeText: String? {
+        item.parsedSize?.formatted ?? item.size
+    }
+
     private var detailText: String? {
         guard let date = item.publishedDate else { return nil }
         return feedRelativeDateFormatter.localizedString(for: date, relativeTo: Date())
+    }
+}
+
+private struct FeedItemMetaLabel: View {
+    let text: String
+    let systemImage: String
+    var tint: Color = .secondary
+
+    var body: some View {
+        Label(text, systemImage: systemImage)
+            .font(.caption)
+            .foregroundStyle(tint)
+            .lineLimit(1)
     }
 }

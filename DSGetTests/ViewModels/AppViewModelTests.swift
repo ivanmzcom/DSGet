@@ -146,8 +146,7 @@ final class AppViewModelTests: XCTestCase {
 
         sut.handleIncomingURL(url)
 
-        XCTAssertTrue(sut.isShowingAddTask)
-        XCTAssertEqual(sut.prefilledAddTaskURL, "https://example.com/file.zip")
+        XCTAssertEqual(sut.addTaskPresentation?.prefilledURL, "https://example.com/file.zip")
     }
 
     func testHandleDeepLinkSettingsURL() {
@@ -167,7 +166,7 @@ final class AppViewModelTests: XCTestCase {
 
         XCTAssertNil(sut.incomingMagnetURL)
         XCTAssertNil(sut.incomingTorrentURL)
-        XCTAssertFalse(sut.isShowingAddTask)
+        XCTAssertNil(sut.addTaskPresentation)
     }
 
     // MARK: - Error Handling

@@ -5,6 +5,8 @@
 //  Handles iOS Home Screen Quick Actions (3D Touch / Long Press).
 //
 
+#if os(iOS)
+
 import SwiftUI
 import Combine
 import UIKit
@@ -121,7 +123,7 @@ final class QuickActionsHandler: ObservableObject {
 
         switch action {
         case .addTask:
-            appViewModel.isShowingAddTask = true
+            appViewModel.presentAddTask()
 
         case .viewDownloads:
             // Navigate to downloads - handled by MainView navigation state
@@ -149,3 +151,5 @@ extension View {
             }
     }
 }
+
+#endif

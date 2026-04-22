@@ -34,16 +34,14 @@ struct FeedListContentView: View {
         let feedIsRefreshing = feedsVM.isRefreshing(feed)
         let feedIsFavorite = isFavorite(feed)
 
-        FeedContentRow(feed: feed, isRefreshing: feedIsRefreshing, isFavorite: feedIsFavorite)
+        let baseRow = FeedContentRow(feed: feed, isRefreshing: feedIsRefreshing, isFavorite: feedIsFavorite)
             .tag(feed.id)
-            // Accessibility
             .feedAccessibility(feed, isFavorite: feedIsFavorite, isRefreshing: feedIsRefreshing)
             .feedRotorActions(
                 onRefresh: { Task { await feedsVM.refreshFeed(feed) } },
                 onToggleFavorite: { onToggleFavorite?(feed) },
                 isFavorite: feedIsFavorite
             )
-            // Context Menu
             .contextMenu {
                 Button {
                     Task { await feedsVM.refreshFeed(feed) }
@@ -70,6 +68,11 @@ struct FeedListContentView: View {
                     }
                 }
             }
+
+        #if os(macOS)
+        baseRow
+        #else
+        baseRow
             .hoverEffect(.highlight)
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                 favoriteButton(for: feed, isFavorite: feedIsFavorite)
@@ -78,6 +81,7 @@ struct FeedListContentView: View {
                 refreshButton(for: feed)
                 shareButton(for: feed)
             }
+        #endif
     }
 
     @ViewBuilder
@@ -137,7 +141,9 @@ struct FeedListContentView: View {
 
         feedListContent()
             .navigationTitle(String.localized("feeds.title"))
+            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .onAppear {
                 Task { await feedsVM.fetchFeedsIfNeeded() }
             }
@@ -170,28 +176,43 @@ private struct FeedContentRow: View {
     var isFavorite: Bool = false
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(feed.title)
-                        .font(.headline)
-                        .lineLimit(2)
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "dot.radiowaves.left.and.right")
+                .foregroundStyle(.secondary)
+                .frame(width: 18)
 
-                    if isFavorite {
-                        Image(systemName: "star.fill")
-                            .font(.caption)
-                            .foregroundStyle(.yellow)
+            VStack(alignment: .leading, spacing: 8) {
+                Text(feed.title)
+                    .font(.headline)
+                    .lineLimit(2)
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        if let hostText {
+                            FeedMetaLabel(text: hostText, systemImage: "link")
+                        }
+                        if let subtitleText {
+                            FeedMetaLabel(text: subtitleText, systemImage: "clock")
+                        }
+                        if isFavorite {
+                            FeedMetaLabel(text: "Favorite", systemImage: "star.fill", tint: .yellow)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        if let hostText {
+                            FeedMetaLabel(text: hostText, systemImage: "link")
+                        }
+                        if let subtitleText {
+                            FeedMetaLabel(text: subtitleText, systemImage: "clock")
+                        }
+                        if isFavorite {
+                            FeedMetaLabel(text: "Favorite", systemImage: "star.fill", tint: .yellow)
+                        }
                     }
                 }
-
-                if let subtitle = subtitleText {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
             }
-
-            Spacer()
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             if isRefreshing {
                 ProgressView()
@@ -201,9 +222,26 @@ private struct FeedContentRow: View {
         .padding(.vertical, 6)
     }
 
+    private var hostText: String? {
+        feed.hostname
+    }
+
     private var subtitleText: String? {
         guard let lastUpdate = feed.lastUpdate else { return nil }
         let relative = feedRelativeDateFormatter.localizedString(for: lastUpdate, relativeTo: Date())
         return "Updated \(relative)"
+    }
+}
+
+private struct FeedMetaLabel: View {
+    let text: String
+    let systemImage: String
+    var tint: Color = .secondary
+
+    var body: some View {
+        Label(text, systemImage: systemImage)
+            .font(.caption)
+            .foregroundStyle(tint)
+            .lineLimit(1)
     }
 }

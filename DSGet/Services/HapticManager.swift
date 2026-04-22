@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 // MARK: - Haptic Manager
 
 @MainActor
@@ -15,60 +19,83 @@ final class HapticManager: HapticManaging {
 
     private init() {}
 
-    // MARK: - iOS Haptics
-
+    #if canImport(UIKit)
     private let impactLight = UIImpactFeedbackGenerator(style: .light)
     private let impactMedium = UIImpactFeedbackGenerator(style: .medium)
     private let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
     private let selectionGenerator = UISelectionFeedbackGenerator()
     private let notificationGenerator = UINotificationFeedbackGenerator()
+    #endif
 
     /// Prepare generators for lower latency.
     func prepare() {
+        #if canImport(UIKit)
         impactLight.prepare()
         impactMedium.prepare()
         selectionGenerator.prepare()
         notificationGenerator.prepare()
+        #endif
     }
 
     /// Light impact feedback - for subtle UI interactions.
     func lightImpact() {
+        #if canImport(UIKit)
         impactLight.impactOccurred()
+        #endif
     }
 
     /// Medium impact feedback - for standard interactions.
     func mediumImpact() {
+        #if canImport(UIKit)
         impactMedium.impactOccurred()
+        #endif
     }
 
     /// Heavy impact feedback - for significant actions.
     func heavyImpact() {
+        #if canImport(UIKit)
         impactHeavy.impactOccurred()
+        #endif
     }
 
     /// Selection changed feedback - for picker/list selection.
     func selectionChanged() {
+        #if canImport(UIKit)
         selectionGenerator.selectionChanged()
+        #endif
     }
 
     /// Notification feedback - for task completion states.
-    func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {
-        notificationGenerator.notificationOccurred(type)
+    func notification(_ type: AppHapticNotificationType) {
+        #if canImport(UIKit)
+        let feedbackType: UINotificationFeedbackGenerator.FeedbackType
+
+        switch type {
+        case .success:
+            feedbackType = .success
+        case .warning:
+            feedbackType = .warning
+        case .error:
+            feedbackType = .error
+        }
+
+        notificationGenerator.notificationOccurred(feedbackType)
+        #endif
     }
 
     /// Success notification.
     func success() {
-        notificationGenerator.notificationOccurred(.success)
+        notification(.success)
     }
 
     /// Warning notification.
     func warning() {
-        notificationGenerator.notificationOccurred(.warning)
+        notification(.warning)
     }
 
     /// Error notification.
     func error() {
-        notificationGenerator.notificationOccurred(.error)
+        notification(.error)
     }
 }
 
