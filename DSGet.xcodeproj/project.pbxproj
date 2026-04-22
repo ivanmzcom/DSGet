@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,12 +13,14 @@
 		04D260EA7AE3F1CD160E6CF4 /* PlatformColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADA1FE395E67F295C343821 /* PlatformColors.swift */; };
 		069B5757C16588BE8D051771 /* DSGetMacSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15FE0378A974491EB43C8157 /* DSGetMacSupport.swift */; };
 		07CEB9046BA2307056930A7D /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495D9B2E310E21119511EC4C /* KeyboardShortcuts.swift */; };
+		081083578D81C631093B25B0 /* WatchCompanionSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE7B4ED85FAAC2C74DE1DBF /* WatchCompanionSyncService.swift */; };
 		08E3570044BE922980EE9BD5 /* OfflineIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DB5196808036AFCA2993BFA /* OfflineIndicatorView.swift */; };
 		0AE38753DDDB3923325CA74F /* ContextMenuActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22832BFA6C7D4D2D6A5280FB /* ContextMenuActions.swift */; };
 		0B463458EA6153B250831F7F /* TaskServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5FDB1A485E2FB05D6F21DC /* TaskServiceTests.swift */; };
 		0B66FEB3FDD53AF71C8F7D7F /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468428EE8F595F40DC3765D0 /* NetworkMonitor.swift */; };
 		0CF6E3A49F412F2B33CD98C5 /* DSGetCore in Frameworks */ = {isa = PBXBuildFile; productRef = B5E31071805CA85BCE673E88 /* DSGetCore */; };
 		0DE8F8E46919FE19991D9CDF /* TaskDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA14F24F71BBDB1CEEF9E5D /* TaskDetailPage.swift */; };
+		0E7E61547352A9A7F9DBD0A1 /* WatchDownloadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D63E11ED4DF6D071646FBF /* WatchDownloadsView.swift */; };
 		0E89B8DA2F290741D70CF878 /* StubServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0D66484799F648F3AEFD8A /* StubServices.swift */; };
 		0EB0A1ADFE342BCA56139107 /* FolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F08E581239089352CFB11C0 /* FolderPickerView.swift */; };
 		0ECAAD272BB88BB46D121AB4 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF6500FA6C6106A5CC2F1C7 /* AddTaskView.swift */; };
@@ -67,6 +69,7 @@
 		51806F3D58B5D31065D8F59E /* FeedDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4995F3E538295982AF9300D1 /* FeedDetailViewModel.swift */; };
 		51FB15D46073E219D0D84513 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C9F5C5AF04A23FBBBAF1AC /* SettingsView.swift */; };
 		53FA597D7EEB9E6ABF389978 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD14F6D887B58F0B2B9C31C9 /* DIContainer.swift */; };
+		5477AA8BEBCFB4E53A1FB95A /* PhoneWatchSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2078EAB011CA555E5E3A663 /* PhoneWatchSyncService.swift */; };
 		54C95CE00A4F8F184186DB69 /* FolderPickerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74099BB4DC518ED82E9A65D9 /* FolderPickerUITests.swift */; };
 		55D08EA71EB02C385804781C /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDE8F35CAC619CE4C2DF036E /* HapticManager.swift */; };
 		5611E872193DF62FBD8BFDA2 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BF2D1ABCF9ABCF7B5C9270 /* AppViewModel.swift */; };
@@ -86,6 +89,7 @@
 		6FF64FE9409532DD0F88A07B /* EmptyStateViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCD548FCE642D5F4F5EE539 /* EmptyStateViews.swift */; };
 		6FFB83639FEA53CFCB3F7659 /* AppSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B226761D9D994321C88D5816 /* AppSection.swift */; };
 		7034726F9920C3F5FB407EFF /* AccessibilityModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4631A9049E23F1FE30B662D6 /* AccessibilityModifiers.swift */; };
+		73448B08E0F4A866F2F4DBB3 /* DSGetCore in Frameworks */ = {isa = PBXBuildFile; productRef = 197AB7D284D2FA1E0F877AB1 /* DSGetCore */; };
 		766880E8CA13CA8EC44CC803 /* FolderPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A78FB0C2AB004087D3C1067 /* FolderPickerViewModelTests.swift */; };
 		76A32C1E9D1F9C79216B04CA /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F121E770F789F9CCD4CDA0A3 /* AppConstants.swift */; };
 		7B04F13CB03E84278614B1D9 /* ContextMenuActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22832BFA6C7D4D2D6A5280FB /* ContextMenuActions.swift */; };
@@ -154,14 +158,17 @@
 		DFAC3B2BD4F5345F73ADF055 /* SpotlightIndexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2937EE5B391C1D0F22F82D68 /* SpotlightIndexerTests.swift */; };
 		E49BFEA7D062183A49C54855 /* DSGetCore in Frameworks */ = {isa = PBXBuildFile; productRef = E11F39D79D60B99D59F1BE29 /* DSGetCore */; };
 		E7BBEDC3354A31D2C4E6A587 /* FeedListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9954A63F33A602E261B6B8FE /* FeedListPage.swift */; };
+		E7C3D06E34E3A0FEF22C732D /* iDSGet Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BFD614EEEDB9E34EF594D6A8 /* iDSGet Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E885B9A2C1FD3DED03DCA508 /* MainSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB158F1433A7491F2AE73845 /* MainSidebarView.swift */; };
 		EA5D559D8C2DEACFBCD74882 /* RecentFoldersManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883A157BABF5E6830A1C3C3 /* RecentFoldersManaging.swift */; };
 		EE3E9ADC8F74F2F751DA0543 /* NavigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81743549D799CAF257D9549F /* NavigationUITests.swift */; };
 		EF11A71A0E5E610C90A6A4D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15401A7ACA5C707C98B863A1 /* Assets.xcassets */; };
 		F027F1E935C3A3E4AFE02C44 /* FolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F08E581239089352CFB11C0 /* FolderPickerView.swift */; };
 		F030540E8E33AFC0C55A23F9 /* FeedDetailUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0988ABD9AFBF76404AE6FE53 /* FeedDetailUITests.swift */; };
+		F06D6F74BC927847E679556A /* WatchLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737F5B6AC0E82C0BF338D8F6 /* WatchLocalization.swift */; };
 		F2C10080B874C3720CEFAE51 /* DSGetTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E43F7A3AD9E0DA7E3A0EFA /* DSGetTimelineProvider.swift */; };
 		F3C17EF9BDDCECEC082A9519 /* QuickActionsHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF98D5A53093D33477FC425 /* QuickActionsHandlerTests.swift */; };
+		F3C8169564A05F20EF4089BB /* PhoneWatchSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2078EAB011CA555E5E3A663 /* PhoneWatchSyncService.swift */; };
 		F4ACACB06AEDE3E5CB2C3648 /* AccessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D2F6FA25605295A2425E5 /* AccessibilityIdentifiers.swift */; };
 		F524A3A2B41B97B586EF6199 /* FeedListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7FF7E85F754FF9A989B397 /* FeedListUITests.swift */; };
 		F65A63C0D93DC7B83B10EB97 /* TaskDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BF20EB030403DCBCBD5F22 /* TaskDetailViewModelTests.swift */; };
@@ -189,6 +196,13 @@
 			remoteGlobalIDString = 66B2C8FEF5A4A2FE4462CCEA;
 			remoteInfo = DSGet;
 		};
+		76A399BEEA9B68CE8C9F544A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F4942A2131EF9FF06D5DE2E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9F7306419451FF53B22638C;
+			remoteInfo = "iDSGet Watch App";
+		};
 		8EB9278C6C90A63D40DF4152 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F4942A2131EF9FF06D5DE2E9 /* Project object */;
@@ -197,6 +211,20 @@
 			remoteInfo = DSGet;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C0111514FAB5457A7452B1FA /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				E7C3D06E34E3A0FEF22C732D /* iDSGet Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00E43F7A3AD9E0DA7E3A0EFA /* DSGetTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSGetTimelineProvider.swift; sourceTree = "<group>"; };
@@ -207,6 +235,7 @@
 		05E239EB05F6B9093ED3205D /* FeedListContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedListContentView.swift; sourceTree = "<group>"; };
 		074190D5E32DA1DCC339A4DE /* iDSGet Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "iDSGet Watch App.entitlements"; sourceTree = "<group>"; };
 		0988ABD9AFBF76404AE6FE53 /* FeedDetailUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailUITests.swift; sourceTree = "<group>"; };
+		0BE7B4ED85FAAC2C74DE1DBF /* WatchCompanionSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCompanionSyncService.swift; sourceTree = "<group>"; };
 		0C3B7A16B688AD5823D0837C /* TaskListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListItemView.swift; sourceTree = "<group>"; };
 		0DFCF52D7FE9291BB2BE5A21 /* WidgetDataSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataSyncTests.swift; sourceTree = "<group>"; };
 		0EEB52781DC6B068B2E8041B /* FeedDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailPage.swift; sourceTree = "<group>"; };
@@ -225,7 +254,7 @@
 		26881D0F7ABB032C7E04484C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		268952A42EA45329EF139CB2 /* TaskListContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListContentView.swift; sourceTree = "<group>"; };
 		2937EE5B391C1D0F22F82D68 /* SpotlightIndexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexerTests.swift; sourceTree = "<group>"; };
-		2A302067E2C9B4F5B17CC7E5 /* DSGetCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DSGetCore; sourceTree = SOURCE_ROOT; };
+		2A302067E2C9B4F5B17CC7E5 /* DSGetCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DSGetCore; path = DSGetCore; sourceTree = SOURCE_ROOT; };
 		2F544DF1B5165C43F867DE46 /* TaskListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListPage.swift; sourceTree = "<group>"; };
 		32215ABA8EEE42911EAA2E84 /* DSGetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DSGetWidgets.entitlements; sourceTree = "<group>"; };
 		324317124B8FF902A983DD3F /* DomainErrorHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainErrorHandlingTests.swift; sourceTree = "<group>"; };
@@ -253,6 +282,7 @@
 		6DB5196808036AFCA2993BFA /* OfflineIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineIndicatorView.swift; sourceTree = "<group>"; };
 		7087E089FD0D243E28D07432 /* DSGetWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSGetWidgetsBundle.swift; sourceTree = "<group>"; };
 		70A4ACBAFC00EF47D3E7698A /* WidgetDataSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataSyncService.swift; sourceTree = "<group>"; };
+		737F5B6AC0E82C0BF338D8F6 /* WatchLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchLocalization.swift; sourceTree = "<group>"; };
 		73AE4EFB6A0C905E23B9CB83 /* LocalizationHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHelpersTests.swift; sourceTree = "<group>"; };
 		74099BB4DC518ED82E9A65D9 /* FolderPickerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPickerUITests.swift; sourceTree = "<group>"; };
 		779A91061695E91605A117A3 /* AppViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModelTests.swift; sourceTree = "<group>"; };
@@ -268,9 +298,10 @@
 		84B9F0D78041108F63A30BC8 /* WatchDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDIContainer.swift; sourceTree = "<group>"; };
 		85798B0D56BD199AF8F5D644 /* SpotlightIndexing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexing.swift; sourceTree = "<group>"; };
 		8A1C1D424E5AFF4885ECD1D3 /* MainDetailColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDetailColumn.swift; sourceTree = "<group>"; };
-		8F1C1EB842516E619AC6D047 /* DSGet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DSGet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F1C1EB842516E619AC6D047 /* DSGet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DSGet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F4EF333B5F346307E22A448 /* MainContentColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContentColumn.swift; sourceTree = "<group>"; };
 		943CDE7B71DDE56A5BCBD9DC /* AddTaskViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskViewModelTests.swift; sourceTree = "<group>"; };
+		95D63E11ED4DF6D071646FBF /* WatchDownloadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDownloadsView.swift; sourceTree = "<group>"; };
 		9954A63F33A602E261B6B8FE /* FeedListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedListPage.swift; sourceTree = "<group>"; };
 		99D5C2189E18871BFB725C13 /* DomainErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainErrorHandling.swift; sourceTree = "<group>"; };
 		9A78FB0C2AB004087D3C1067 /* FolderPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPickerViewModelTests.swift; sourceTree = "<group>"; };
@@ -285,7 +316,7 @@
 		A8AB77BDD334E543A9C9D3DF /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		AA6A97B069EBAA43B733CD5B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AB158F1433A7491F2AE73845 /* MainSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSidebarView.swift; sourceTree = "<group>"; };
-		AB51BE8A5ABB9287559ABC54 /* DSGetWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DSGetWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB51BE8A5ABB9287559ABC54 /* DSGetWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DSGetWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACCD548FCE642D5F4F5EE539 /* EmptyStateViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateViews.swift; sourceTree = "<group>"; };
 		ACDE55D2AE50D3AB44F6C5BE /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 		AF0DB9F2CBFE36A809F97DBD /* XCUIApplication+Launch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+Launch.swift"; sourceTree = "<group>"; };
@@ -295,6 +326,7 @@
 		B9732245315CF4EE64FA10D4 /* TasksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewModel.swift; sourceTree = "<group>"; };
 		BFD614EEEDB9E34EF594D6A8 /* iDSGet Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iDSGet Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1632C17402477DFC334BED2 /* FeedServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedServiceTests.swift; sourceTree = "<group>"; };
+		C2078EAB011CA555E5E3A663 /* PhoneWatchSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneWatchSyncService.swift; sourceTree = "<group>"; };
 		C2A11675A16674AFFDC23C95 /* FolderPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPickerViewModel.swift; sourceTree = "<group>"; };
 		C883A157BABF5E6830A1C3C3 /* RecentFoldersManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFoldersManaging.swift; sourceTree = "<group>"; };
 		CBF6500FA6C6106A5CC2F1C7 /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
@@ -352,6 +384,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0CF6E3A49F412F2B33CD98C5 /* DSGetCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8638610F8FC058059003116 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				73448B08E0F4A866F2F4DBB3 /* DSGetCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,7 +490,10 @@
 				074190D5E32DA1DCC339A4DE /* iDSGet Watch App.entitlements */,
 				543BCCD2156E8CF0F2551157 /* iDSGetApp.swift */,
 				0571A044580969C17C161EDB /* Info.plist */,
+				0BE7B4ED85FAAC2C74DE1DBF /* WatchCompanionSyncService.swift */,
 				84B9F0D78041108F63A30BC8 /* WatchDIContainer.swift */,
+				95D63E11ED4DF6D071646FBF /* WatchDownloadsView.swift */,
+				737F5B6AC0E82C0BF338D8F6 /* WatchLocalization.swift */,
 				240ECF82785494B0B0338F8E /* WatchTasksViewModel.swift */,
 				429649B357F6A886012DC203 /* Resources */,
 			);
@@ -647,6 +690,7 @@
 				EDE8F35CAC619CE4C2DF036E /* HapticManager.swift */,
 				468428EE8F595F40DC3765D0 /* NetworkMonitor.swift */,
 				3BFB5A64D3D5F49518CEFE29 /* OTPService.swift */,
+				C2078EAB011CA555E5E3A663 /* PhoneWatchSyncService.swift */,
 				4A826974AA0601EEDCF64516 /* RecentFoldersService.swift */,
 				E701A9742287F6195B2CDCD4 /* SpotlightIndexer.swift */,
 				70A4ACBAFC00EF47D3E7698A /* WidgetDataSyncService.swift */,
@@ -747,6 +791,7 @@
 			buildConfigurationList = C77851CE2FFB266C11457B42 /* Build configuration list for PBXNativeTarget "DSGetWidgets" */;
 			buildPhases = (
 				11C1AE69B0127B2F6CE99CCF /* Sources */,
+				F8638610F8FC058059003116 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -755,6 +800,7 @@
 			);
 			name = DSGetWidgets;
 			packageProductDependencies = (
+				197AB7D284D2FA1E0F877AB1 /* DSGetCore */,
 			);
 			productName = DSGetWidgets;
 			productReference = AB51BE8A5ABB9287559ABC54 /* DSGetWidgets.appex */;
@@ -807,10 +853,12 @@
 				6A52F1BD3C5D8EEEFFEAF0F7 /* Sources */,
 				672D1359D12A4DBDD5573857 /* Resources */,
 				303B84A98412B298D906E7CD /* Frameworks */,
+				C0111514FAB5457A7452B1FA /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				39DBF875614743BEED6F7992 /* PBXTargetDependency */,
 			);
 			name = DSGet;
 			packageProductDependencies = (
@@ -868,26 +916,28 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					259C0E06C099B25A51DB420B = {
+						DevelopmentTeam = BH4ZLEBC89;
 						ProvisioningStyle = Automatic;
 					};
 					3FEF01D33D38704420B79813 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = BH4ZLEBC89;
 						ProvisioningStyle = Automatic;
 					};
 					522B67A0CD339CDBA72C6445 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = BH4ZLEBC89;
 						ProvisioningStyle = Automatic;
 					};
 					66B2C8FEF5A4A2FE4462CCEA = {
+						DevelopmentTeam = BH4ZLEBC89;
 						ProvisioningStyle = Automatic;
 					};
 					7EE25531AE37694575383F48 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = BH4ZLEBC89;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 66B2C8FEF5A4A2FE4462CCEA;
 					};
 					C9F7306419451FF53B22638C = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = BH4ZLEBC89;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -906,6 +956,7 @@
 			packageReferences = (
 				7B4BEC1BCB6B8E6817FD0AA3 /* XCLocalSwiftPackageReference "DSGetCore" */,
 			);
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -1024,6 +1075,7 @@
 				0B66FEB3FDD53AF71C8F7D7F /* NetworkMonitor.swift in Sources */,
 				94644B634D894E3A78E6044F /* OTPService.swift in Sources */,
 				CD13D3337DB81240C9EEA0B3 /* OfflineIndicatorView.swift in Sources */,
+				5477AA8BEBCFB4E53A1FB95A /* PhoneWatchSyncService.swift in Sources */,
 				2D1EC135ACE1A7BF98899DB4 /* PlatformClipboard.swift in Sources */,
 				04D260EA7AE3F1CD160E6CF4 /* PlatformColors.swift in Sources */,
 				B4BA1F4B8845A2E114C0FFB8 /* QuickActionsHandler.swift in Sources */,
@@ -1084,6 +1136,7 @@
 				DB57682E91DFF8637B906CA2 /* NetworkMonitor.swift in Sources */,
 				C4C2E198583F01A6F6D041CA /* OTPService.swift in Sources */,
 				08E3570044BE922980EE9BD5 /* OfflineIndicatorView.swift in Sources */,
+				F3C8169564A05F20EF4089BB /* PhoneWatchSyncService.swift in Sources */,
 				2FAA9A3148D8DAB7E673A916 /* PlatformClipboard.swift in Sources */,
 				BD777A94C559C708BBB4B908 /* PlatformColors.swift in Sources */,
 				A4B46FCF75677C2ACD7006E7 /* QuickActionsHandler.swift in Sources */,
@@ -1141,7 +1194,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F55DC97A3FE66A2FD0693FF /* ContentView.swift in Sources */,
+				081083578D81C631093B25B0 /* WatchCompanionSyncService.swift in Sources */,
 				CD682D8A9672864D13A21D5F /* WatchDIContainer.swift in Sources */,
+				0E7E61547352A9A7F9DBD0A1 /* WatchDownloadsView.swift in Sources */,
+				F06D6F74BC927847E679556A /* WatchLocalization.swift in Sources */,
 				838E39EFD5D2CDC87F314713 /* WatchTasksViewModel.swift in Sources */,
 				2C0210E2FE264E382A62B9B0 /* iDSGetApp.swift in Sources */,
 			);
@@ -1154,6 +1210,11 @@
 			isa = PBXTargetDependency;
 			target = 66B2C8FEF5A4A2FE4462CCEA /* DSGet */;
 			targetProxy = 65204DDB0F7B49233390AD4C /* PBXContainerItemProxy */;
+		};
+		39DBF875614743BEED6F7992 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9F7306419451FF53B22638C /* iDSGet Watch App */;
+			targetProxy = 76A399BEEA9B68CE8C9F544A /* PBXContainerItemProxy */;
 		};
 		553B6B4BF412BA32D2965974 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1196,13 +1257,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DSGet/DSGet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -1264,7 +1321,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1298,14 +1355,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DSGetWidgets/DSGetWidgets.entitlements;
-				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1318,14 +1370,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DSGetWidgets/DSGetWidgets.entitlements;
-				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1340,11 +1387,8 @@
 				CODE_SIGN_ENTITLEMENTS = "iDSGet Watch App/iDSGet Watch App.entitlements";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iDSGet Watch App/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.iDSGetWatchApp;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet.watchapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1364,7 +1408,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetMac;
 				SDKROOT = macosx;
 			};
@@ -1377,11 +1420,8 @@
 				CODE_SIGN_ENTITLEMENTS = "iDSGet Watch App/iDSGet Watch App.entitlements";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iDSGet Watch App/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.iDSGetWatchApp;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet.watchapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1401,7 +1441,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetMac;
 				SDKROOT = macosx;
 			};
@@ -1461,7 +1500,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1507,13 +1546,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DSGet/DSGet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -1614,6 +1649,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		197AB7D284D2FA1E0F877AB1 /* DSGetCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DSGetCore;
+		};
 		1F811E81614A6B094877758A /* DSGetCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DSGetCore;

@@ -45,7 +45,8 @@ final class DIContainer {
     lazy var authService: AuthServiceProtocol = AuthService(
         apiClient: synologyAPIClient,
         networkClient: networkClient,
-        secureStorage: secureStorage
+        secureStorage: secureStorage,
+        userDefaults: DSGetSharedStorage.userDefaults
     )
 
     /// Feed service for RSS operations.

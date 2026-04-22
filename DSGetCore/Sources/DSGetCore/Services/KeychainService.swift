@@ -44,7 +44,7 @@ public final class KeychainService: SecureStorageProtocol, @unchecked Sendable {
     public static let shared: KeychainService = {
         KeychainService(
             service: "es.ncrd.DSGet",
-            accessGroup: "group.es.ncrd.DSGet"
+            accessGroup: resolvedSharedAccessGroup()
         )
     }()
 
@@ -132,5 +132,14 @@ public final class KeychainService: SecureStorageProtocol, @unchecked Sendable {
         }
 
         return query
+    }
+
+    private static func resolvedSharedAccessGroup() -> String? {
+        if let group = Bundle.main.object(forInfoDictionaryKey: "DSGetSharedKeychainAccessGroup") as? String,
+           !group.isEmpty {
+            return group
+        }
+
+        return nil
     }
 }

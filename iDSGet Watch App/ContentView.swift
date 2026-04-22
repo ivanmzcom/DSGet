@@ -1,101 +1,115 @@
-//
-//  ContentView.swift
-//  iDSGet Watch App
-//
-//  Created by Iván Moreno Zambudio on 25/1/26.
-//
-
 import SwiftUI
-import DSGetCore
 
 struct ContentView: View {
-    @State private var viewModel = WatchTasksViewModel()
+    @State private var tasksViewModel = WatchTasksViewModel()
 
     var body: some View {
         NavigationStack {
-            Group {
-                if viewModel.isLoading && viewModel.tasks.isEmpty {
-                    ProgressView(NSLocalizedString("watch.loading", comment: "Loading indicator"))
-                } else if viewModel.tasks.isEmpty {
-                    VStack(spacing: 8) {
-                        Image(systemName: "arrow.down.circle")
-                            .font(.largeTitle)
-                            .foregroundStyle(.secondary)
-                        Text(NSLocalizedString("watch.no_downloads", comment: "Empty state title"))
-                            .font(.headline)
-                        Text(NSLocalizedString("watch.add_tasks_hint", comment: "Empty state hint"))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                } else {
-                    List(viewModel.tasks) { task in
-                        TaskRow(task: task)
+            WatchRootContent(viewModel: tasksViewModel)
+                .navigationTitle(tasksViewModel.navigationTitle)
+                .toolbar {
+                    if tasksViewModel.phase == .ready {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                Task { await tasksViewModel.refresh() }
+                            } label: {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                            .disabled(tasksViewModel.isLoading)
+                        }
                     }
                 }
-            }
-            .navigationTitle(NSLocalizedString("watch.downloads_title", comment: "Navigation title"))
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        Task { await viewModel.refresh() }
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                    .disabled(viewModel.isLoading)
-                }
-            }
         }
         .task {
-            await viewModel.loadTasks()
+            await tasksViewModel.bootstrap()
+        }
+        .alert(
+            String.watchLocalized("watch.error.title"),
+            isPresented: errorAlertBinding,
+            presenting: tasksViewModel.error
+        ) { _ in
+            Button(String.watchLocalized("watch.action.ok"), role: .cancel) {
+                tasksViewModel.clearError()
+            }
+        } message: { error in
+            Text(error.localizedDescription)
+        }
+    }
+
+    private var errorAlertBinding: Binding<Bool> {
+        Binding(
+            get: { tasksViewModel.error != nil },
+            set: { isPresented in
+                if !isPresented {
+                    tasksViewModel.clearError()
+                }
+            }
+        )
+    }
+}
+
+private struct WatchRootContent: View {
+    @Bindable var viewModel: WatchTasksViewModel
+
+    var body: some View {
+        switch viewModel.phase {
+        case .checkingSession:
+            WatchLoadingView()
+
+        case .waitingForPhone:
+            WatchWaitingForPhoneView(
+                message: viewModel.companionStatusText,
+                canRetry: viewModel.canRetrySync,
+                retry: viewModel.retryCompanionSync
+            )
+
+        case .ready:
+            WatchDownloadsView(viewModel: viewModel)
         }
     }
 }
 
-// MARK: - Task Row
-
-struct TaskRow: View {
-    let task: DownloadTask
-
+private struct WatchLoadingView: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(task.title)
-                .font(.headline)
-                .lineLimit(2)
-
-            HStack {
-                statusIcon
-                Text(task.status.displayName)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            if task.isDownloading || task.status == .waiting {
-                ProgressView(value: task.progress)
-                    .progressViewStyle(.linear)
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
-    @ViewBuilder
-    private var statusIcon: some View {
-        switch task.status {
-        case .downloading:
-            Image(systemName: "arrow.down.circle.fill")
-                .foregroundStyle(.blue)
-        case .finished:
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
-        case .paused:
-            Image(systemName: "pause.circle.fill")
-                .foregroundStyle(.orange)
-        case .error:
-            Image(systemName: "exclamationmark.circle.fill")
-                .foregroundStyle(.red)
-        default:
-            Image(systemName: "clock.fill")
+        VStack(spacing: 10) {
+            ProgressView()
+            Text(String.watchLocalized("watch.loading"))
+                .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+private struct WatchWaitingForPhoneView: View {
+    let message: String
+    let canRetry: Bool
+    let retry: () -> Void
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "iphone.and.arrow.forward")
+                .font(.title2)
+                .foregroundStyle(.blue)
+
+            Text(String.watchLocalized("watch.waiting.title"))
+                .font(.headline)
+                .multilineTextAlignment(.center)
+
+            Text(message)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            if canRetry {
+                Button(String.watchLocalized("watch.waiting.button")) {
+                    retry()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
 }
 

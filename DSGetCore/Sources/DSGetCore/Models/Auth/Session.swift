@@ -62,6 +62,8 @@ public struct Credentials: Equatable, Sendable {
     }
 }
 
+extension Credentials: Codable {}
+
 /// Login request parameters.
 public struct LoginRequest: Equatable, Sendable {
     public let configuration: ServerConfiguration

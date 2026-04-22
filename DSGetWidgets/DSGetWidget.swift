@@ -17,7 +17,7 @@ struct DSGetWidget: Widget {
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("DSGet Downloads")
-        .description("Muestra el estado de tus descargas activas.")
+        .description("Muestra el estado real de tus descargas compartido por la app.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

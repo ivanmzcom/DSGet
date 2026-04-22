@@ -20,9 +20,13 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>DSGetSharedKeychainAccessGroup</key>
+	<string>$(AppIdentifierPrefix)es.ncrd.DSGet.shared</string>
+	<key>WKApplication</key>
+	<true/>
 	<key>WKApplicationNavigationBarTitleText</key>
 	<string>iDSGet Watch</string>
-	<key>WKWatchKitExtension</key>
-	<string></string>
+	<key>WKCompanionAppBundleIdentifier</key>
+	<string>es.ncrd.DSGet</string>
 </dict>
 </plist>

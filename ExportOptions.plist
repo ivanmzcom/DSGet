@@ -6,8 +6,8 @@
     <string>app-store</string>
     <key>signingStyle</key>
     <string>automatic</string>
-    <key>teamID</key>
-    <string>V6HSSZ7WYZ</string>
+	<key>teamID</key>
+	<string>BH4ZLEBC89</string>
     <key>uploadSymbols</key>
     <true/>
     <key>manageAppVersionAndBuildNumber</key>

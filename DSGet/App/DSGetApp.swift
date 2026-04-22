@@ -11,6 +11,10 @@ import DSGetCore
 @main
 struct DSGetApp: App {
     @State private var appViewModel: AppViewModel
+    #if os(iOS)
+    @Environment(\.scenePhase) private var scenePhase
+    private let phoneWatchSyncService = PhoneWatchSyncService.shared
+    #endif
 
     private var loginSheetBinding: Binding<Bool> {
         Binding(
@@ -61,9 +65,31 @@ struct DSGetApp: App {
     private var rootContent: some View {
         AppRootView(appViewModel: appViewModel)
             .environment(appViewModel)
+            #if os(iOS)
+            .task {
+                phoneWatchSyncService.activate()
+                await phoneWatchSyncService.syncAuthentication()
+            }
+            .onChange(of: appViewModel.isLoggedIn) { _, isLoggedIn in
+                if isLoggedIn {
+                    Task { await phoneWatchSyncService.syncAuthentication() }
+                } else {
+                    phoneWatchSyncService.clearAuthentication()
+                }
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                guard newPhase == .active else { return }
+                Task { await phoneWatchSyncService.syncAuthentication() }
+            }
+            #endif
             .sheet(isPresented: loginSheetBinding) {
                 LoginView {
-                    appViewModel.isLoggedIn = true
+                    Task {
+                        await appViewModel.onLoginSuccess()
+                        #if os(iOS)
+                        await phoneWatchSyncService.syncAuthentication()
+                        #endif
+                    }
                 }
                 .interactiveDismissDisabled(true)
             }

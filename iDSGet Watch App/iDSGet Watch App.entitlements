@@ -6,5 +6,9 @@
 	<array>
 		<string>group.es.ncrd.DSGet</string>
 	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)es.ncrd.DSGet.shared</string>
+	</array>
 </dict>
 </plist>

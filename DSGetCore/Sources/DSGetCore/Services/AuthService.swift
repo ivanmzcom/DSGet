@@ -195,24 +195,29 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     }
 
     public func refreshSession() async throws -> Session {
-        // Load stored credentials
-        guard let storedSession = try? secureStorage.load(forKey: sessionKey, type: StoredSessionDTO.self),
-              let storedCredentials = try? secureStorage.load(forKey: credentialsKey, type: StoredCredentialsDTO.self) else {
+        if let storedSession = try? secureStorage.load(forKey: sessionKey, type: StoredSessionDTO.self),
+           let storedCredentials = try? secureStorage.load(forKey: credentialsKey, type: StoredCredentialsDTO.self) {
+            let config = ServerConfiguration(
+                host: storedSession.host,
+                port: storedSession.port,
+                useHTTPS: storedSession.useHTTPS
+            )
+
+            let credentials = Credentials(
+                username: storedCredentials.username,
+                password: storedCredentials.password
+            )
+
+            let request = LoginRequest(configuration: config, credentials: credentials)
+            return try await login(request: request)
+        }
+
+        guard let server = try await getServer() else {
             throw DomainError.notAuthenticated
         }
 
-        let config = ServerConfiguration(
-            host: storedSession.host,
-            port: storedSession.port,
-            useHTTPS: storedSession.useHTTPS
-        )
-
-        let credentials = Credentials(
-            username: storedCredentials.username,
-            password: storedCredentials.password
-        )
-
-        let request = LoginRequest(configuration: config, credentials: credentials)
+        let credentials = try await getCredentials()
+        let request = LoginRequest(configuration: server.configuration, credentials: credentials)
         return try await login(request: request)
     }
 
