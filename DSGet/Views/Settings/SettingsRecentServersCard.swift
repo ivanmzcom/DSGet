@@ -11,7 +11,7 @@ struct SettingsRecentServersCard: View {
     let clearHistory: () async -> Void
 
     var body: some View {
-        AdaptiveSectionCard(String.localized("settings.section.recentServers"), systemImage: "clock.arrow.circlepath") {
+        Section(String.localized("settings.section.recentServers")) {
             if servers.isEmpty {
                 Text(String.localized("settings.recentServers.empty"))
                     .font(.subheadline)
@@ -28,7 +28,6 @@ struct SettingsRecentServersCard: View {
                 } label: {
                     Label(String.localized("settings.recentServers.clear"), systemImage: "trash")
                 }
-                .buttonStyle(.bordered)
                 .accessibilityIdentifier(AccessibilityID.Settings.clearServerHistoryButton)
             }
         }
@@ -64,8 +63,5 @@ private struct SettingsRecentServerRow: View {
                     .lineLimit(1)
             }
         }
-        .padding(10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .dsgetSurface(.row)
     }
 }

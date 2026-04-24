@@ -155,67 +155,14 @@ struct TaskDetailView: View {
     }
 
     var body: some View {
-        AdaptiveLayoutReader { width in
-            VStack(spacing: 0) {
-                TaskDetailHero(
-                    task: viewModel.task,
-                    statusText: statusTextAndColor.text,
-                    statusColor: statusTextAndColor.color,
-                    progressValue: progressValue,
-                    progressPercentage: progressPercentage,
-                    downloadSpeed: downloadSpeed,
-                    uploadSpeed: uploadSpeed,
-                    etaText: etaText
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-
-                if width.prefersSegmentedTabs {
-                    Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
-                        ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                            Label(tab.title, systemImage: tab.icon)
-                                .tag(tab)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .padding(.vertical, 12)
-                } else {
-                    Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
-                        ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                            Label(tab.title, systemImage: tab.icon)
-                                .tag(tab)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .padding(.horizontal)
-                    .padding(.vertical, 12)
-                }
-
-                Group {
-                    switch selectedTab {
-                    case .general:
-                        generalTabContent
-
-                    case .transfer:
-                        transferTabContent
-
-                    case .trackers:
-                        trackersTabContent
-
-                    case .peers:
-                        peersTabContent
-
-                    case .files:
-                        filesTabContent
-                    }
-                }
-                #if os(macOS)
-                .listStyle(.inset)
-                #else
-                .listStyle(.insetGrouped)
-                #endif
+        Group {
+            #if os(macOS)
+            AdaptiveLayoutReader { width in
+                taskDetailContent(prefersSegmentedTabs: width.prefersSegmentedTabs)
             }
+            #else
+            taskDetailContent(prefersSegmentedTabs: horizontalSizeClass != .compact)
+            #endif
         }
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -248,6 +195,69 @@ struct TaskDetailView: View {
             Button(String.localized("general.ok")) { }
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? String.localized("error.unknown"))
+        }
+    }
+
+    private func taskDetailContent(prefersSegmentedTabs: Bool) -> some View {
+        VStack(spacing: 0) {
+            TaskDetailHero(
+                task: viewModel.task,
+                statusText: statusTextAndColor.text,
+                statusColor: statusTextAndColor.color,
+                progressValue: progressValue,
+                progressPercentage: progressPercentage,
+                downloadSpeed: downloadSpeed,
+                uploadSpeed: uploadSpeed,
+                etaText: etaText
+            )
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+
+            if prefersSegmentedTabs {
+                Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
+                    ForEach(TaskDetailTab.allCases, id: \.self) { tab in
+                        Label(tab.title, systemImage: tab.icon)
+                            .tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+            } else {
+                Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
+                    ForEach(TaskDetailTab.allCases, id: \.self) { tab in
+                        Label(tab.title, systemImage: tab.icon)
+                            .tag(tab)
+                    }
+                }
+                .pickerStyle(.menu)
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+            }
+
+            Group {
+                switch selectedTab {
+                case .general:
+                    generalTabContent
+
+                case .transfer:
+                    transferTabContent
+
+                case .trackers:
+                    trackersTabContent
+
+                case .peers:
+                    peersTabContent
+
+                case .files:
+                    filesTabContent
+                }
+            }
+            #if os(macOS)
+            .listStyle(.inset)
+            #else
+            .listStyle(.insetGrouped)
+            #endif
         }
     }
 
@@ -326,14 +336,65 @@ private struct TaskDetailHero: View {
     let uploadSpeed: String?
     let etaText: String?
 
+    private var metrics: [TaskDetailMetric] {
+        var values = [
+            TaskDetailMetric(
+                title: String.localized("taskDetail.metric.downloaded"),
+                value: task.downloadedSize.formatted,
+                systemImage: "externaldrive",
+                tint: statusColor
+            ),
+            TaskDetailMetric(
+                title: String.localized("taskDetail.metric.size"),
+                value: task.size.formatted,
+                systemImage: "shippingbox",
+                tint: .secondary
+            )
+        ]
+
+        if let downloadSpeed {
+            values.append(
+                TaskDetailMetric(
+                    title: String.localized("taskDetail.metric.down"),
+                    value: downloadSpeed + "/s",
+                    systemImage: "arrow.down",
+                    tint: .blue
+                )
+            )
+        }
+
+        if let uploadSpeed {
+            values.append(
+                TaskDetailMetric(
+                    title: String.localized("taskDetail.metric.up"),
+                    value: uploadSpeed + "/s",
+                    systemImage: "arrow.up",
+                    tint: .green
+                )
+            )
+        }
+
+        if let etaText {
+            values.append(
+                TaskDetailMetric(
+                    title: String.localized("taskDetail.metric.eta"),
+                    value: etaText,
+                    systemImage: "clock",
+                    tint: .orange
+                )
+            )
+        }
+
+        return values
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
-                DSGetIconBadge(
-                    systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill",
-                    tint: statusColor,
-                    size: 38
-                )
+                Image(systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill")
+                    .font(.title2)
+                    .foregroundStyle(statusColor)
+                    .frame(width: 32, height: 32)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(task.title)
@@ -356,87 +417,54 @@ private struct TaskDetailHero: View {
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 18) {
-                    DSGetMetricLabel(
-                        title: String.localized("taskDetail.metric.downloaded"),
-                        value: task.downloadedSize.formatted,
-                        systemImage: "externaldrive",
-                        tint: statusColor
-                    )
-                    DSGetMetricLabel(
-                        title: String.localized("taskDetail.metric.size"),
-                        value: task.size.formatted,
-                        systemImage: "shippingbox",
-                        tint: .secondary
-                    )
-                    if let downloadSpeed {
-                        DSGetMetricLabel(
-                            title: String.localized("taskDetail.metric.down"),
-                            value: downloadSpeed + "/s",
-                            systemImage: "arrow.down",
-                            tint: .blue
-                        )
-                    }
-                    if let uploadSpeed {
-                        DSGetMetricLabel(
-                            title: String.localized("taskDetail.metric.up"),
-                            value: uploadSpeed + "/s",
-                            systemImage: "arrow.up",
-                            tint: .green
-                        )
-                    }
-                    if let etaText {
-                        DSGetMetricLabel(
-                            title: String.localized("taskDetail.metric.eta"),
-                            value: etaText,
-                            systemImage: "clock",
-                            tint: .orange
-                        )
+                    ForEach(metrics) { metric in
+                        Label {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(metric.title.uppercased())
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+
+                                Text(metric.value)
+                                    .font(.caption.monospacedDigit())
+                                    .lineLimit(1)
+                            }
+                        } icon: {
+                            Image(systemName: metric.systemImage)
+                                .foregroundStyle(metric.tint)
+                        }
                     }
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    DSGetMetricLabel(
-                        title: String.localized("taskDetail.metric.downloaded"),
-                        value: task.downloadedSize.formatted,
-                        systemImage: "externaldrive",
-                        tint: statusColor
-                    )
-                    DSGetMetricLabel(
-                        title: String.localized("taskDetail.metric.size"),
-                        value: task.size.formatted,
-                        systemImage: "shippingbox",
-                        tint: .secondary
-                    )
-                    if let downloadSpeed {
-                        DSGetMetricLabel(
-                            title: String.localized("taskDetail.metric.down"),
-                            value: downloadSpeed + "/s",
-                            systemImage: "arrow.down",
-                            tint: .blue
-                        )
-                    }
-                    if let uploadSpeed {
-                        DSGetMetricLabel(
-                            title: String.localized("taskDetail.metric.up"),
-                            value: uploadSpeed + "/s",
-                            systemImage: "arrow.up",
-                            tint: .green
-                        )
-                    }
-                    if let etaText {
-                        DSGetMetricLabel(
-                            title: String.localized("taskDetail.metric.eta"),
-                            value: etaText,
-                            systemImage: "clock",
-                            tint: .orange
-                        )
+                    ForEach(metrics) { metric in
+                        Label {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(metric.title.uppercased())
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+
+                                Text(metric.value)
+                                    .font(.caption.monospacedDigit())
+                                    .lineLimit(1)
+                            }
+                        } icon: {
+                            Image(systemName: metric.systemImage)
+                                .foregroundStyle(metric.tint)
+                        }
                     }
                 }
             }
         }
-        .padding(16)
-        .dsgetSurface(.header)
+        .padding(.vertical, 8)
     }
+}
+
+private struct TaskDetailMetric: Identifiable {
+    let id = UUID()
+    let title: String
+    let value: String
+    let systemImage: String
+    let tint: Color
 }
 
 // MARK: - TaskDetailView Extension (Tab Content & Sections)
@@ -625,7 +653,7 @@ private extension TaskDetailView {
     func fileRow(_ file: TaskFile) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "doc")
-                .foregroundStyle(file.isWanted ? Color.accentColor : .secondary)
+                .foregroundStyle(file.isWanted ? Color.accentColor : Color.secondary)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 6) {

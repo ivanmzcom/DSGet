@@ -48,7 +48,10 @@ struct TaskTransferHeader<AddButton: View>: View {
     private var iosHeader: some View {
         VStack(spacing: 0) {
             HStack(alignment: .center, spacing: 12) {
-                DSGetIconBadge(systemName: "arrow.down.circle.fill", tint: .accentColor, size: 36)
+                Image(systemName: "arrow.down.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 36, height: 36)
 
                 titleBlock(font: .title3.weight(.semibold))
 
@@ -82,7 +85,10 @@ struct TaskTransferHeader<AddButton: View>: View {
             if layoutWidth == .compact {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 12) {
-                        DSGetIconBadge(systemName: "arrow.down.circle.fill", tint: .accentColor, size: 32)
+                        Image(systemName: "arrow.down.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(Color.accentColor)
+                            .frame(width: 32, height: 32)
                         titleBlock(font: .headline)
                         Spacer(minLength: 0)
                         addTaskButton
@@ -97,7 +103,10 @@ struct TaskTransferHeader<AddButton: View>: View {
                 .padding(.bottom, 8)
             } else {
                 HStack(alignment: .center, spacing: 14) {
-                    DSGetIconBadge(systemName: "arrow.down.circle.fill", tint: .accentColor, size: 36)
+                    Image(systemName: "arrow.down.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(Color.accentColor)
+                        .frame(width: 36, height: 36)
                     titleBlock(font: .title3.weight(.semibold))
                     Spacer(minLength: 0)
                     transferStats
@@ -206,20 +215,10 @@ private struct TaskStatusChip: View {
                 Text("\(count)")
                     .foregroundStyle(.secondary)
             }
-            .font(.caption.weight(.medium))
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .foregroundStyle(isSelected ? Color.accentColor : Color.primary)
-            .background(
-                isSelected ? Color.accentColor.opacity(0.14) : Color.secondary.opacity(0.08),
-                in: RoundedRectangle(cornerRadius: DSGetDesign.cornerRadius, style: .continuous)
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: DSGetDesign.cornerRadius, style: .continuous)
-                    .stroke(isSelected ? Color.accentColor.opacity(0.35) : Color.clear, lineWidth: 1)
-            }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bordered)
+        .controlSize(.small)
+        .tint(isSelected ? Color.accentColor : Color.secondary)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }

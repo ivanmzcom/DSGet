@@ -32,9 +32,6 @@ struct FeedDetailView: View {
                 }
                 .buttonStyle(.plain)
                 .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-                .listRowBackground(Color.clear)
             }
 
             if viewModel.isLoadingMore {
@@ -52,7 +49,6 @@ struct FeedDetailView: View {
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
         #endif
-        .dsgetContentBackground()
         .navigationTitle(viewModel.feed.title)
         .toolbar {
             if let onClose, showsCloseButton {
@@ -129,20 +125,24 @@ struct FeedDetailView: View {
     private var feedItemStateOverlay: some View {
         switch feedItemContentState {
         case .loading:
-            DSGetLoadingContentStateView(
-                title: String.localized("feedItems.state.loading.title"),
-                description: String.localized("feedItems.state.loading.description")
-            )
+            ProgressView(String.localized("feedItems.state.loading.title"))
         case .error(let error):
-            DSGetContentStateView.error(error, onRetry: retryFeedItems)
+            ContentUnavailableView {
+                Label(error.requiresRelogin ? String.localized("state.permission.title") : String.localized(EmptyStateText.errorTitle),
+                      systemImage: error.requiresRelogin ? "lock.shield" : "exclamationmark.triangle")
+            } description: {
+                Text(error.requiresRelogin ? String.localized("state.permission.description") : error.localizedDescription)
+            } actions: {
+                Button(String.localized(EmptyStateText.errorAction), action: retryFeedItems)
+            }
         case .empty:
-            DSGetContentStateView(
-                title: String.localized("feed.detail.noItems"),
-                description: String.localized("feed.detail.noItems.description"),
-                systemImage: "doc.plaintext",
-                primaryActionTitle: String.localized("feed.action.refresh"),
-                primaryAction: retryFeedItems
-            )
+            ContentUnavailableView {
+                Label(String.localized("feed.detail.noItems"), systemImage: "doc.plaintext")
+            } description: {
+                Text(String.localized("feed.detail.noItems.description"))
+            } actions: {
+                Button(String.localized("feed.action.refresh"), action: retryFeedItems)
+            }
         case nil:
             EmptyView()
         }
@@ -180,11 +180,9 @@ struct FeedItemRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            DSGetIconBadge(
-                systemName: item.canDownload ? "arrow.down.circle.fill" : "doc.text",
-                tint: item.canDownload ? .accentColor : .secondary,
-                size: 32
-            )
+            Image(systemName: item.canDownload ? "arrow.down.circle" : "doc.text")
+                .foregroundStyle(item.canDownload ? Color.accentColor : Color.secondary)
+                .frame(width: 24)
 
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -195,13 +193,8 @@ struct FeedItemRow: View {
 
                     if item.isNew {
                         Text(String.localized("feed.item.new"))
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.accentColor.opacity(0.15))
+                            .font(.caption)
                             .foregroundStyle(Color.accentColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                     }
                 }
 
@@ -230,8 +223,6 @@ struct FeedItemRow: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(DSGetDesign.rowPadding)
-        .dsgetSurface(.row)
     }
 
     private var sizeText: String? {

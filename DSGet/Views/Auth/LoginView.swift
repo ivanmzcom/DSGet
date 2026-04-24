@@ -15,43 +15,29 @@ struct LoginView: View {
 
     var body: some View {
         NavigationStack {
-            AdaptiveLayoutReader { width in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        LoginHeaderView()
+            Form {
+                Section {
+                    Text(String.localized("auth.login.subtitle"))
+                        .foregroundStyle(.secondary)
+                }
 
-                        if width.usesTwoColumns {
-                            HStack(alignment: .top, spacing: 20) {
-                                LoginServerCard(viewModel: viewModel, focusedField: $focusedField)
-                                LoginCredentialsCard(viewModel: viewModel, focusedField: $focusedField)
-                            }
-                        } else {
-                            VStack(alignment: .leading, spacing: 20) {
-                                LoginServerCard(viewModel: viewModel, focusedField: $focusedField)
-                                LoginCredentialsCard(viewModel: viewModel, focusedField: $focusedField)
-                            }
-                        }
-
-                        LoginActionCard(
-                            isLoading: viewModel.isLoading,
-                            isEnabled: viewModel.isFormValid,
-                            guidanceMessage: viewModel.formGuidanceMessage,
-                            login: login
-                        )
-                    }
-                    .padding(20)
-                    .frame(maxWidth: width.contentMaxWidth)
-                    .frame(maxWidth: .infinity, alignment: .top)
-                }
-                .navigationTitle(String.localized("auth.login.title"))
-                .alert(String.localized("auth.login.error.title"), isPresented: $viewModel.showingError) {
-                    Button(String.localized("general.ok"), role: .cancel) { }
-                } message: {
-                    Text(viewModel.currentError?.localizedDescription ?? String.localized("auth.login.error.unknown"))
-                }
-                .task {
-                    await viewModel.loadRecentServers()
-                }
+                LoginServerCard(viewModel: viewModel, focusedField: $focusedField)
+                LoginCredentialsCard(viewModel: viewModel, focusedField: $focusedField)
+                LoginActionCard(
+                    isLoading: viewModel.isLoading,
+                    isEnabled: viewModel.isFormValid,
+                    guidanceMessage: viewModel.formGuidanceMessage,
+                    login: login
+                )
+            }
+            .navigationTitle(String.localized("auth.login.title"))
+            .alert(String.localized("auth.login.error.title"), isPresented: $viewModel.showingError) {
+                Button(String.localized("general.ok"), role: .cancel) { }
+            } message: {
+                Text(viewModel.currentError?.localizedDescription ?? String.localized("auth.login.error.unknown"))
+            }
+            .task {
+                await viewModel.loadRecentServers()
             }
         }
     }

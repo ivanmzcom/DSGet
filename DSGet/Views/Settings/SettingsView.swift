@@ -16,40 +16,19 @@ struct SettingsView: View {
     @State private var recentServers: [Server] = []
 
     var body: some View {
-        AdaptiveLayoutReader { width in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    SettingsHeaderView(server: appViewModel.currentServer, status: serverStatus)
-
-                    if width.usesTwoColumns {
-                        HStack(alignment: .top, spacing: 20) {
-                            primaryColumn
-                            secondaryColumn
-                        }
-                    } else {
-                        VStack(alignment: .leading, spacing: 20) {
-                            primaryColumn
-                            secondaryColumn
-                        }
-                    }
-                }
-                .padding(20)
-                .frame(maxWidth: width.contentMaxWidth)
-                .frame(maxWidth: .infinity, alignment: .top)
-            }
-            .navigationTitle(String.localized("settings.title"))
-            .task {
-                await loadSettingsState()
-            }
-        }
-    }
-
-    private var primaryColumn: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        Form {
             SettingsServerCard(
                 server: appViewModel.currentServer,
                 status: serverStatus,
                 testConnection: checkCurrentServer
+            )
+
+            SettingsSessionCard(
+                session: currentSession,
+                isRefreshingSession: isRefreshingSession,
+                isLoggingOut: isLoggingOut,
+                refreshSession: refreshSession,
+                logout: logout
             )
 
             SettingsRecentServersCard(
@@ -59,18 +38,10 @@ struct SettingsView: View {
 
             SettingsAboutCard()
         }
-        .frame(maxWidth: .infinity, alignment: .top)
-    }
-
-    private var secondaryColumn: some View {
-        SettingsSessionCard(
-            session: currentSession,
-            isRefreshingSession: isRefreshingSession,
-            isLoggingOut: isLoggingOut,
-            refreshSession: refreshSession,
-            logout: logout
-        )
-        .frame(maxWidth: .infinity, alignment: .top)
+        .navigationTitle(String.localized("settings.title"))
+        .task {
+            await loadSettingsState()
+        }
     }
 
     private func loadSettingsState() async {

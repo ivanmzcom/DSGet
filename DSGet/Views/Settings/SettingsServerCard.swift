@@ -12,7 +12,7 @@ struct SettingsServerCard: View {
     let testConnection: () async -> Void
 
     var body: some View {
-        AdaptiveSectionCard(String.localized("settings.section.server"), systemImage: "server.rack") {
+        Section(String.localized("settings.section.server")) {
             if let server {
                 SettingsStatusSummary(status: status)
 
@@ -41,7 +41,6 @@ struct SettingsServerCard: View {
                         Label(String.localized("settings.connection.test"), systemImage: "network")
                     }
                 }
-                .buttonStyle(.bordered)
                 .disabled(status.isChecking)
                 .accessibilityIdentifier(AccessibilityID.Settings.testConnectionButton)
             } else {

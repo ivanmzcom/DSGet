@@ -83,44 +83,30 @@ struct TaskListItemView: View {
         return "\(String.localized("tasks.header.down")) \(down)  \(String.localized("tasks.header.up")) \(up)"
     }
 
-    private var primaryRowColor: Color {
-        #if os(iOS)
-        isSelected ? .white : .primary
-        #else
-        .primary
-        #endif
-    }
-
-    private var secondaryRowColor: Color {
-        #if os(iOS)
-        isSelected ? .white.opacity(0.82) : .secondary
-        #else
-        .secondary
-        #endif
-    }
-
-    private var statusRowColor: Color {
-        #if os(iOS)
-        isSelected ? .white.opacity(0.92) : status.color
-        #else
-        status.color
-        #endif
-    }
-
-    private var progressRowColor: Color {
-        #if os(iOS)
-        isSelected ? .white.opacity(0.92) : status.color
-        #else
-        status.color
-        #endif
-    }
-
     var body: some View {
         rowContent
     }
 
     @ViewBuilder
     private var rowContent: some View {
+        #if os(iOS)
+        taskContent
+            .contentShape(Rectangle())
+            .taskAccessibility(task)
+            .taskRotorActions(
+                onPause: { Task { await handleTogglePause() } },
+                onResume: { Task { await handleTogglePause() } },
+                onDelete: { Task { await handleDelete() } },
+                isPaused: task.isPaused
+            )
+            .contextMenu { contextMenuContent }
+            .alert(String.localized("taskItem.status.error"), isPresented: $showingErrorAlert) {
+                Button(String.localized("general.ok")) { }
+            } message: {
+                Text(errorMessage ?? String.localized("error.unknown"))
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) { swipeActionsContent }
+        #else
         let baseContent = taskContent
             .padding(DSGetDesign.rowPadding)
             .dsgetSurface(isSelected ? .selectedRow : .row, tint: .accentColor)
@@ -139,16 +125,11 @@ struct TaskListItemView: View {
                 Text(errorMessage ?? String.localized("error.unknown"))
             }
 
-        #if os(macOS)
         baseContent
             .onTapGesture(count: 2) {
                 guard opensDetailInWindowOnDoubleClick else { return }
                 openWindow(value: task.id)
             }
-        #else
-        baseContent
-            .hoverEffect(.highlight)
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) { swipeActionsContent }
         #endif
     }
 
@@ -172,68 +153,72 @@ struct TaskListItemView: View {
     #if os(iOS)
     @ViewBuilder
     private var iosLayout: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Image(systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill")
-                    .foregroundStyle(statusRowColor)
-                    .font(.headline)
-                    .frame(width: 30, height: 30)
-                    .background(
-                        (isSelected ? Color.white.opacity(0.14) : status.color.opacity(0.12)),
-                        in: RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    )
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: task.type == .bt ? "arrow.down.circle" : "tray.full")
+                .foregroundStyle(status.color)
+                .frame(width: 24)
 
-                Text(title)
-                    .font(.body.weight(.medium))
-                    .lineLimit(2)
-                    .foregroundStyle(primaryRowColor)
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(title)
+                        .font(.body)
+                        .lineLimit(2)
 
-                Spacer(minLength: 0)
+                    Spacer(minLength: 8)
 
-                Text(progressPercentage)
-                    .font(.subheadline.monospacedDigit().weight(.semibold))
-                    .foregroundStyle(primaryRowColor)
-            }
-
-            HStack(spacing: 8) {
-                Text(status.text)
-                    .foregroundStyle(statusRowColor)
-                Text("/")
-                Text(taskTypeLabel)
-                if let etaText {
-                    Text("/")
-                    Text(String.localized("taskItem.eta", etaText))
+                    Text(progressPercentage)
+                        .font(.subheadline.monospacedDigit())
+                        .foregroundStyle(.secondary)
                 }
-            }
-            .font(.caption)
-            .foregroundStyle(secondaryRowColor)
-            .lineLimit(1)
 
-            ProgressBar(progress: progress, color: progressRowColor)
-                .frame(height: 4)
+                Text(status.text)
+                    .font(.subheadline)
+                    .foregroundStyle(status.color)
 
-            HStack(spacing: 8) {
+                ProgressView(value: progress)
+                    .tint(status.color)
+
                 Text(sizeText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                     .lineLimit(1)
 
-                Spacer(minLength: 0)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) {
+                        transferLabels
+                    }
 
-                if let downloadSpeed {
-                    Label(downloadSpeed, systemImage: "arrow.down")
-                        .monospacedDigit()
+                    VStack(alignment: .leading, spacing: 4) {
+                        transferLabels
+                    }
                 }
+                .font(.caption)
+                .foregroundStyle(.secondary)
 
-                if let uploadSpeed {
-                    Label(uploadSpeed, systemImage: "arrow.up")
-                        .monospacedDigit()
+                if let etaText {
+                    Text(String.localized("taskItem.eta", etaText))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
-            .font(.caption2)
-            .foregroundStyle(secondaryRowColor)
+        }
+    }
+
+    @ViewBuilder
+    private var transferLabels: some View {
+        if let downloadSpeed {
+            Label(downloadSpeed, systemImage: "arrow.down")
+                .monospacedDigit()
+        }
+
+        if let uploadSpeed {
+            Label(uploadSpeed, systemImage: "arrow.up")
+                .monospacedDigit()
         }
     }
     #endif
 
+    #if os(macOS)
     @ViewBuilder
     private var expandedLayout: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -258,20 +243,20 @@ struct TaskListItemView: View {
     private var leadingColumn: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: task.type == .bt ? "arrow.down.circle" : "tray.full")
-                .foregroundStyle(statusRowColor)
+                .foregroundStyle(status.color)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.body.weight(.medium))
                     .lineLimit(2)
-                    .foregroundStyle(primaryRowColor)
+                    .foregroundStyle(.primary)
 
                 HStack(spacing: 8) {
-                    TaskInfoBadge(text: status.text, systemImage: "circle.fill", tint: statusRowColor)
-                    TaskInfoBadge(text: taskTypeLabel, systemImage: "circle.dashed", tint: secondaryRowColor)
+                    TaskInfoBadge(text: status.text, systemImage: "circle.fill", tint: status.color)
+                    TaskInfoBadge(text: taskTypeLabel, systemImage: "circle.dashed", tint: .secondary)
                     if let ratioText {
-                        TaskInfoBadge(text: String.localized("taskItem.ratio", ratioText), systemImage: "arrow.triangle.swap", tint: secondaryRowColor)
+                        TaskInfoBadge(text: String.localized("taskItem.ratio", ratioText), systemImage: "arrow.triangle.swap", tint: .secondary)
                     }
                 }
             }
@@ -284,8 +269,8 @@ struct TaskListItemView: View {
         VStack(alignment: .trailing, spacing: 6) {
             Text(progressPercentage)
                 .font(.body.monospacedDigit())
-                .foregroundStyle(primaryRowColor)
-            ProgressBar(progress: progress, color: progressRowColor)
+                .foregroundStyle(.primary)
+            ProgressBar(progress: progress, color: status.color)
                 .frame(width: width, height: 5)
         }
         .font(.caption)
@@ -297,16 +282,16 @@ struct TaskListItemView: View {
         VStack(alignment: .trailing, spacing: 4) {
             Text(trailingRateText)
                 .font(.caption.monospacedDigit())
-                .foregroundStyle(secondaryRowColor)
+                .foregroundStyle(.secondary)
 
             Text(sizeText)
                 .font(.caption)
-                .foregroundStyle(secondaryRowColor)
+                .foregroundStyle(.secondary)
 
             if let etaText {
                 Text(String.localized("taskItem.eta", etaText))
                     .font(.caption2.monospacedDigit())
-                    .foregroundStyle(secondaryRowColor)
+                    .foregroundStyle(.secondary)
             }
         }
         .frame(width: width, alignment: .trailing)
@@ -341,7 +326,7 @@ struct TaskListItemView: View {
             }
         }
         .font(.caption)
-        .foregroundStyle(secondaryRowColor)
+        .foregroundStyle(.secondary)
     }
 
     @ViewBuilder
@@ -350,11 +335,11 @@ struct TaskListItemView: View {
             HStack(spacing: 10) {
                 Text(trailingRateText)
                     .font(.caption2.monospacedDigit())
-                    .foregroundStyle(secondaryRowColor)
+                    .foregroundStyle(.secondary)
                 if let etaText {
                     Text(String.localized("taskItem.eta", etaText))
                         .font(.caption2.monospacedDigit())
-                        .foregroundStyle(secondaryRowColor)
+                        .foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
             }
@@ -362,15 +347,16 @@ struct TaskListItemView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(trailingRateText)
                     .font(.caption2.monospacedDigit())
-                    .foregroundStyle(secondaryRowColor)
+                    .foregroundStyle(.secondary)
                 if let etaText {
                     Text(String.localized("taskItem.eta", etaText))
                         .font(.caption2.monospacedDigit())
-                        .foregroundStyle(secondaryRowColor)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
     }
+    #endif
 
     @ViewBuilder
     private var contextMenuContent: some View {
@@ -456,17 +442,9 @@ struct TaskListItemView: View {
     }
 }
 
-// MARK: - Subvistas (Redefined for compilation, ideally in a common file)
+// MARK: - macOS row helpers
 
-private struct StatusDot: View {
-    var color: Color
-    var body: some View {
-        Circle()
-            .fill(color)
-            .frame(width: 8, height: 8)
-    }
-}
-
+#if os(macOS)
 private struct TaskInfoBadge: View {
     let text: String
     let systemImage: String
@@ -481,29 +459,6 @@ private struct TaskInfoBadge: View {
                 .lineLimit(1)
         }
         .foregroundStyle(tint)
-    }
-}
-
-private struct SpeedBadge: View {
-    var systemName: String
-    var value: String
-    var color: Color
-
-    var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: systemName)
-                .font(.caption2.bold())
-            Text(value)
-                .font(.caption2)
-                .monospacedDigit()
-        }
-        .padding(.vertical, 3)
-        .padding(.horizontal, 8)
-        .foregroundStyle(color)
-        .background(
-            Capsule(style: .continuous)
-                .fill(color.opacity(0.12))
-        )
     }
 }
 
@@ -525,3 +480,4 @@ private struct ProgressBar: View {
         }
     }
 }
+#endif

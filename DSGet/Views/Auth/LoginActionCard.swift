@@ -12,7 +12,7 @@ struct LoginActionCard: View {
     let login: () async -> Void
 
     var body: some View {
-        AdaptiveSectionCard(String.localized("auth.login.section.continue"), systemImage: "arrow.right.circle") {
+        Section {
             if let guidanceMessage {
                 LoginStatusMessage(
                     title: String.localized("auth.login.validation.readyTitle"),
@@ -40,6 +40,8 @@ struct LoginActionCard: View {
             .controlSize(.large)
             .accessibilityIdentifier(AccessibilityID.Login.loginButton)
             .disabled(isLoading || !isEnabled)
+        } header: {
+            Text(String.localized("auth.login.section.continue"))
         }
     }
 }

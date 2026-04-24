@@ -35,13 +35,8 @@ struct TaskListSelectionView: View {
                 )
                     .tag(task)
                     .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-                    .listRowBackground(Color.clear)
             }
         }
-        .listStyle(.plain)
-        .dsgetContentBackground()
         .accessibilityIdentifier(AccessibilityID.TaskList.list)
         #endif
     }

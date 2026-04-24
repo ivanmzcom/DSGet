@@ -14,7 +14,7 @@ struct SettingsSessionCard: View {
     let logout: () async -> Void
 
     var body: some View {
-        AdaptiveSectionCard(String.localized("settings.section.session"), systemImage: "person.crop.circle") {
+        Section(String.localized("settings.section.session")) {
             Text(String.localized("settings.session.description"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -47,7 +47,6 @@ struct SettingsSessionCard: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.bordered)
         .disabled(isRefreshingSession || isLoggingOut)
         .accessibilityIdentifier(AccessibilityID.Settings.refreshSessionButton)
     }
@@ -64,8 +63,6 @@ struct SettingsSessionCard: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(.red)
         .disabled(isLoggingOut || isRefreshingSession)
         .accessibilityIdentifier(AccessibilityID.Settings.logoutButton)
     }

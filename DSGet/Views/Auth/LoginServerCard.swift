@@ -13,7 +13,7 @@ struct LoginServerCard: View {
     var body: some View {
         @Bindable var viewModel = viewModel
 
-        AdaptiveSectionCard(String.localized("auth.login.section.serverDetails"), systemImage: "server.rack") {
+        Section(String.localized("auth.login.section.serverDetails")) {
             if !viewModel.recentServers.isEmpty {
                 LoginRecentServersMenu(servers: viewModel.recentServers) { server in
                     viewModel.applyRecentServer(server)
@@ -21,7 +21,6 @@ struct LoginServerCard: View {
             }
 
             TextField(String.localized("auth.login.placeholder.serverName"), text: $viewModel.serverName)
-                .textFieldStyle(.roundedBorder)
                 .accessibilityIdentifier(AccessibilityID.Login.serverNameField)
                 .autocorrectionDisabled(true)
                 #if !os(macOS)
@@ -32,7 +31,6 @@ struct LoginServerCard: View {
                 .onSubmit { focusedField = .host }
 
             TextField(String.localized("auth.login.placeholder.ipAddress"), text: $viewModel.host)
-                .textFieldStyle(.roundedBorder)
                 .accessibilityIdentifier(AccessibilityID.Login.hostField)
                 .textContentType(.URL)
                 .autocorrectionDisabled(true)
@@ -80,7 +78,6 @@ private struct LoginPortField: View {
                 set: { viewModel.portString = $0 }
             )
         )
-        .textFieldStyle(.roundedBorder)
         .accessibilityIdentifier(AccessibilityID.Login.portField)
         #if !os(macOS)
         .keyboardType(.numberPad)
@@ -105,7 +102,6 @@ private struct LoginRecentServersMenu: View {
         } label: {
             Label(String.localized("auth.login.recentServers"), systemImage: "clock.arrow.circlepath")
         }
-        .buttonStyle(.bordered)
         .accessibilityIdentifier(AccessibilityID.Login.recentServersMenu)
     }
 }
@@ -126,7 +122,6 @@ private struct LoginConnectionTestView: View {
                     Label(String.localized("auth.login.connection.test"), systemImage: "network")
                 }
             }
-            .buttonStyle(.bordered)
             .disabled(!viewModel.isServerConfigurationValid || viewModel.connectionTestState.isTesting || viewModel.isLoading)
             .accessibilityIdentifier(AccessibilityID.Login.testConnectionButton)
 

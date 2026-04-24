@@ -6,6 +6,29 @@
 import SwiftUI
 import DSGetCore
 
+struct TaskStatusFilterMenu: View {
+    let statusFilter: TaskStatusFilter
+    let onStatusFilterChange: (TaskStatusFilter) -> Void
+
+    var body: some View {
+        Menu {
+            ForEach(TaskStatusFilter.allCases) { filter in
+                Button {
+                    onStatusFilterChange(filter)
+                } label: {
+                    if filter == statusFilter {
+                        Label(filter.localizedLabel, systemImage: "checkmark")
+                    } else {
+                        Text(filter.localizedLabel)
+                    }
+                }
+            }
+        } label: {
+            Label(statusFilter.localizedLabel, systemImage: "line.3.horizontal.decrease.circle")
+        }
+    }
+}
+
 struct TaskTypeFilterMenu: View {
     let viewModel: TasksViewModel
     let selectedTaskTypeLabel: String

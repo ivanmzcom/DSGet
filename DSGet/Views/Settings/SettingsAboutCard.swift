@@ -11,7 +11,7 @@ struct SettingsAboutCard: View {
     }
 
     var body: some View {
-        AdaptiveSectionCard(String.localized("settings.section.about"), systemImage: "info.circle") {
+        Section(String.localized("settings.section.about")) {
             SettingsDetailRow(title: String.localized("settings.about.version"), value: appVersion)
         }
     }

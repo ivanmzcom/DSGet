@@ -94,65 +94,94 @@ struct TaskListContentView: View {
     var body: some View {
         @Bindable var vm = tasksVM
 
+        #if os(macOS)
         AdaptiveLayoutReader { width in
-            VStack(spacing: 0) {
+            taskListContent(
+                selectedTask: $vm.selectedTask,
+                searchText: $vm.searchText,
+                layoutWidth: width
+            )
+        }
+        #else
+        taskListContent(
+            selectedTask: $vm.selectedTask,
+            searchText: $vm.searchText
+        )
+        #endif
+    }
+
+    private func taskListContent(
+        selectedTask: Binding<DownloadTask?>,
+        searchText: Binding<String>,
+        layoutWidth: AdaptiveLayoutWidth? = nil
+    ) -> some View {
+        VStack(spacing: 0) {
+            #if os(macOS)
+            if let layoutWidth {
                 TaskTransferHeader(
-                    layoutWidth: width,
+                    layoutWidth: layoutWidth,
                     tasksViewModel: tasksVM,
                     statusFilter: statusFilter,
                     onStatusFilterChange: onStatusFilterChange,
                     addTaskButton: addTaskButton,
                     usesCompactToolbarLayout: usesCompactToolbarLayout
                 )
-
-                TaskListSelectionView(
-                    tasks: tasksVM.visibleTasks,
-                    selectedTask: $vm.selectedTask,
-                    onDelete: handleDeleteTask,
-                    onTogglePause: handleTogglePause,
-                    opensTaskDetailInWindow: opensTaskDetailInWindow
-                )
             }
-            .overlay {
-                taskStateOverlay
-            }
-            .navigationTitle(String.localized("tasks.title"))
-            #if !os(macOS)
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $vm.searchText, prompt: String.localized("tasks.search.prompt"))
             #endif
-            .toolbar {
-                #if os(macOS)
-                ToolbarItemGroup(placement: .primaryAction) {
-                    refreshButton
-                    addTaskButton
-                        .labelStyle(.iconOnly)
-                        .help(String.localized("tasks.button.addTask"))
-                }
-                #endif
 
-                ToolbarItemGroup(placement: toolbarFilterPlacement) {
-                    HStack(spacing: 12) {
-                        TaskTypeFilterMenu(viewModel: tasksVM, selectedTaskTypeLabel: selectedTaskTypeLabel)
-                        TaskSortMenu(viewModel: tasksVM)
+            TaskListSelectionView(
+                tasks: tasksVM.visibleTasks,
+                selectedTask: selectedTask,
+                onDelete: handleDeleteTask,
+                onTogglePause: handleTogglePause,
+                opensTaskDetailInWindow: opensTaskDetailInWindow
+            )
+        }
+        .overlay {
+            taskStateOverlay
+        }
+        .navigationTitle(String.localized("tasks.title"))
+        #if !os(macOS)
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: searchText, prompt: String.localized("tasks.search.prompt"))
+        #endif
+        .toolbar {
+            #if os(macOS)
+            ToolbarItemGroup(placement: .primaryAction) {
+                refreshButton
+                addTaskButton
+                    .labelStyle(.iconOnly)
+                    .help(String.localized("tasks.button.addTask"))
+            }
+            #endif
+
+            ToolbarItemGroup(placement: toolbarFilterPlacement) {
+                HStack(spacing: 12) {
+                    if let onStatusFilterChange {
+                        TaskStatusFilterMenu(
+                            statusFilter: statusFilter,
+                            onStatusFilterChange: onStatusFilterChange
+                        )
                     }
+                    TaskTypeFilterMenu(viewModel: tasksVM, selectedTaskTypeLabel: selectedTaskTypeLabel)
+                    TaskSortMenu(viewModel: tasksVM)
                 }
             }
-            .task {
-                tasksVM.statusFilter = statusFilter
-                await tasksVM.fetchTasks()
-            }
-            .onChange(of: statusFilter) { _, newValue in
-                tasksVM.statusFilter = newValue
-            }
-            .errorAlert(isPresented: taskErrorAlertBinding, error: tasksVM.currentError)
-            .onChange(of: appViewModel.incomingTorrentURL) { _, newValue in
-                guard let url = newValue else { return }
-                Task { await importTorrent(from: url) }
-            }
-            .sheet(item: $preselectedTorrent, content: addTaskSheet)
-            .offlineModeIndicator(isOffline: shouldShowOfflineBadge)
         }
+        .task {
+            tasksVM.statusFilter = statusFilter
+            await tasksVM.fetchTasks()
+        }
+        .onChange(of: statusFilter) { _, newValue in
+            tasksVM.statusFilter = newValue
+        }
+        .errorAlert(isPresented: taskErrorAlertBinding, error: tasksVM.currentError)
+        .onChange(of: appViewModel.incomingTorrentURL) { _, newValue in
+            guard let url = newValue else { return }
+            Task { await importTorrent(from: url) }
+        }
+        .sheet(item: $preselectedTorrent, content: addTaskSheet)
+        .offlineModeIndicator(isOffline: shouldShowOfflineBadge)
     }
 
     private var addTaskButton: some View {
@@ -180,30 +209,40 @@ struct TaskListContentView: View {
     private var taskStateOverlay: some View {
         switch taskContentState {
         case .loading:
-            DSGetLoadingContentStateView(
-                title: String.localized("tasks.state.loading.title"),
-                description: String.localized("tasks.state.loading.description")
-            )
+            ProgressView(String.localized("tasks.state.loading.title"))
         case .offline:
-            DSGetContentStateView.offline(onRetry: retryTasks)
+            ContentUnavailableView {
+                Label(String.localized(EmptyStateText.offlineTitle), systemImage: "wifi.slash")
+            } description: {
+                Text(String.localized(EmptyStateText.offlineDescription))
+            } actions: {
+                Button(String.localized(EmptyStateText.offlineAction), action: retryTasks)
+            }
         case .error(let error):
-            DSGetContentStateView.error(error, onRetry: retryTasks)
+            ContentUnavailableView {
+                Label(error.requiresRelogin ? String.localized("state.permission.title") : String.localized(EmptyStateText.errorTitle),
+                      systemImage: error.requiresRelogin ? "lock.shield" : "exclamationmark.triangle")
+            } description: {
+                Text(error.requiresRelogin ? String.localized("state.permission.description") : error.localizedDescription)
+            } actions: {
+                Button(String.localized(EmptyStateText.errorAction), action: retryTasks)
+            }
         case .empty:
-            DSGetContentStateView(
-                title: String.localized(EmptyStateText.noTasksTitle),
-                description: String.localized(EmptyStateText.noTasksDescription),
-                systemImage: "arrow.down.circle",
-                primaryActionTitle: String.localized("tasks.button.addTask"),
-                primaryAction: presentAddTask
-            )
+            ContentUnavailableView {
+                Label(String.localized(EmptyStateText.noTasksTitle), systemImage: "arrow.down.circle")
+            } description: {
+                Text(String.localized(EmptyStateText.noTasksDescription))
+            } actions: {
+                Button(String.localized("tasks.button.addTask"), action: presentAddTask)
+            }
         case .noResults:
-            DSGetContentStateView(
-                title: String.localized("tasks.state.noResults.title"),
-                description: taskNoResultsDescription,
-                systemImage: "line.3.horizontal.decrease.circle",
-                primaryActionTitle: String.localized("state.clearFilters"),
-                primaryAction: clearTaskFilters
-            )
+            ContentUnavailableView {
+                Label(String.localized("tasks.state.noResults.title"), systemImage: "line.3.horizontal.decrease.circle")
+            } description: {
+                Text(taskNoResultsDescription)
+            } actions: {
+                Button(String.localized("state.clearFilters"), action: clearTaskFilters)
+            }
         case nil:
             EmptyView()
         }

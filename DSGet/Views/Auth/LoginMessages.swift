@@ -25,24 +25,16 @@ struct LoginStatusMessage: View {
     let tint: Color
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: systemImage)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tint)
-                .frame(width: 18)
-
+        Label {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
-
                 Text(detail)
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
             }
+        } icon: {
+            Image(systemName: systemImage)
+                .foregroundStyle(tint)
         }
-        .padding(10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .dsgetSurface(.row, tint: tint)
     }
 }

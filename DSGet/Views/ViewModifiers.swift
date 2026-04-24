@@ -81,18 +81,13 @@ struct OfflineModeOverlay: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .overlay(alignment: .bottom) {
+            .safeAreaInset(edge: .bottom) {
                 if isOffline {
-                    HStack {
-                        Image(systemName: "wifi.slash")
-                        Text(String.localized("offline.cachedData"))
-                    }
-                    .font(.caption)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
-                    .padding(.bottom, 8)
+                    Label(String.localized("offline.cachedData"), systemImage: "wifi.slash")
+                        .font(.footnote)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                        .background(.bar)
                 }
             }
     }

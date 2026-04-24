@@ -132,12 +132,7 @@ struct FeedListContentView: View {
         List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
             feedRowView(for: feed)
                 .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-                .listRowBackground(Color.clear)
         }
-        .listStyle(.plain)
-        .dsgetContentBackground()
         .accessibilityIdentifier(AccessibilityID.FeedList.list)
     }
 
@@ -221,33 +216,43 @@ struct FeedListContentView: View {
     private var feedStateOverlay: some View {
         switch feedContentState {
         case .loading:
-            DSGetLoadingContentStateView(
-                title: String.localized("feeds.state.loading.title"),
-                description: String.localized("feeds.state.loading.description")
-            )
+            ProgressView(String.localized("feeds.state.loading.title"))
         case .offline:
-            DSGetContentStateView.offline(onRetry: retryFeeds)
+            ContentUnavailableView {
+                Label(String.localized(EmptyStateText.offlineTitle), systemImage: "wifi.slash")
+            } description: {
+                Text(String.localized(EmptyStateText.offlineDescription))
+            } actions: {
+                Button(String.localized(EmptyStateText.offlineAction), action: retryFeeds)
+            }
         case .error(let error):
-            DSGetContentStateView.error(error, onRetry: retryFeeds)
+            ContentUnavailableView {
+                Label(error.requiresRelogin ? String.localized("state.permission.title") : String.localized(EmptyStateText.errorTitle),
+                      systemImage: error.requiresRelogin ? "lock.shield" : "exclamationmark.triangle")
+            } description: {
+                Text(error.requiresRelogin ? String.localized("state.permission.description") : error.localizedDescription)
+            } actions: {
+                Button(String.localized(EmptyStateText.errorAction), action: retryFeeds)
+            }
         case .empty:
-            DSGetContentStateView(
-                title: String.localized("feeds.empty.noFeeds"),
-                description: String.localized("feeds.empty.noFeeds.description"),
-                systemImage: "dot.radiowaves.right",
-                primaryActionTitle: String.localized("feed.action.refresh"),
-                primaryAction: retryFeeds
-            )
+            ContentUnavailableView {
+                Label(String.localized("feeds.empty.noFeeds"), systemImage: "dot.radiowaves.right")
+            } description: {
+                Text(String.localized("feeds.empty.noFeeds.description"))
+            } actions: {
+                Button(String.localized("feed.action.refresh"), action: retryFeeds)
+            }
         case .noResults:
-            DSGetContentStateView(
-                title: String.localized("feeds.state.noResults.title"),
-                description: String.localized(
+            ContentUnavailableView {
+                Label(String.localized("feeds.state.noResults.title"), systemImage: "magnifyingglass")
+            } description: {
+                Text(String.localized(
                     "feeds.state.noResults.search",
                     feedsVM.searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-                ),
-                systemImage: "magnifyingglass",
-                primaryActionTitle: String.localized("state.clearSearch"),
-                primaryAction: clearFeedSearch
-            )
+                ))
+            } actions: {
+                Button(String.localized("state.clearSearch"), action: clearFeedSearch)
+            }
         case nil:
             EmptyView()
         }
@@ -283,11 +288,9 @@ private struct FeedContentRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            DSGetIconBadge(
-                systemName: isFavorite ? "star.fill" : "dot.radiowaves.left.and.right",
-                tint: isFavorite ? .yellow : .accentColor,
-                size: 32
-            )
+            Image(systemName: isFavorite ? "star.fill" : "dot.radiowaves.left.and.right")
+                .foregroundStyle(isFavorite ? .yellow : .secondary)
+                .frame(width: 24)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(feed.title)
@@ -327,8 +330,6 @@ private struct FeedContentRow: View {
                     .progressViewStyle(.circular)
             }
         }
-        .padding(DSGetDesign.rowPadding)
-        .dsgetSurface(.row)
     }
 
     private var hostText: String? {
