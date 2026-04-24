@@ -93,6 +93,7 @@ struct MainView: View {
                 }
                 .tabItem {
                     Label(AppSection.downloads.label, systemImage: AppSection.downloads.icon)
+                        .accessibilityIdentifier(AccessibilityID.Sidebar.downloads)
                 }
                 .tag(Optional(AppSection.downloads))
 
@@ -105,6 +106,7 @@ struct MainView: View {
                 }
                 .tabItem {
                     Label(AppSection.feeds.label, systemImage: AppSection.feeds.icon)
+                        .accessibilityIdentifier(AccessibilityID.Sidebar.feeds)
                 }
                 .tag(Optional(AppSection.feeds))
 
@@ -113,6 +115,7 @@ struct MainView: View {
                 }
                 .tabItem {
                     Label(AppSection.settings.label, systemImage: AppSection.settings.icon)
+                        .accessibilityIdentifier(AccessibilityID.Sidebar.settings)
                 }
                 .tag(Optional(AppSection.settings))
             }

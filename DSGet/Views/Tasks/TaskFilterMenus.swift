@@ -36,9 +36,15 @@ struct TaskFilterMenu: View {
             }
 
             Section(String.localized("tasks.type.filter")) {
-                Picker(String.localized("tasks.type.filter"), selection: $viewModel.taskTypeFilter) {
-                    ForEach(TaskTypeFilter.allCases) { type in
-                        Text(type.localizedShortLabel).tag(type)
+                ForEach(TaskTypeFilter.allCases) { type in
+                    Button {
+                        viewModel.taskTypeFilter = type
+                    } label: {
+                        if type == viewModel.taskTypeFilter {
+                            Label(type.localizedShortLabel, systemImage: "checkmark")
+                        } else {
+                            Text(type.localizedShortLabel)
+                        }
                     }
                 }
             }
@@ -88,9 +94,17 @@ struct TaskTypeFilterMenu: View {
         @Bindable var viewModel = viewModel
 
         Menu {
-            Picker(String.localized("tasks.type.filter"), selection: $viewModel.taskTypeFilter) {
+            Section(String.localized("tasks.type.filter")) {
                 ForEach(TaskTypeFilter.allCases) { type in
-                    Text(type.localizedShortLabel).tag(type)
+                    Button {
+                        viewModel.taskTypeFilter = type
+                    } label: {
+                        if type == viewModel.taskTypeFilter {
+                            Label(type.localizedShortLabel, systemImage: "checkmark")
+                        } else {
+                            Text(type.localizedShortLabel)
+                        }
+                    }
                 }
             }
 
