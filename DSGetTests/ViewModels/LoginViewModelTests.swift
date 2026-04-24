@@ -124,7 +124,7 @@ final class LoginViewModelTests: XCTestCase {
         sut = makeSUT()
         sut.port = 5001
         sut.portString = "abc"
-        XCTAssertEqual(sut.port, 5001) // unchanged
+        XCTAssertEqual(sut.port, 0)
     }
 
     // MARK: - Login
@@ -221,7 +221,6 @@ final class LoginViewModelTests: XCTestCase {
     func testLoginUsesHostAsServerNameWhenEmpty() async {
         sut = makeSUT()
         sut.host = "nas.local"
-        sut.serverName = ""
         sut.username = "admin"
         sut.password = "password"
         mockAuthService.loginResult = .success(makeSession())
@@ -231,19 +230,6 @@ final class LoginViewModelTests: XCTestCase {
         // Server name should default to host
         XCTAssertTrue(mockAuthService.saveServerCalled)
         XCTAssertEqual(mockAuthService.lastSavedServer?.name, "nas.local")
-    }
-
-    func testLoginUsesCustomServerName() async {
-        sut = makeSUT()
-        sut.host = "192.168.1.100"
-        sut.serverName = "My NAS"
-        sut.username = "admin"
-        sut.password = "password"
-        mockAuthService.loginResult = .success(makeSession())
-
-        await sut.login()
-
-        XCTAssertEqual(mockAuthService.lastSavedServer?.name, "My NAS")
     }
 
     // MARK: - Reset

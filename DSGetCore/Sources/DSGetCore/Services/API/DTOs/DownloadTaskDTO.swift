@@ -23,6 +23,21 @@ public struct DownloadTaskDTO: Decodable {
     public let username: String
     public let additional: TaskAdditionalDTO?
 
+    private enum CodingKeys: String, CodingKey {
+        case id, title, size, status, type, username, additional
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeFlexibleString(forKey: .id)
+        title = try container.decodeFlexibleString(forKey: .title)
+        size = try container.decodeFlexibleInt64(forKey: .size)
+        status = try container.decodeFlexibleString(forKey: .status)
+        type = try container.decodeFlexibleString(forKey: .type)
+        username = try container.decodeFlexibleString(forKey: .username)
+        additional = try container.decodeIfPresent(TaskAdditionalDTO.self, forKey: .additional)
+    }
+
     public init(
         id: String,
         title: String,
@@ -48,6 +63,20 @@ public struct TaskAdditionalDTO: Decodable {
     public let transfer: TaskTransferDTO?
     public let file: [TaskFileDTO]?
     public let tracker: [TaskTrackerDTO]?
+
+    private enum CodingKeys: String, CodingKey {
+        case detail, transfer, file, files, tracker, trackers
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        detail = try container.decodeIfPresent(TaskDetailDTO.self, forKey: .detail)
+        transfer = try container.decodeIfPresent(TaskTransferDTO.self, forKey: .transfer)
+        file = try container.decodeIfPresent([TaskFileDTO].self, forKey: .file)
+            ?? container.decodeIfPresent([TaskFileDTO].self, forKey: .files)
+        tracker = try container.decodeIfPresent([TaskTrackerDTO].self, forKey: .tracker)
+            ?? container.decodeIfPresent([TaskTrackerDTO].self, forKey: .trackers)
+    }
 
     public init(
         detail: TaskDetailDTO? = nil,
@@ -95,6 +124,24 @@ public struct TaskDetailDTO: Decodable {
         case uri
         case waitingSeconds = "waiting_seconds"
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        completedTime = try container.decodeFlexibleTimeIntervalIfPresent(forKey: .completedTime)
+        connectedLeechers = try container.decodeFlexibleIntIfPresent(forKey: .connectedLeechers)
+        connectedPeers = try container.decodeFlexibleIntIfPresent(forKey: .connectedPeers)
+        connectedSeeders = try container.decodeFlexibleIntIfPresent(forKey: .connectedSeeders)
+        createTime = try container.decodeFlexibleTimeIntervalIfPresent(forKey: .createTime)
+        destination = try container.decodeIfPresent(String.self, forKey: .destination)
+        seedelapsed = try container.decodeFlexibleTimeIntervalIfPresent(forKey: .seedelapsed)
+        startedTime = try container.decodeFlexibleTimeIntervalIfPresent(forKey: .startedTime)
+        totalPeers = try container.decodeFlexibleIntIfPresent(forKey: .totalPeers)
+        totalPieces = try container.decodeFlexibleIntIfPresent(forKey: .totalPieces)
+        totalSize = try container.decodeFlexibleInt64IfPresent(forKey: .totalSize)
+        unzipPassword = try container.decodeIfPresent(String.self, forKey: .unzipPassword)
+        uri = try container.decodeIfPresent(String.self, forKey: .uri)
+        waitingSeconds = try container.decodeFlexibleIntIfPresent(forKey: .waitingSeconds)
+    }
 }
 
 /// Task transfer statistics.
@@ -109,6 +156,14 @@ public struct TaskTransferDTO: Decodable {
         case sizeUploaded = "size_uploaded"
         case speedDownload = "speed_download"
         case speedUpload = "speed_upload"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        sizeDownloaded = try container.decodeFlexibleInt64(forKey: .sizeDownloaded)
+        sizeUploaded = try container.decodeFlexibleInt64(forKey: .sizeUploaded)
+        speedDownload = try container.decodeFlexibleInt(forKey: .speedDownload)
+        speedUpload = try container.decodeFlexibleInt(forKey: .speedUpload)
     }
 
     public init(
@@ -138,6 +193,16 @@ public struct TaskFileDTO: Decodable {
         case sizeDownloaded = "size_downloaded"
         case priority, wanted
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        filename = try container.decodeIfPresent(String.self, forKey: .filename)
+        name = try container.decodeIfPresent(String.self, forKey: .name)
+        size = try container.decodeFlexibleInt64IfPresent(forKey: .size)
+        sizeDownloaded = try container.decodeFlexibleInt64IfPresent(forKey: .sizeDownloaded)
+        priority = try container.decodeIfPresent(String.self, forKey: .priority)
+        wanted = try container.decodeIfPresent(Bool.self, forKey: .wanted)
+    }
 }
 
 /// Task tracker information.
@@ -151,16 +216,116 @@ public struct TaskTrackerDTO: Decodable {
         case url, status
         case updateUrl = "update_url"
         case updateInterval = "update_interval"
+        case updateTimer = "update_timer"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        url = try container.decodeIfPresent(String.self, forKey: .url)
+        status = try container.decodeIfPresent(String.self, forKey: .status)
+        updateUrl = try container.decodeIfPresent(String.self, forKey: .updateUrl)
+        updateInterval = try container.decodeFlexibleIntIfPresent(forKey: .updateInterval)
+            ?? container.decodeFlexibleIntIfPresent(forKey: .updateTimer)
     }
 }
 
-/// Result of task edit operation.
-public struct TaskEditResultDTO: Decodable {
+/// Result of task action operations.
+public struct TaskActionResultDTO: Decodable {
     public let id: String
     public let error: Int
+
+    private enum CodingKeys: String, CodingKey {
+        case id, error
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeFlexibleString(forKey: .id)
+        error = try container.decodeFlexibleInt(forKey: .error)
+    }
 
     public init(id: String, error: Int) {
         self.id = id
         self.error = error
+    }
+}
+
+/// Result of task edit operation.
+public typealias TaskEditResultDTO = TaskActionResultDTO
+
+private extension KeyedDecodingContainer {
+    func decodeFlexibleString(forKey key: Key) throws -> String {
+        if let value = try? decode(String.self, forKey: key) {
+            return value
+        }
+        if let value = try? decode(Int.self, forKey: key) {
+            return String(value)
+        }
+        if let value = try? decode(Int64.self, forKey: key) {
+            return String(value)
+        }
+        return try decode(String.self, forKey: key)
+    }
+
+    func decodeFlexibleInt(forKey key: Key) throws -> Int {
+        if let value = try? decode(Int.self, forKey: key) {
+            return value
+        }
+        if let value = try? decode(String.self, forKey: key), let intValue = Int(value) {
+            return intValue
+        }
+        return try decode(Int.self, forKey: key)
+    }
+
+    func decodeFlexibleIntIfPresent(forKey key: Key) throws -> Int? {
+        guard contains(key) else { return nil }
+        if try decodeNil(forKey: key) {
+            return nil
+        }
+        if let value = try? decode(Int.self, forKey: key) {
+            return value
+        }
+        if let value = try? decode(String.self, forKey: key), let intValue = Int(value) {
+            return intValue
+        }
+        return try decodeIfPresent(Int.self, forKey: key)
+    }
+
+    func decodeFlexibleInt64(forKey key: Key) throws -> Int64 {
+        if let value = try? decode(Int64.self, forKey: key) {
+            return value
+        }
+        if let value = try? decode(String.self, forKey: key), let intValue = Int64(value) {
+            return intValue
+        }
+        return try decode(Int64.self, forKey: key)
+    }
+
+    func decodeFlexibleInt64IfPresent(forKey key: Key) throws -> Int64? {
+        guard contains(key) else { return nil }
+        if try decodeNil(forKey: key) {
+            return nil
+        }
+        if let value = try? decode(Int64.self, forKey: key) {
+            return value
+        }
+        if let value = try? decode(String.self, forKey: key), let intValue = Int64(value) {
+            return intValue
+        }
+        return try decodeIfPresent(Int64.self, forKey: key)
+    }
+
+    func decodeFlexibleTimeIntervalIfPresent(forKey key: Key) throws -> TimeInterval? {
+        guard contains(key) else { return nil }
+        if try decodeNil(forKey: key) {
+            return nil
+        }
+        if let value = try? decode(TimeInterval.self, forKey: key) {
+            return value
+        }
+        if let value = try? decode(String.self, forKey: key), let doubleValue = TimeInterval(value) {
+            return doubleValue
+        }
+        return try decodeIfPresent(TimeInterval.self, forKey: key)
     }
 }

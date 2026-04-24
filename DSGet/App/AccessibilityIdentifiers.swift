@@ -11,7 +11,6 @@ enum AccessibilityID {
     // MARK: - Login
 
     enum Login {
-        static let serverNameField = "login.serverName"
         static let hostField = "login.host"
         static let portField = "login.port"
         static let httpsToggle = "login.httpsToggle"

@@ -6,7 +6,6 @@
 // MARK: - Autenticación
 "auth.login.title" = "DSGet";
 "auth.login.section.serverDetails" = "Detalles del Servidor";
-"auth.login.placeholder.serverName" = "Nombre del Servidor (opcional)";
 "auth.login.placeholder.ipAddress" = "IP o dirección";
 "auth.login.toggle.https" = "Usar HTTPS";
 "auth.login.placeholder.port" = "Puerto";
@@ -150,6 +149,8 @@
 "tasks.filter.downloading" = "Descargando";
 "tasks.filter.paused" = "Pausadas";
 "tasks.filter.completed" = "Completadas";
+"tasks.filter.status" = "Estado";
+"tasks.filters" = "Filtros";
 "tasks.type.all" = "BT/E2K";
 "tasks.type.bt" = "BT";
 "tasks.type.e2k" = "E2K";
@@ -177,6 +178,7 @@
 "tasks.selectTask.description" = "Elige una tarea para ver archivos, peers, trackers y detalles de transferencia.";
 
 // MARK: - Detalle de Tarea
+"taskDetail.navigationTitle" = "Tarea";
 "taskDetail.title" = "Título";
 "taskDetail.tab.general" = "General";
 "taskDetail.tab.transfer" = "Transferencia";
@@ -206,6 +208,7 @@
 "taskDetail.started" = "Iniciado";
 "taskDetail.completed" = "Completado";
 "taskDetail.destination" = "Destino";
+"taskDetail.destination.completedError" = "No se puede cambiar el destino de una tarea completada.";
 "taskDetail.uri" = "URI";
 "taskDetail.connectionInfo" = "Información de Conexión";
 "taskDetail.connectedPeers" = "Peers Conectados";

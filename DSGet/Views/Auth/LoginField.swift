@@ -4,5 +4,5 @@
 //
 
 enum LoginField: Hashable {
-    case serverName, host, port, username, password, otp
+    case host, port, username, password, otp
 }

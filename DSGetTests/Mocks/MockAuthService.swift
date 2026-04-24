@@ -15,8 +15,10 @@ final class MockAuthService: AuthServiceProtocol, @unchecked Sendable {
     var getServerResult: Server?
     var saveServerError: Error?
     var removeServerError: Error?
+    var testConnectionError: Error?
     var hasServerResult: Bool = false
     var getCredentialsResult: Result<Credentials, Error> = .failure(DomainError.serverCredentialsNotFound(ServerID()))
+    var getRecentServersResult: [Server] = []
 
     // MARK: - Spy
 
@@ -25,9 +27,12 @@ final class MockAuthService: AuthServiceProtocol, @unchecked Sendable {
     var validateSessionCalled = false
     var saveServerCalled = false
     var removeServerCalled = false
+    var testConnectionCalled = false
+    var clearRecentServersCalled = false
     var lastLoginRequest: LoginRequest?
     var lastSavedServer: Server?
     var lastSavedCredentials: Credentials?
+    var lastTestConnectionConfiguration: ServerConfiguration?
 
     // MARK: - AuthServiceProtocol
 
@@ -64,6 +69,12 @@ final class MockAuthService: AuthServiceProtocol, @unchecked Sendable {
         try refreshSessionResult.get()
     }
 
+    func testConnection(configuration: ServerConfiguration) async throws {
+        testConnectionCalled = true
+        lastTestConnectionConfiguration = configuration
+        if let error = testConnectionError { throw error }
+    }
+
     func getServer() async throws -> Server? {
         getServerResult
     }
@@ -86,5 +97,14 @@ final class MockAuthService: AuthServiceProtocol, @unchecked Sendable {
 
     func getCredentials() async throws -> Credentials {
         try getCredentialsResult.get()
+    }
+
+    func getRecentServers() async -> [Server] {
+        getRecentServersResult
+    }
+
+    func clearRecentServers() async {
+        clearRecentServersCalled = true
+        getRecentServersResult = []
     }
 }

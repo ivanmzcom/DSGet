@@ -53,39 +53,15 @@ public final class TaskService: TaskServiceProtocol, @unchecked Sendable {
     }
 
     public func pauseTasks(ids: [TaskID]) async throws {
-        let idsParam = ids.map { $0.rawValue }.joined(separator: ",")
-
-        let _: SynoResponseDTO<EmptyDataDTO> = try await apiClient.get(
-            endpoint: .downloadStation,
-            api: "SYNO.DownloadStation.Task",
-            method: "pause",
-            version: 1,
-            params: ["id": idsParam]
-        )
+        try await performTaskAction(method: "pause", ids: ids)
     }
 
     public func resumeTasks(ids: [TaskID]) async throws {
-        let idsParam = ids.map { $0.rawValue }.joined(separator: ",")
-
-        let _: SynoResponseDTO<EmptyDataDTO> = try await apiClient.get(
-            endpoint: .downloadStation,
-            api: "SYNO.DownloadStation.Task",
-            method: "resume",
-            version: 1,
-            params: ["id": idsParam]
-        )
+        try await performTaskAction(method: "resume", ids: ids)
     }
 
     public func deleteTasks(ids: [TaskID]) async throws {
-        let idsParam = ids.map { $0.rawValue }.joined(separator: ",")
-
-        let _: SynoResponseDTO<EmptyDataDTO> = try await apiClient.get(
-            endpoint: .downloadStation,
-            api: "SYNO.DownloadStation.Task",
-            method: "delete",
-            version: 1,
-            params: ["id": idsParam]
-        )
+        try await performTaskAction(method: "delete", ids: ids)
     }
 
     public func editTaskDestination(ids: [TaskID], destination: String) async throws {
@@ -99,16 +75,31 @@ public final class TaskService: TaskServiceProtocol, @unchecked Sendable {
             params: ["id": idsParam, "destination": destination]
         )
 
-        // Check for errors in results
-        let results = response.data ?? []
-        let errors = results.filter { $0.error != 0 }
-        if let firstError = errors.first {
-            let errorID = TaskID(firstError.id)
-            throw DomainError.taskOperationFailed(errorID, reason: "Failed to edit destination (error: \(firstError.error))")
-        }
+        try checkTaskActionResults(response.data ?? [], action: "edit destination")
     }
 
     // MARK: - Private Methods
+
+    private func performTaskAction(method: String, ids: [TaskID]) async throws {
+        let idsParam = ids.map { $0.rawValue }.joined(separator: ",")
+
+        let response: SynoResponseDTO<[TaskActionResultDTO]> = try await apiClient.get(
+            endpoint: .downloadStation,
+            api: "SYNO.DownloadStation.Task",
+            method: method,
+            version: 1,
+            params: ["id": idsParam]
+        )
+
+        try checkTaskActionResults(response.data ?? [], action: method)
+    }
+
+    private func checkTaskActionResults(_ results: [TaskActionResultDTO], action: String) throws {
+        if let firstError = results.first(where: { $0.error != 0 }) {
+            let errorID = TaskID(firstError.id)
+            throw DomainError.taskOperationFailed(errorID, reason: "Failed to \(action) task (error: \(firstError.error))")
+        }
+    }
 
     private func createTaskFromURL(_ uri: String, destination: String?) async throws {
         // Use GET request with version 1, matching the CLI implementation

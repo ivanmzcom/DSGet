@@ -68,6 +68,11 @@ final class TaskDetailViewModel: DomainErrorHandling {
         return !isCompletedEmule && allowedStatuses.contains(statusLower)
     }
 
+    /// Whether Download Station allows changing the destination.
+    var canEditDestination: Bool {
+        !isProcessingAction && !TaskStatus(apiValue: effectiveStatus).isCompleted
+    }
+
     // MARK: - Dependencies
 
     private let taskService: TaskServiceProtocol
@@ -133,6 +138,15 @@ final class TaskDetailViewModel: DomainErrorHandling {
 
     /// Edits the task destination.
     func editDestination(_ destination: String) async {
+        guard canEditDestination else {
+            currentError = .api(.serverError(
+                code: -1,
+                message: String.localized("taskDetail.destination.completedError")
+            ))
+            showingError = true
+            return
+        }
+
         isProcessingAction = true
         currentError = nil
         showingError = false

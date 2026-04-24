@@ -88,6 +88,7 @@ public final class SynologyAPIClient: SynologyAPIClientProtocol {
 
     public enum APIEndpoint: String {
         case auth = "/webapi/auth.cgi"
+        case downloadStationInfo = "/webapi/DownloadStation/info.cgi"
         case downloadStation = "/webapi/DownloadStation/task.cgi"
         case rssSite = "/webapi/DownloadStation/RSSsite.cgi"
         case rssFeed = "/webapi/DownloadStation/RSSfeed.cgi"
@@ -358,6 +359,9 @@ public final class SynologyAPIClient: SynologyAPIClientProtocol {
             if let response = try? decoder.decode(SynoResponseDTO<EmptyDataDTO>.self, from: data),
                !response.success,
                let error = response.error {
+                if error.isSessionExpired {
+                    throw DataError.sessionExpired
+                }
                 throw DataError.apiError(error)
             }
         }
@@ -390,6 +394,9 @@ public final class SynologyAPIClient: SynologyAPIClientProtocol {
         do {
             let response = try decoder.decode(SynoResponseDTO<T>.self, from: data)
             if !response.success, let error = response.error {
+                if error.isSessionExpired {
+                    throw DataError.sessionExpired
+                }
                 throw DataError.apiError(error)
             }
             return response

@@ -31,10 +31,6 @@ struct TaskListContentView: View {
         #endif
     }
 
-    private var selectedTaskTypeLabel: String {
-        tasksVM.taskTypeFilter.localizedShortLabel
-    }
-
     private var taskContentState: TaskListContentState? {
         if tasksVM.isLoading && tasksVM.tasks.isEmpty {
             return .loading
@@ -110,12 +106,13 @@ struct TaskListContentView: View {
         #endif
     }
 
+    @ViewBuilder
     private func taskListContent(
         selectedTask: Binding<DownloadTask?>,
         searchText: Binding<String>,
         layoutWidth: AdaptiveLayoutWidth? = nil
     ) -> some View {
-        VStack(spacing: 0) {
+        let content = VStack(spacing: 0) {
             #if os(macOS)
             if let layoutWidth {
                 TaskTransferHeader(
@@ -143,7 +140,6 @@ struct TaskListContentView: View {
         .navigationTitle(String.localized("tasks.title"))
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: searchText, prompt: String.localized("tasks.search.prompt"))
         #endif
         .toolbar {
             #if os(macOS)
@@ -157,13 +153,11 @@ struct TaskListContentView: View {
 
             ToolbarItemGroup(placement: toolbarFilterPlacement) {
                 HStack(spacing: 12) {
-                    if let onStatusFilterChange {
-                        TaskStatusFilterMenu(
-                            statusFilter: statusFilter,
-                            onStatusFilterChange: onStatusFilterChange
-                        )
-                    }
-                    TaskTypeFilterMenu(viewModel: tasksVM, selectedTaskTypeLabel: selectedTaskTypeLabel)
+                    TaskFilterMenu(
+                        viewModel: tasksVM,
+                        statusFilter: statusFilter,
+                        onStatusFilterChange: onStatusFilterChange
+                    )
                     TaskSortMenu(viewModel: tasksVM)
                 }
             }
@@ -182,6 +176,16 @@ struct TaskListContentView: View {
         }
         .sheet(item: $preselectedTorrent, content: addTaskSheet)
         .offlineModeIndicator(isOffline: shouldShowOfflineBadge)
+
+        #if os(macOS)
+        content
+        #else
+        if usesCompactToolbarLayout {
+            content.searchable(text: searchText, prompt: String.localized("tasks.search.prompt"))
+        } else {
+            content
+        }
+        #endif
     }
 
     private var addTaskButton: some View {

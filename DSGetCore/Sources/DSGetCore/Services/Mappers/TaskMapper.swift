@@ -8,7 +8,8 @@ public struct TaskMapper: Sendable {
 
     /// Maps a DownloadTaskDTO to a DownloadTask entity.
     public func mapToEntity(_ dto: DownloadTaskDTO) -> DownloadTask {
-        DownloadTask(
+        let transfer = dto.additional?.transfer.map { mapTransfer($0) }
+        return DownloadTask(
             id: TaskID(dto.id),
             title: dto.title,
             size: ByteSize(bytes: dto.size),
@@ -16,8 +17,8 @@ public struct TaskMapper: Sendable {
             type: TaskType(apiValue: dto.type),
             username: dto.username,
             detail: dto.additional?.detail.map { mapDetail($0) },
-            transfer: dto.additional?.transfer.map { mapTransfer($0) },
-            files: dto.additional?.file?.map { mapFile($0) } ?? [],
+            transfer: transfer,
+            files: mapFiles(dto, transfer: transfer),
             trackers: dto.additional?.tracker?.map { mapTracker($0) } ?? []
         )
     }
@@ -65,6 +66,27 @@ public struct TaskMapper: Sendable {
             priority: FilePriority(apiValue: dto.priority),
             isWanted: dto.wanted ?? true
         )
+    }
+
+    private func mapFiles(_ dto: DownloadTaskDTO, transfer: TaskTransferInfo?) -> [TaskFile] {
+        let files = dto.additional?.file?.map { mapFile($0) } ?? []
+        if !files.isEmpty {
+            return files
+        }
+
+        let title = dto.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty, dto.size > 0 else { return [] }
+
+        let status = TaskStatus(apiValue: dto.status)
+        let downloadedSize = transfer?.downloaded ?? (status.isCompleted ? ByteSize(bytes: dto.size) : .zero)
+        return [
+            TaskFile(
+                id: dto.id,
+                name: title,
+                size: ByteSize(bytes: dto.size),
+                downloadedSize: downloadedSize
+            )
+        ]
     }
 
     private func mapTracker(_ dto: TaskTrackerDTO) -> TaskTracker {

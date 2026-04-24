@@ -6,6 +6,57 @@
 import SwiftUI
 import DSGetCore
 
+struct TaskFilterMenu: View {
+    let viewModel: TasksViewModel
+    let statusFilter: TaskStatusFilter
+    let onStatusFilterChange: ((TaskStatusFilter) -> Void)?
+
+    private var hasActiveFilters: Bool {
+        statusFilter != .all || viewModel.taskTypeFilter != .all
+    }
+
+    var body: some View {
+        @Bindable var viewModel = viewModel
+
+        Menu {
+            if let onStatusFilterChange {
+                Section(String.localized("tasks.filter.status")) {
+                    ForEach(TaskStatusFilter.allCases) { filter in
+                        Button {
+                            onStatusFilterChange(filter)
+                        } label: {
+                            if filter == statusFilter {
+                                Label(filter.localizedLabel, systemImage: "checkmark")
+                            } else {
+                                Text(filter.localizedLabel)
+                            }
+                        }
+                    }
+                }
+            }
+
+            Section(String.localized("tasks.type.filter")) {
+                Picker(String.localized("tasks.type.filter"), selection: $viewModel.taskTypeFilter) {
+                    ForEach(TaskTypeFilter.allCases) { type in
+                        Text(type.localizedShortLabel).tag(type)
+                    }
+                }
+            }
+
+            if !viewModel.searchText.isEmpty {
+                Button(String.localized("tasks.search.clear"), systemImage: "xmark.circle") {
+                    viewModel.searchText = ""
+                }
+            }
+        } label: {
+            Label(
+                String.localized("tasks.filters"),
+                systemImage: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle"
+            )
+        }
+    }
+}
+
 struct TaskStatusFilterMenu: View {
     let statusFilter: TaskStatusFilter
     let onStatusFilterChange: (TaskStatusFilter) -> Void

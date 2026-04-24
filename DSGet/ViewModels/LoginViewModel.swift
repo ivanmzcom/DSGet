@@ -31,9 +31,6 @@ enum LoginConnectionTestState: Equatable {
 final class LoginViewModel: DomainErrorHandling {
     // MARK: - Published State
 
-    /// Server name (user-friendly label).
-    var serverName: String = ""
-
     /// Server host address.
     var host: String = "" {
         didSet {
@@ -145,14 +142,6 @@ final class LoginViewModel: DomainErrorHandling {
         }
     }
 
-    /// Generated server name if user didn't provide one.
-    private var effectiveServerName: String {
-        if serverName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return trimmedHost
-        }
-        return serverName
-    }
-
     private var trimmedHost: String {
         host.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -180,7 +169,7 @@ final class LoginViewModel: DomainErrorHandling {
 
         // Build server configuration
         let server = Server.create(
-            name: effectiveServerName,
+            name: trimmedHost,
             host: trimmedHost,
             port: port,
             useHTTPS: useHTTPS
@@ -236,7 +225,6 @@ final class LoginViewModel: DomainErrorHandling {
     }
 
     func applyRecentServer(_ server: Server) {
-        serverName = server.name
         host = server.configuration.host
         port = server.configuration.port
         useHTTPS = server.configuration.useHTTPS

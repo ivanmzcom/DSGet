@@ -18,6 +18,9 @@ private let feedRelativeDateFormatter: RelativeDateTimeFormatter = {
 
 struct FeedListContentView: View {
     @Environment(AppViewModel.self) private var appViewModel
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
 
     var favoriteFeedIDs: Set<String> = []
     var onToggleFavorite: ((RSSFeed) -> Void)?
@@ -129,11 +132,31 @@ struct FeedListContentView: View {
     @ViewBuilder
     private func feedListContent() -> some View {
         @Bindable var vm = feedsVM
+        #if os(iOS)
+        if horizontalSizeClass == .compact {
+            List(feedsVM.visibleFeeds) { feed in
+                NavigationLink {
+                    FeedDetailView(feed: feed)
+                } label: {
+                    feedRowView(for: feed)
+                }
+                .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+            }
+            .accessibilityIdentifier(AccessibilityID.FeedList.list)
+        } else {
+            List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
+                feedRowView(for: feed)
+                    .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+            }
+            .accessibilityIdentifier(AccessibilityID.FeedList.list)
+        }
+        #else
         List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
             feedRowView(for: feed)
                 .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
         }
         .accessibilityIdentifier(AccessibilityID.FeedList.list)
+        #endif
     }
 
     @ViewBuilder

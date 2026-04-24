@@ -303,6 +303,122 @@ final class TaskServiceTests: XCTestCase {
         }
     }
 
+    // MARK: - API Decoding Tests
+
+    func testDownloadTaskDTODecodesDocumentedStringNumbers() throws {
+        let data = """
+        {
+            "id": "dbid_001",
+            "type": "bt",
+            "username": "admin",
+            "title": "TOP 100 MIX",
+            "size": "9427312332",
+            "status": "downloading",
+            "additional": {
+                "detail": {
+                    "create_time": "1341210005",
+                    "destination": "Download",
+                    "total_peers": "5",
+                    "connected_seeders": "1",
+                    "connected_leechers": "2",
+                    "total_size": "9427312332"
+                },
+                "transfer": {
+                    "size_downloaded": "100",
+                    "size_uploaded": "20",
+                    "speed_download": 500,
+                    "speed_upload": "10"
+                },
+                "file": [{
+                    "filename": "mix001.mp3",
+                    "size": "41835",
+                    "size_downloaded": "0",
+                    "priority": "normal"
+                }],
+                "tracker": [{
+                    "url": "https://tracker.example",
+                    "status": "updating",
+                    "update_timer": "30"
+                }]
+            }
+        }
+        """.data(using: .utf8)!
+
+        let dto = try JSONDecoder().decode(DownloadTaskDTO.self, from: data)
+
+        XCTAssertEqual(dto.size, 9_427_312_332)
+        XCTAssertEqual(dto.additional?.detail?.createTime, 1_341_210_005)
+        XCTAssertEqual(dto.additional?.detail?.connectedSeeders, 1)
+        XCTAssertEqual(dto.additional?.detail?.totalSize, 9_427_312_332)
+        XCTAssertEqual(dto.additional?.transfer?.sizeDownloaded, 100)
+        XCTAssertEqual(dto.additional?.transfer?.speedUpload, 10)
+        XCTAssertEqual(dto.additional?.file?.first?.size, 41_835)
+        XCTAssertEqual(dto.additional?.tracker?.first?.updateInterval, 30)
+    }
+
+    func testSynoResponseDecodesIntegerErrorCode() throws {
+        let data = #"{"success":false,"error":106}"#.data(using: .utf8)!
+
+        let response = try JSONDecoder().decode(SynoResponseDTO<EmptyDataDTO>.self, from: data)
+
+        XCTAssertEqual(response.error?.code, 106)
+        XCTAssertEqual(response.error?.isSessionExpired, true)
+    }
+
+    func testTaskActionResultDecodesStringErrorCode() throws {
+        let data = #"[{"id":"dbid_001","error":"405"}]"#.data(using: .utf8)!
+
+        let results = try JSONDecoder().decode([TaskActionResultDTO].self, from: data)
+
+        XCTAssertEqual(results.first?.id, "dbid_001")
+        XCTAssertEqual(results.first?.error, 405)
+    }
+
+    func testTaskAdditionalDecodesPluralFilesKey() throws {
+        let data = """
+        {
+            "files": [{
+                "filename": "video.mkv",
+                "size": "1024",
+                "size_downloaded": "512"
+            }]
+        }
+        """.data(using: .utf8)!
+
+        let dto = try JSONDecoder().decode(TaskAdditionalDTO.self, from: data)
+
+        XCTAssertEqual(dto.file?.first?.filename, "video.mkv")
+        XCTAssertEqual(dto.file?.first?.size, 1_024)
+        XCTAssertEqual(dto.file?.first?.sizeDownloaded, 512)
+    }
+
+    func testTaskMapperCreatesSingleFileFallbackWhenAPIProvidesNoFiles() throws {
+        let dto = DownloadTaskDTO(
+            id: "dbid_001",
+            title: "movie.mkv",
+            size: 2_048,
+            status: "finished",
+            type: "emule",
+            username: "admin",
+            additional: TaskAdditionalDTO(
+                transfer: TaskTransferDTO(
+                    sizeDownloaded: 2_048,
+                    sizeUploaded: 0,
+                    speedDownload: 0,
+                    speedUpload: 0
+                )
+            )
+        )
+
+        let task = TaskMapper().mapToEntity(dto)
+
+        XCTAssertEqual(task.files.count, 1)
+        XCTAssertEqual(task.files.first?.id, "dbid_001")
+        XCTAssertEqual(task.files.first?.name, "movie.mkv")
+        XCTAssertEqual(task.files.first?.size.bytes, 2_048)
+        XCTAssertEqual(task.files.first?.downloadedSize.bytes, 2_048)
+    }
+
     // MARK: - Connectivity Tests
 
     func testConnectivityServiceDisconnected() async {

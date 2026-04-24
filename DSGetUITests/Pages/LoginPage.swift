@@ -8,7 +8,6 @@ import XCTest
 struct LoginPage {
     let app: XCUIApplication
 
-    var serverNameField: XCUIElement { app.textFields["login.serverName"] }
     var hostField: XCUIElement { app.textFields["login.host"] }
     var portField: XCUIElement { app.textFields["login.port"] }
     var httpsToggle: XCUIElement { app.switches["login.httpsToggle"] }

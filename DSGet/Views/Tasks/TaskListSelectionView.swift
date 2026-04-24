@@ -7,6 +7,10 @@ import SwiftUI
 import DSGetCore
 
 struct TaskListSelectionView: View {
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+
     let tasks: [DownloadTask]
     @Binding var selectedTask: DownloadTask?
 
@@ -24,21 +28,37 @@ struct TaskListSelectionView: View {
             opensTaskDetailInWindow: opensTaskDetailInWindow
         )
         #else
-        List(selection: $selectedTask) {
-            ForEach(tasks) { task in
-                TaskListItemView(
-                    task: task,
-                    isSelected: selectedTask?.id == task.id,
-                    opensDetailInWindowOnDoubleClick: opensTaskDetailInWindow,
-                    onDelete: onDelete,
-                    onTogglePause: onTogglePause
-                )
-                    .tag(task)
-                    .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
+        if horizontalSizeClass == .compact {
+            List(tasks) { task in
+                NavigationLink {
+                    TaskDetailView(task: task)
+                } label: {
+                    taskRow(task)
+                }
+                .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
             }
+            .accessibilityIdentifier(AccessibilityID.TaskList.list)
+        } else {
+            List(selection: $selectedTask) {
+                ForEach(tasks) { task in
+                    taskRow(task)
+                        .tag(task)
+                        .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
+                }
+            }
+            .accessibilityIdentifier(AccessibilityID.TaskList.list)
         }
-        .accessibilityIdentifier(AccessibilityID.TaskList.list)
         #endif
+    }
+
+    private func taskRow(_ task: DownloadTask) -> some View {
+        TaskListItemView(
+            task: task,
+            isSelected: selectedTask?.id == task.id,
+            opensDetailInWindowOnDoubleClick: opensTaskDetailInWindow,
+            onDelete: onDelete,
+            onTogglePause: onTogglePause
+        )
     }
 }
 

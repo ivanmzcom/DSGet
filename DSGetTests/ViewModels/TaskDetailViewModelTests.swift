@@ -190,6 +190,17 @@ final class TaskDetailViewModelTests: XCTestCase {
         XCTAssertNotNil(sut.currentError)
     }
 
+    func testEditDestinationFinishedTaskDoesNotCallService() async {
+        sut = makeSUT(status: .finished)
+
+        await sut.editDestination("/volume1/new-path")
+
+        XCTAssertFalse(mockTaskService.editDestinationCalled)
+        XCTAssertNotNil(sut.currentError)
+        XCTAssertTrue(sut.showingError)
+        XCTAssertFalse(sut.isProcessingAction)
+    }
+
     // MARK: - Update Task
 
     func testUpdateTask() {

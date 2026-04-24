@@ -28,7 +28,7 @@ enum TaskDetailTab: String, CaseIterable {
     var icon: String {
         switch self {
         case .general: return "info.circle"
-        case .transfer: return "arrow.down.arrow.up"
+        case .transfer: return "arrow.up.arrow.down"
         case .trackers: return "antenna.radiowaves.left.and.right"
         case .peers: return "person.2"
         case .files: return "doc.on.doc"
@@ -158,16 +158,16 @@ struct TaskDetailView: View {
         Group {
             #if os(macOS)
             AdaptiveLayoutReader { width in
-                taskDetailContent(prefersSegmentedTabs: width.prefersSegmentedTabs)
+                taskDetailContent(prefersSegmentedTabs: width.prefersSegmentedTabs, usesIconOnlyTabs: false)
             }
             #else
-            taskDetailContent(prefersSegmentedTabs: horizontalSizeClass != .compact)
+            taskDetailContent(prefersSegmentedTabs: true, usesIconOnlyTabs: true)
             #endif
         }
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
-        .navigationTitle(viewModel.task.title)
+        .navigationTitle(String.localized("taskDetail.navigationTitle"))
         .toolbar { toolbarContent }
         .confirmationDialog(
             String.localized("taskDetail.delete.confirmTitle"),
@@ -198,7 +198,31 @@ struct TaskDetailView: View {
         }
     }
 
-    private func taskDetailContent(prefersSegmentedTabs: Bool) -> some View {
+    private func taskDetailContent(prefersSegmentedTabs: Bool, usesIconOnlyTabs: Bool) -> some View {
+        #if os(iOS)
+        List {
+            Section {
+                TaskDetailHero(
+                    task: viewModel.task,
+                    statusText: statusTextAndColor.text,
+                    statusColor: statusTextAndColor.color,
+                    progressValue: progressValue,
+                    progressPercentage: progressPercentage,
+                    downloadSpeed: downloadSpeed,
+                    uploadSpeed: uploadSpeed,
+                    etaText: etaText
+                )
+            }
+
+            Section {
+                taskDetailTabPicker(prefersSegmentedTabs: true, usesIconOnlyTabs: usesIconOnlyTabs)
+            }
+
+            selectedTabSections
+        }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.visible)
+        #else
         VStack(spacing: 0) {
             TaskDetailHero(
                 task: viewModel.task,
@@ -213,51 +237,86 @@ struct TaskDetailView: View {
             .padding(.horizontal, 16)
             .padding(.top, 12)
 
-            if prefersSegmentedTabs {
-                Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
-                    ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                        Label(tab.title, systemImage: tab.icon)
-                            .tag(tab)
-                    }
-                }
-                .pickerStyle(.segmented)
+            taskDetailTabPicker(prefersSegmentedTabs: prefersSegmentedTabs, usesIconOnlyTabs: usesIconOnlyTabs)
                 .padding(.horizontal)
                 .padding(.vertical, 12)
-            } else {
-                Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
-                    ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                        Label(tab.title, systemImage: tab.icon)
-                            .tag(tab)
-                    }
-                }
-                .pickerStyle(.menu)
-                .padding(.horizontal)
-                .padding(.vertical, 12)
-            }
 
-            Group {
-                switch selectedTab {
-                case .general:
-                    generalTabContent
-
-                case .transfer:
-                    transferTabContent
-
-                case .trackers:
-                    trackersTabContent
-
-                case .peers:
-                    peersTabContent
-
-                case .files:
-                    filesTabContent
-                }
-            }
-            #if os(macOS)
+            selectedTabContent
             .listStyle(.inset)
-            #else
-            .listStyle(.insetGrouped)
-            #endif
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private func taskDetailTabPicker(prefersSegmentedTabs: Bool, usesIconOnlyTabs: Bool) -> some View {
+        if prefersSegmentedTabs {
+            Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
+                ForEach(TaskDetailTab.allCases, id: \.self) { tab in
+                    taskDetailTabLabel(tab, usesIconOnlyTabs: usesIconOnlyTabs)
+                }
+            }
+            .pickerStyle(.segmented)
+        } else {
+            Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
+                ForEach(TaskDetailTab.allCases, id: \.self) { tab in
+                    Label(tab.title, systemImage: tab.icon)
+                        .tag(tab)
+                }
+            }
+            .pickerStyle(.menu)
+        }
+    }
+
+    @ViewBuilder
+    private var selectedTabContent: some View {
+        switch selectedTab {
+        case .general:
+            generalTabContent
+
+        case .transfer:
+            transferTabContent
+
+        case .trackers:
+            trackersTabContent
+
+        case .peers:
+            peersTabContent
+
+        case .files:
+            filesTabContent
+        }
+    }
+
+    @ViewBuilder
+    private var selectedTabSections: some View {
+        switch selectedTab {
+        case .general:
+            overviewSection
+            taskInfoSection
+
+        case .transfer:
+            transferSection
+
+        case .trackers:
+            trackersSection
+
+        case .peers:
+            connectionSection
+
+        case .files:
+            filesSection
+        }
+    }
+
+    @ViewBuilder
+    private func taskDetailTabLabel(_ tab: TaskDetailTab, usesIconOnlyTabs: Bool) -> some View {
+        if usesIconOnlyTabs {
+            Image(systemName: tab.icon)
+                .accessibilityLabel(tab.title)
+                .tag(tab)
+        } else {
+            Label(tab.title, systemImage: tab.icon)
+                .tag(tab)
         }
     }
 
@@ -273,6 +332,29 @@ struct TaskDetailView: View {
                 }
             }
         }
+
+        #if os(iOS)
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            Button {
+                Task { await viewModel.togglePauseResume() }
+            } label: {
+                Label(
+                    viewModel.isTaskPaused
+                        ? String.localized("taskDetail.button.resume")
+                        : String.localized("taskDetail.button.pause"),
+                    systemImage: viewModel.isTaskPaused ? "play.fill" : "pause.fill"
+                )
+            }
+            .disabled(!viewModel.canTogglePause)
+
+            Button(role: .destructive) {
+                viewModel.showingDeleteConfirmation = true
+            } label: {
+                Label(String.localized("taskDetail.button.delete"), systemImage: "trash")
+            }
+            .disabled(viewModel.isProcessingAction)
+        }
+        #else
         ToolbarItem(placement: .primaryAction) {
             Button(
                 viewModel.isTaskPaused
@@ -298,6 +380,7 @@ struct TaskDetailView: View {
                 ProgressView()
             }
         }
+        #endif
     }
 
     private var showsCloseButton: Bool {
@@ -575,19 +658,26 @@ private extension TaskDetailView {
     var destinationRow: some View {
         let destination = viewModel.task.destination
         if !destination.isEmpty {
-            Button {
-                viewModel.showingEditDestination = true
-            } label: {
-                LabeledContent(String.localized("taskDetail.destination")) {
-                    HStack {
-                        Text(destination)
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+            if viewModel.canEditDestination {
+                Button {
+                    viewModel.showingEditDestination = true
+                } label: {
+                    LabeledContent(String.localized("taskDetail.destination")) {
+                        HStack {
+                            Text(destination)
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .buttonStyle(.plain)
+            } else {
+                LabeledContent(String.localized("taskDetail.destination")) {
+                    Text(destination)
+                        .foregroundStyle(.secondary)
+                }
             }
-            .buttonStyle(.plain)
         }
     }
 

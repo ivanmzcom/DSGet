@@ -140,7 +140,7 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
         // Try a simple API call to validate the session
         do {
             let _: SynoResponseDTO<EmptyDataDTO> = try await apiClient.get(
-                endpoint: .downloadStation,
+                endpoint: .downloadStationInfo,
                 api: "SYNO.DownloadStation.Info",
                 method: "getinfo",
                 version: 1
@@ -239,10 +239,15 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
         let response = try decoder.decode(SynoResponseDTO<[String: SynologyAPIInfoDTO]>.self, from: data)
 
         guard response.success else {
-            throw DataError.apiError(response.error ?? SynoErrorDTO(code: -1, description: "Connection test failed"))
+            let error = response.error ?? SynoErrorDTO(code: -1, description: "Connection test failed")
+            if error.isSessionExpired {
+                throw DataError.sessionExpired
+            }
+            throw DataError.apiError(error)
         }
 
-        guard response.data?["SYNO.API.Auth"] != nil else {
+        guard response.data?["SYNO.API.Auth"] != nil,
+              response.data?["SYNO.DownloadStation.Info"] != nil else {
             throw DomainError.invalidServerConfiguration
         }
     }
