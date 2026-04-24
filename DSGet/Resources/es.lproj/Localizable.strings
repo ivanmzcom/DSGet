@@ -16,9 +16,29 @@
 "auth.login.placeholder.otp" = "OTP (si está activado)";
 "auth.login.button.login" = "Iniciar Sesión";
 "auth.login.subtitle" = "Conéctate a tu Synology Download Station";
+"auth.login.section.continue" = "Continuar";
 "auth.login.error.title" = "Error de Inicio de Sesión";
 "auth.login.error.unknown" = "Ha ocurrido un error desconocido.";
 "auth.login.error.invalidPort" = "El puerto debe ser un número válido entre 1 y 65535.";
+"auth.login.recentServers" = "Servidores recientes";
+"auth.login.connection.test" = "Probar conexión";
+"auth.login.connection.testing" = "Probando conexión";
+"auth.login.connection.testing.description" = "Comprobando si este servidor responde como endpoint de la API de Synology.";
+"auth.login.connection.success" = "Servidor accesible";
+"auth.login.connection.success.description" = "DSGet puede llegar a este servidor. Puedes iniciar sesión cuando las credenciales estén listas.";
+"auth.login.connection.failure" = "La conexión ha fallado";
+"auth.login.connection.invalidServer" = "Completa un host y puerto válidos antes de probar la conexión.";
+"auth.login.validation.readyTitle" = "Antes de iniciar sesión";
+"auth.login.validation.serverSummary" = "Completa primero la dirección del servidor y el puerto.";
+"auth.login.validation.credentialsSummary" = "Introduce tu usuario y contraseña para continuar.";
+"auth.login.validation.hostRequired" = "Introduce la IP o el nombre del NAS.";
+"auth.login.validation.hostNoScheme" = "Introduce solo el host o IP, sin http:// ni https://.";
+"auth.login.validation.hostNoPath" = "Introduce solo el host o IP, sin ruta.";
+"auth.login.validation.hostInvalid" = "Este host no puede convertirse en una URL de servidor válida.";
+"auth.login.validation.portRequired" = "Introduce un número de puerto.";
+"auth.login.validation.portRange" = "Usa un puerto entre 1 y 65535.";
+"auth.login.validation.usernameRequired" = "Introduce tu usuario.";
+"auth.login.validation.passwordRequired" = "Introduce tu contraseña.";
 
 // MARK: - Pestañas Principales
 "tab.downloads" = "Descargas";
@@ -28,11 +48,42 @@
 // MARK: - Configuración
 "settings.title" = "Ajustes";
 "settings.section.server" = "Servidor";
+"settings.section.general" = "General";
+"settings.section.account" = "Cuenta";
 "settings.server.noServer" = "Sin servidor";
 "settings.section.about" = "Acerca de";
 "settings.about.version" = "Versión";
 "settings.section.logout" = "Cerrar Sesión";
 "settings.logout.button" = "Cerrar Sesión";
+"settings.section.session" = "Sesión";
+"settings.session.description" = "Gestiona la conexión actual y cierra sesión cuando necesites cambiar de servidor.";
+"settings.detail.name" = "Nombre";
+"settings.detail.address" = "Dirección";
+"settings.detail.security" = "Seguridad";
+"settings.detail.lastConnected" = "Última conexión";
+"settings.connection.test" = "Probar conexión";
+"settings.section.recentServers" = "Servidores recientes";
+"settings.recentServers.empty" = "Aún no hay servidores recientes.";
+"settings.recentServers.clear" = "Borrar historial de servidores";
+"settings.server.status.unknown" = "Estado desconocido";
+"settings.server.status.unknown.description" = "Prueba la conexión para confirmar que este servidor está accesible.";
+"settings.server.status.checking" = "Comprobando servidor";
+"settings.server.status.checking.description" = "Probando el servidor y validando la sesión actual.";
+"settings.server.status.connected" = "Conectado";
+"settings.server.status.connected.description" = "El servidor está accesible y la sesión actual se puede usar.";
+"settings.server.status.signedOut" = "Sesión cerrada";
+"settings.server.status.signedOut.description" = "El servidor está configurado, pero no hay una sesión activa.";
+"settings.server.status.unavailable" = "Servidor no disponible";
+"settings.session.refresh" = "Renovar sesión";
+"settings.session.started" = "Iniciada";
+"settings.session.server" = "Servidor";
+"settings.session.status.active" = "Sesión activa";
+"settings.session.status.active.description" = "La sesión guardada es válida y está lista para las peticiones de Download Station.";
+"settings.session.status.expired" = "La sesión podría haber caducado";
+"settings.session.status.expired.description" = "Esta sesión podría haber caducado. Renuévala o inicia sesión de nuevo.";
+"settings.session.status.signedOut" = "Sin sesión activa";
+"settings.session.status.signedOut.description" = "Inicia sesión de nuevo para recuperar el acceso a Download Station.";
+"settings.badge.showActiveDownload" = "Mostrar indicador de descargas activas";
 
 // MARK: - Añadir Tarea
 "addTask.title" = "Añadir Nueva Tarea";
@@ -50,7 +101,9 @@
 "addTask.placeholder.selectTorrent" = "Seleccionar archivo .torrent...";
 "addTask.button.removeFile" = "Eliminar archivo seleccionado";
 "addTask.placeholder.selectFolder" = "Seleccionar carpeta...";
+"addTask.section.destination" = "Destino";
 "addTask.section.recentFolders" = "Carpetas Recientes";
+"addTask.section.create" = "Crear";
 "addTask.button.createTask" = "Crear Tarea";
 "addTask.error.selectTorrentFile" = "Selecciona un archivo .torrent antes de crear la tarea.";
 
@@ -80,9 +133,19 @@
 "empty.noTasks.title" = "Sin Tareas";
 "empty.noTasks.description" = "Añade una nueva tarea de descarga usando el botón +.";
 "empty.noFolders" = "No se encontraron carpetas.";
+"state.clearFilters" = "Limpiar filtros";
+"state.clearSearch" = "Limpiar búsqueda";
+"state.permission.title" = "Permiso requerido";
+"state.permission.description" = "Inicia sesión de nuevo o comprueba que esta cuenta tenga permiso para acceder a Download Station.";
 
 // MARK: - Lista de Tareas
 "tasks.title" = "Descargas";
+"tasks.state.loading.title" = "Cargando descargas";
+"tasks.state.loading.description" = "Obteniendo las tareas más recientes de Download Station.";
+"tasks.state.noResults.title" = "Sin descargas coincidentes";
+"tasks.state.noResults.search" = "No hay descargas que coincidan con \"%@\". Prueba con otra búsqueda.";
+"tasks.state.noResults.searchAndFilters" = "No hay descargas que coincidan con \"%@\" y los filtros actuales. Prueba a limpiar filtros o cambiar la búsqueda.";
+"tasks.state.noResults.filters" = "No hay descargas que coincidan con los filtros actuales. Limpia los filtros para ver todas las tareas.";
 "tasks.filter.all" = "Todas";
 "tasks.filter.downloading" = "Descargando";
 "tasks.filter.paused" = "Pausadas";
@@ -92,7 +155,9 @@
 "tasks.type.e2k" = "E2K";
 "tasks.search.prompt" = "Filtrar";
 "tasks.search.clear" = "Limpiar Búsqueda";
+"tasks.type.filter" = "Tipo";
 "tasks.sort.by" = "Ordenar Por";
+"tasks.sort.order" = "Orden";
 "tasks.sort.date" = "Fecha";
 "tasks.sort.name" = "Nombre";
 "tasks.sort.downloadSpeed" = "Velocidad Descarga";
@@ -100,13 +165,26 @@
 "tasks.sort.ascending" = "Ascendente";
 "tasks.sort.descending" = "Descendente";
 "tasks.button.addTask" = "Añadir Tarea";
+"tasks.header.transfers" = "Transferencias";
+"tasks.header.items" = "%d elementos";
+"tasks.header.down" = "Bajada";
+"tasks.header.up" = "Subida";
+"tasks.header.active" = "Activas";
+"tasks.table.name" = "Nombre";
+"tasks.table.progress" = "Progreso";
+"tasks.table.status" = "Estado";
+"tasks.selectTask" = "Selecciona una descarga";
+"tasks.selectTask.description" = "Elige una tarea para ver archivos, peers, trackers y detalles de transferencia.";
 
 // MARK: - Detalle de Tarea
-"taskDetail.title" = "General";
+"taskDetail.title" = "Título";
+"taskDetail.tab.general" = "General";
 "taskDetail.tab.transfer" = "Transferencia";
 "taskDetail.tab.trackers" = "Trackers";
 "taskDetail.tab.peers" = "Peers";
 "taskDetail.tab.files" = "Archivos";
+"taskDetail.tab.picker" = "Sección";
+"taskDetail.status" = "Estado";
 "taskDetail.overview" = "Resumen";
 "taskDetail.status.downloading" = "Descargando";
 "taskDetail.status.completed" = "Completada";
@@ -136,9 +214,14 @@
 "taskDetail.totalPeers" = "Total de Peers";
 "taskDetail.filesCount" = "Archivos (%d)";
 "taskDetail.noTransferData" = "Sin datos de transferencia";
+"taskDetail.noTransferData.description" = "La velocidad y el tiempo restante aparecerán cuando la tarea empiece a transferir.";
 "taskDetail.noPeerInfo" = "Sin información de peers";
+"taskDetail.noPeerInfo.description" = "La información de peers no está disponible para esta tarea ahora mismo.";
 "taskDetail.noFiles" = "Sin archivos";
+"taskDetail.noFiles.description" = "Los detalles de archivos aparecerán cuando Download Station los proporcione.";
 "taskDetail.noTrackers" = "Sin trackers";
+"taskDetail.noTrackers.description" = "La información de trackers no está disponible para esta tarea.";
+"taskDetail.trackersCount" = "Trackers (%d)";
 "taskDetail.trackerUpdateInterval" = "Intervalo de actualización: %ds";
 "taskDetail.button.pause" = "Pausar";
 "taskDetail.button.resume" = "Reanudar";
@@ -146,6 +229,12 @@
 "taskDetail.button.close" = "Cerrar";
 "taskDetail.delete.confirmTitle" = "Eliminar Tarea";
 "taskDetail.delete.confirmMessage" = "¿Estás seguro de que deseas eliminar \"%@\"?";
+"taskDetail.delete.confirmButton" = "Eliminar Tarea";
+"taskDetail.metric.downloaded" = "Descargado";
+"taskDetail.metric.size" = "Tamaño";
+"taskDetail.metric.down" = "Bajada";
+"taskDetail.metric.up" = "Subida";
+"taskDetail.metric.eta" = "ETA";
 
 // MARK: - Elemento de Lista de Tareas
 "taskItem.status.downloading" = "Descargando";
@@ -154,6 +243,9 @@
 "taskItem.status.waiting" = "Esperando";
 "taskItem.status.error" = "Error";
 "taskItem.eta" = "ETA %@";
+"taskItem.ratio" = "Ratio %@";
+"taskItem.peers" = "%d peers";
+"taskItem.seeds" = "%d seeds";
 "taskItem.action.pause" = "Pausar";
 "taskItem.action.resume" = "Reanudar";
 "taskItem.action.delete" = "Eliminar";
@@ -163,10 +255,18 @@
 "feeds.title" = "Feeds";
 "feeds.empty.noFeeds" = "Sin Feeds";
 "feeds.empty.noFeeds.description" = "Desliza hacia abajo para refrescar los feeds de tu Download Station.";
+"feeds.state.loading.title" = "Cargando feeds";
+"feeds.state.loading.description" = "Obteniendo fuentes RSS de Download Station.";
+"feeds.state.noResults.title" = "Sin feeds coincidentes";
+"feeds.state.noResults.search" = "No hay feeds que coincidan con \"%@\". Prueba con otra búsqueda.";
 "feed.detail.noItems" = "Sin Elementos";
 "feed.detail.noItems.description" = "Desliza hacia abajo para refrescar este feed.";
+"feedItems.state.loading.title" = "Cargando elementos";
+"feedItems.state.loading.description" = "Obteniendo los últimos elementos de este feed.";
 "feed.item.new" = "NUEVO";
 "feed.item.updated" = "Actualizado %@";
+"feed.item.ready" = "Listo";
+"feed.meta.favorite" = "Favorito";
 "feed.action.refresh" = "Refrescar";
 "feed.action.favorite" = "Favorito";
 "feed.action.unfavorite" = "Quitar de Favoritos";
@@ -176,6 +276,12 @@
 "feed.action.share" = "Compartir";
 "feed.action.delete" = "Eliminar Feed";
 "feed.action.refreshing" = "Refrescando";
+"feed.action.download" = "Descargar";
+"feed.action.copyTitle" = "Copiar título";
+"feed.action.copyDownloadURL" = "Copiar URL de descarga";
+"feeds.search.prompt" = "Buscar feeds";
+"feeds.selectFeed" = "Selecciona un feed";
+"feeds.selectFeed.description" = "Elige un feed para explorar los elementos disponibles.";
 
 // MARK: - Selector de Carpetas
 "folderPicker.title.sharedFolders" = "Carpetas Compartidas";
@@ -209,6 +315,7 @@
 
 // MARK: - OTP
 "otp.title" = "Introducir OTP";
+"otp.required.title" = "Verificación Requerida";
 "otp.required" = "Tu sesión ha expirado y se requiere OTP para autenticarse de nuevo.";
 "otp.placeholder" = "Código OTP";
 "otp.button.submit" = "Enviar";
@@ -223,3 +330,26 @@
 "general.copy" = "Copiar";
 "general.share" = "Compartir";
 "general.select" = "Seleccionar";
+"general.notAvailable" = "N/D";
+
+// MARK: - Overlays del sistema
+"dropZone.title" = "Suelta un torrent o enlace magnet";
+"keyboardShortcuts.title" = "Atajos de teclado";
+"keyboardShortcuts.newTask" = "Nueva tarea";
+"keyboardShortcuts.navigation" = "Navegación";
+"keyboardShortcuts.nextField" = "Siguiente campo";
+"keyboardShortcuts.confirm" = "Confirmar";
+"keyboardShortcuts.cancelClose" = "Cancelar / Cerrar";
+
+// MARK: - macOS
+"mac.command.openTaskDetail" = "Abrir detalle en una ventana";
+"mac.command.clearFilters" = "Limpiar filtros";
+"mac.detailWindow.taskUnavailable" = "Tarea no disponible";
+"mac.detailWindow.taskUnavailable.description" = "Refresca la lista de tareas e inténtalo de nuevo.";
+
+// MARK: - Barra lateral
+"sidebar.downloads.active" = "%d activas";
+"sidebar.downloads.all" = "Todas las descargas";
+"sidebar.feeds.favorites" = "%d favoritos";
+"sidebar.feeds.sources" = "Fuentes RSS";
+"sidebar.settings.detail" = "Servidor y cuenta";

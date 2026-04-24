@@ -175,10 +175,10 @@ extension View {
         isPaused: Bool
     ) -> some View {
         self
-            .accessibilityAction(named: isPaused ? "Resume" : "Pause") {
+            .accessibilityAction(named: isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause")) {
                 isPaused ? onResume() : onPause()
             }
-            .accessibilityAction(named: "Delete") {
+            .accessibilityAction(named: String.localized("taskItem.action.delete")) {
                 onDelete()
             }
     }
@@ -190,10 +190,10 @@ extension View {
         isFavorite: Bool
     ) -> some View {
         self
-            .accessibilityAction(named: "Refresh") {
+            .accessibilityAction(named: String.localized("feed.action.refresh")) {
                 onRefresh()
             }
-            .accessibilityAction(named: isFavorite ? "Remove from favorites" : "Add to favorites") {
+            .accessibilityAction(named: isFavorite ? String.localized("feed.action.removeFromFavorites") : String.localized("feed.action.addToFavorites")) {
                 onToggleFavorite()
             }
     }

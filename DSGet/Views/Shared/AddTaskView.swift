@@ -98,14 +98,14 @@ struct AddTaskView: View {
             onCompletion: handleFileImport
         )
         .alert(String.localized("addTask.alert.success"), isPresented: $viewModel.showingSuccessAlert) {
-            Button("OK") { dismiss() }
+            Button(String.localized("general.ok")) { dismiss() }
         } message: {
             Text(String.localized("addTask.alert.success.message"))
         }
         .alert(String.localized("addTask.alert.error"), isPresented: $viewModel.showingError) {
-            Button("OK") { }
+            Button(String.localized("general.ok")) { }
         } message: {
-            Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
+            Text(viewModel.currentError?.localizedDescription ?? String.localized("error.unknown"))
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -160,7 +160,7 @@ private struct AddTaskHeaderSection: View {
             }
         } else {
             Section(String.localized("addTask.section.input")) {
-                Picker("Input", selection: $inputMode) {
+                Picker(String.localized("addTask.section.input"), selection: $inputMode) {
                     ForEach(AddTaskInputMode.allCases) { mode in
                         Text(mode.title).tag(mode)
                     }
@@ -183,7 +183,7 @@ private struct AddTaskInputSection: View {
     var body: some View {
         @Bindable var viewModel = viewModel
 
-        Section(String.localized("addTask.section.input")) {
+        Section(String.localized("addTask.section.destination")) {
             switch viewModel.inputMode {
             case .url:
                 AddTaskURLInputRow(
@@ -215,10 +215,14 @@ private struct AddTaskURLInputRow: View {
 
     var body: some View {
         HStack {
-            TextField("URL", text: $taskURL)
+            TextField(String.localized("addTask.placeholder.url"), text: $taskURL)
                 .accessibilityIdentifier(AccessibilityID.AddTask.urlField)
                 .autocorrectionDisabled(true)
                 .disabled(isLocked)
+                #if !os(macOS)
+                .keyboardType(.URL)
+                .textInputAutocapitalization(.never)
+                #endif
 
             if !isLocked {
                 Button(action: pasteFromClipboard) {
@@ -265,7 +269,7 @@ private struct AddTaskFolderButton: View {
     var body: some View {
         Button(action: showFolderPicker) {
             HStack {
-                Text(destinationFolderPath.isEmpty ? "Select folder..." : destinationFolderPath)
+                Text(destinationFolderPath.isEmpty ? String.localized("addTask.placeholder.selectFolder") : destinationFolderPath)
                     .foregroundStyle(destinationFolderPath.isEmpty ? .secondary : .primary)
                 Spacer()
                 Image(systemName: "folder")
@@ -309,7 +313,7 @@ private struct AddTaskCreateSection: View {
     let createTask: () async -> Void
 
     var body: some View {
-        Section(String.localized("addTask.section.input")) {
+        Section(String.localized("addTask.section.create")) {
             Button {
                 Task { await createTask() }
             } label: {

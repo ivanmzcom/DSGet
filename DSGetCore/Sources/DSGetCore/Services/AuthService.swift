@@ -13,6 +13,7 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     private let credentialsKey = "DSGet.Credentials"
     private let serverKey = "dsget.server"
     private let serverCredentialsKey = "dsget.server.credentials"
+    private let recentServersKey = "dsget.servers.recent"
 
     private let userDefaults: UserDefaults
 
@@ -221,6 +222,31 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
         return try await login(request: request)
     }
 
+    public func testConnection(configuration: ServerConfiguration) async throws {
+        guard configuration.isValid, let baseURL = configuration.baseURL else {
+            throw DomainError.invalidServerConfiguration
+        }
+
+        let queryURL = baseURL.appendingPathComponent("/webapi/query.cgi")
+        let queryItems = [
+            URLQueryItem(name: "api", value: "SYNO.API.Info"),
+            URLQueryItem(name: "method", value: "query"),
+            URLQueryItem(name: "version", value: "1"),
+            URLQueryItem(name: "query", value: "SYNO.API.Auth,SYNO.DownloadStation.Info")
+        ]
+
+        let (data, _) = try await networkClient.get(url: queryURL, queryItems: queryItems)
+        let response = try decoder.decode(SynoResponseDTO<[String: SynologyAPIInfoDTO]>.self, from: data)
+
+        guard response.success else {
+            throw DataError.apiError(response.error ?? SynoErrorDTO(code: -1, description: "Connection test failed"))
+        }
+
+        guard response.data?["SYNO.API.Auth"] != nil else {
+            throw DomainError.invalidServerConfiguration
+        }
+    }
+
     // MARK: - AuthServiceProtocol - Server Management
 
     public func getServer() async throws -> Server? {
@@ -232,11 +258,14 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     }
 
     public func saveServer(_ server: Server, credentials: Credentials) async throws {
-        let serverDTO = serverMapper.toDTO(server)
+        let connectedServer = server.withUpdatedConnection()
+        let serverDTO = serverMapper.toDTO(connectedServer)
         let serverData = try JSONEncoder().encode(serverDTO)
         userDefaults.set(serverData, forKey: serverKey)
 
-        let credentialsDTO = serverMapper.toCredentialsDTO(serverID: server.id, credentials: credentials)
+        saveRecentServer(connectedServer)
+
+        let credentialsDTO = serverMapper.toCredentialsDTO(serverID: connectedServer.id, credentials: credentials)
         try secureStorage.save(credentialsDTO, forKey: serverCredentialsKey)
     }
 
@@ -261,7 +290,40 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
         }
     }
 
+    public func getRecentServers() async -> [Server] {
+        loadRecentServers()
+    }
+
+    public func clearRecentServers() async {
+        userDefaults.removeObject(forKey: recentServersKey)
+    }
+
     // MARK: - Private Methods
+
+    private func loadRecentServers() -> [Server] {
+        guard let data = userDefaults.data(forKey: recentServersKey),
+              let servers = try? decoder.decode([Server].self, from: data) else {
+            return []
+        }
+
+        return servers
+    }
+
+    private func saveRecentServer(_ server: Server) {
+        var servers = loadRecentServers()
+        servers.removeAll { existing in
+            existing.configuration == server.configuration
+        }
+        servers.insert(server, at: 0)
+
+        if servers.count > 6 {
+            servers = Array(servers.prefix(6))
+        }
+
+        if let data = try? JSONEncoder().encode(servers) {
+            userDefaults.set(data, forKey: recentServersKey)
+        }
+    }
 
     private func decodeLoginResponse(_ data: Data) throws -> SynoResponseDTO<LoginResponseDTO> {
         do {
@@ -285,4 +347,10 @@ private struct StoredSessionDTO: Codable {
 private struct StoredCredentialsDTO: Codable {
     let username: String
     let password: String
+}
+
+private struct SynologyAPIInfoDTO: Decodable {
+    let path: String?
+    let minVersion: Int?
+    let maxVersion: Int?
 }

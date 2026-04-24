@@ -9,11 +9,21 @@ import SwiftUI
 import DSGetCore
 
 enum TaskDetailTab: String, CaseIterable {
-    case general = "General"
-    case transfer = "Transfer"
-    case trackers = "Trackers"
-    case peers = "Peers"
-    case files = "Files"
+    case general
+    case transfer
+    case trackers
+    case peers
+    case files
+
+    var title: String {
+        switch self {
+        case .general: return String.localized("taskDetail.tab.general")
+        case .transfer: return String.localized("taskDetail.tab.transfer")
+        case .trackers: return String.localized("taskDetail.tab.trackers")
+        case .peers: return String.localized("taskDetail.tab.peers")
+        case .files: return String.localized("taskDetail.tab.files")
+        }
+    }
 
     var icon: String {
         switch self {
@@ -46,11 +56,11 @@ struct TaskDetailView: View {
 
     private var statusTextAndColor: (text: String, color: Color) {
         switch viewModel.effectiveStatus {
-        case "downloading": return ("Downloading", .blue)
-        case "seeding", "finished": return ("Completed", .green)
-        case "paused": return ("Paused", .orange)
-        case "waiting": return ("Waiting", .gray)
-        case "error": return ("Error", .red)
+        case "downloading": return (String.localized("taskDetail.status.downloading"), .blue)
+        case "seeding", "finished": return (String.localized("taskDetail.status.completed"), .green)
+        case "paused": return (String.localized("taskDetail.status.paused"), .orange)
+        case "waiting": return (String.localized("taskDetail.status.waiting"), .gray)
+        case "error": return (String.localized("taskDetail.status.error"), .red)
         default: return (viewModel.effectiveStatus.capitalized, .purple)
         }
     }
@@ -111,7 +121,7 @@ struct TaskDetailView: View {
     @ViewBuilder
     private var trackersSection: some View {
         if !viewModel.task.trackers.isEmpty {
-            Section(String.localized("taskDetail.trackersCount").replacingOccurrences(of: "%d", with: "\(viewModel.task.trackers.count)")) {
+            Section(String.localized("taskDetail.trackersCount", viewModel.task.trackers.count)) {
                 ForEach(viewModel.task.trackers) { tracker in
                     trackerRow(tracker)
                 }
@@ -132,7 +142,7 @@ struct TaskDetailView: View {
                     .font(.body)
                     .lineLimit(2)
                 if let interval = tracker.updateInterval, interval > 0 {
-                    Text("Update interval: \(interval)s")
+                    Text(String.localized("taskDetail.trackerUpdateInterval", interval))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -161,9 +171,9 @@ struct TaskDetailView: View {
                 .padding(.top, 12)
 
                 if width.prefersSegmentedTabs {
-                    Picker("Tab", selection: $selectedTab) {
+                    Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
                         ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                            Label(tab.rawValue, systemImage: tab.icon)
+                            Label(tab.title, systemImage: tab.icon)
                                 .tag(tab)
                         }
                     }
@@ -171,9 +181,9 @@ struct TaskDetailView: View {
                     .padding(.horizontal)
                     .padding(.vertical, 12)
                 } else {
-                    Picker("Tab", selection: $selectedTab) {
+                    Picker(String.localized("taskDetail.tab.picker"), selection: $selectedTab) {
                         ForEach(TaskDetailTab.allCases, id: \.self) { tab in
-                            Label(tab.rawValue, systemImage: tab.icon)
+                            Label(tab.title, systemImage: tab.icon)
                                 .tag(tab)
                         }
                     }
@@ -225,7 +235,7 @@ struct TaskDetailView: View {
             }
             Button(String.localized("general.cancel"), role: .cancel) { }
         } message: {
-            Text("Are you sure you want to delete \"\(viewModel.task.title)\"?")
+            Text(String.localized("taskDetail.delete.confirmMessage", viewModel.task.title))
         }
         .sheet(isPresented: $viewModel.showingEditDestination) {
             EditDestinationSheet(
@@ -235,9 +245,9 @@ struct TaskDetailView: View {
             )
         }
         .alert(String.localized("error.title"), isPresented: $viewModel.showingError) {
-            Button("OK") { }
+            Button(String.localized("general.ok")) { }
         } message: {
-            Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
+            Text(viewModel.currentError?.localizedDescription ?? String.localized("error.unknown"))
         }
     }
 
@@ -295,7 +305,7 @@ struct TaskDetailView: View {
         formatter.unitsStyle = .full
         formatter.allowedUnits = [.hour, .minute, .second]
         formatter.zeroFormattingBehavior = .pad
-        return formatter.string(from: interval) ?? "N/A"
+        return formatter.string(from: interval) ?? String.localized("general.notAvailable")
     }
 
     private func formatDate(_ date: Date) -> String {
@@ -319,9 +329,11 @@ private struct TaskDetailHero: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
-                Image(systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill")
-                    .foregroundStyle(statusColor)
-                    .font(.title2)
+                DSGetIconBadge(
+                    systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill",
+                    tint: statusColor,
+                    size: 38
+                )
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(task.title)
@@ -344,45 +356,86 @@ private struct TaskDetailHero: View {
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 18) {
-                    detailMetric(title: "Downloaded", value: task.downloadedSize.formatted)
-                    detailMetric(title: "Size", value: task.size.formatted)
+                    DSGetMetricLabel(
+                        title: String.localized("taskDetail.metric.downloaded"),
+                        value: task.downloadedSize.formatted,
+                        systemImage: "externaldrive",
+                        tint: statusColor
+                    )
+                    DSGetMetricLabel(
+                        title: String.localized("taskDetail.metric.size"),
+                        value: task.size.formatted,
+                        systemImage: "shippingbox",
+                        tint: .secondary
+                    )
                     if let downloadSpeed {
-                        detailMetric(title: "Down", value: downloadSpeed + "/s")
+                        DSGetMetricLabel(
+                            title: String.localized("taskDetail.metric.down"),
+                            value: downloadSpeed + "/s",
+                            systemImage: "arrow.down",
+                            tint: .blue
+                        )
                     }
                     if let uploadSpeed {
-                        detailMetric(title: "Up", value: uploadSpeed + "/s")
+                        DSGetMetricLabel(
+                            title: String.localized("taskDetail.metric.up"),
+                            value: uploadSpeed + "/s",
+                            systemImage: "arrow.up",
+                            tint: .green
+                        )
                     }
                     if let etaText {
-                        detailMetric(title: "ETA", value: etaText)
+                        DSGetMetricLabel(
+                            title: String.localized("taskDetail.metric.eta"),
+                            value: etaText,
+                            systemImage: "clock",
+                            tint: .orange
+                        )
                     }
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    detailMetric(title: "Downloaded", value: task.downloadedSize.formatted)
-                    detailMetric(title: "Size", value: task.size.formatted)
+                    DSGetMetricLabel(
+                        title: String.localized("taskDetail.metric.downloaded"),
+                        value: task.downloadedSize.formatted,
+                        systemImage: "externaldrive",
+                        tint: statusColor
+                    )
+                    DSGetMetricLabel(
+                        title: String.localized("taskDetail.metric.size"),
+                        value: task.size.formatted,
+                        systemImage: "shippingbox",
+                        tint: .secondary
+                    )
                     if let downloadSpeed {
-                        detailMetric(title: "Down", value: downloadSpeed + "/s")
+                        DSGetMetricLabel(
+                            title: String.localized("taskDetail.metric.down"),
+                            value: downloadSpeed + "/s",
+                            systemImage: "arrow.down",
+                            tint: .blue
+                        )
                     }
                     if let uploadSpeed {
-                        detailMetric(title: "Up", value: uploadSpeed + "/s")
+                        DSGetMetricLabel(
+                            title: String.localized("taskDetail.metric.up"),
+                            value: uploadSpeed + "/s",
+                            systemImage: "arrow.up",
+                            tint: .green
+                        )
                     }
                     if let etaText {
-                        detailMetric(title: "ETA", value: etaText)
+                        DSGetMetricLabel(
+                            title: String.localized("taskDetail.metric.eta"),
+                            value: etaText,
+                            systemImage: "clock",
+                            tint: .orange
+                        )
                     }
                 }
             }
         }
-        .padding(.vertical, 2)
-    }
-
-    private func detailMetric(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title.uppercased())
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
-            Text(value)
-                .font(.caption.monospacedDigit())
-        }
+        .padding(16)
+        .dsgetSurface(.header)
     }
 }
 
@@ -555,7 +608,7 @@ private extension TaskDetailView {
     @ViewBuilder
     var filesSection: some View {
         if !viewModel.task.files.isEmpty {
-            Section(String.localized("taskDetail.filesCount").replacingOccurrences(of: "%d", with: "\(viewModel.task.files.count)")) {
+            Section(String.localized("taskDetail.filesCount", viewModel.task.files.count)) {
                 ForEach(viewModel.task.files) { file in
                     fileRow(file)
                 }
@@ -570,16 +623,23 @@ private extension TaskDetailView {
     }
 
     func fileRow(_ file: TaskFile) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(file.name)
-                    .font(.body)
-                Spacer()
-                Text(file.size.formatted)
-                    .foregroundStyle(.secondary)
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "doc")
+                .foregroundStyle(file.isWanted ? Color.accentColor : .secondary)
+                .frame(width: 18)
+
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text(file.name)
+                        .font(.body)
+                        .lineLimit(2)
+                    Spacer()
+                    Text(file.size.formatted)
+                        .foregroundStyle(.secondary)
+                }
+                ProgressView(value: file.progress)
+                    .tint(.accentColor)
             }
-            ProgressView(value: file.progress)
-                .tint(.accentColor)
         }
         .opacity(file.isWanted ? 1.0 : 0.5)
     }

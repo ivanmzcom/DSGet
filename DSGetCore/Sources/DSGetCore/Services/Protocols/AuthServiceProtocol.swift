@@ -30,6 +30,10 @@ public protocol AuthServiceProtocol: Sendable {
     /// - Returns: The new session.
     func refreshSession() async throws -> Session
 
+    /// Tests whether a server configuration responds as a Synology API endpoint.
+    /// - Parameter configuration: The server configuration to test.
+    func testConnection(configuration: ServerConfiguration) async throws
+
     // MARK: - Server Management
 
     /// Gets the saved server configuration.
@@ -52,4 +56,10 @@ public protocol AuthServiceProtocol: Sendable {
     /// Gets the stored credentials.
     /// - Returns: The stored credentials.
     func getCredentials() async throws -> Credentials
+
+    /// Gets recently used servers, most recent first.
+    func getRecentServers() async -> [Server]
+
+    /// Clears the recently used server list.
+    func clearRecentServers() async
 }

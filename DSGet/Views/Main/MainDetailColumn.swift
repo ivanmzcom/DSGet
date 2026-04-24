@@ -21,7 +21,8 @@ struct MainDetailColumn: View {
             } else {
                 ContentUnavailableView(
                     String.localized("tasks.selectTask"),
-                    systemImage: "arrow.down.circle"
+                    systemImage: "arrow.down.circle",
+                    description: Text(String.localized("tasks.selectTask.description"))
                 )
             }
         case .feeds:
@@ -31,7 +32,8 @@ struct MainDetailColumn: View {
             } else {
                 ContentUnavailableView(
                     String.localized("feeds.selectFeed"),
-                    systemImage: "dot.radiowaves.left.and.right"
+                    systemImage: "dot.radiowaves.left.and.right",
+                    description: Text(String.localized("feeds.selectFeed.description"))
                 )
             }
         case .settings, nil:

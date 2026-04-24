@@ -80,7 +80,7 @@ struct TaskListItemView: View {
     private var trailingRateText: String {
         let down = downloadSpeed ?? "0 B/s"
         let up = uploadSpeed ?? "0 B/s"
-        return "D \(down)  U \(up)"
+        return "\(String.localized("tasks.header.down")) \(down)  \(String.localized("tasks.header.up")) \(up)"
     }
 
     private var primaryRowColor: Color {
@@ -122,7 +122,8 @@ struct TaskListItemView: View {
     @ViewBuilder
     private var rowContent: some View {
         let baseContent = taskContent
-            .padding(.vertical, 8)
+            .padding(DSGetDesign.rowPadding)
+            .dsgetSurface(isSelected ? .selectedRow : .row, tint: .accentColor)
             .contentShape(Rectangle())
             .taskAccessibility(task)
             .taskRotorActions(
@@ -135,7 +136,7 @@ struct TaskListItemView: View {
             .alert(String.localized("taskItem.status.error"), isPresented: $showingErrorAlert) {
                 Button(String.localized("general.ok")) { }
             } message: {
-                Text(errorMessage ?? "An unknown error occurred.")
+                Text(errorMessage ?? String.localized("error.unknown"))
             }
 
         #if os(macOS)
@@ -175,11 +176,16 @@ struct TaskListItemView: View {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: task.type == .bt ? "arrow.down.circle.fill" : "tray.full.fill")
                     .foregroundStyle(statusRowColor)
-                    .frame(width: 18)
+                    .font(.headline)
+                    .frame(width: 30, height: 30)
+                    .background(
+                        (isSelected ? Color.white.opacity(0.14) : status.color.opacity(0.12)),
+                        in: RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    )
 
                 Text(title)
                     .font(.body.weight(.medium))
-                    .lineLimit(1)
+                    .lineLimit(2)
                     .foregroundStyle(primaryRowColor)
 
                 Spacer(minLength: 0)
@@ -192,11 +198,11 @@ struct TaskListItemView: View {
             HStack(spacing: 8) {
                 Text(status.text)
                     .foregroundStyle(statusRowColor)
-                Text("•")
+                Text("/")
                 Text(taskTypeLabel)
                 if let etaText {
-                    Text("•")
-                    Text("ETA \(etaText)")
+                    Text("/")
+                    Text(String.localized("taskItem.eta", etaText))
                 }
             }
             .font(.caption)
@@ -213,12 +219,12 @@ struct TaskListItemView: View {
                 Spacer(minLength: 0)
 
                 if let downloadSpeed {
-                    Text("D \(downloadSpeed)")
+                    Label(downloadSpeed, systemImage: "arrow.down")
                         .monospacedDigit()
                 }
 
                 if let uploadSpeed {
-                    Text("U \(uploadSpeed)")
+                    Label(uploadSpeed, systemImage: "arrow.up")
                         .monospacedDigit()
                 }
             }
@@ -265,7 +271,7 @@ struct TaskListItemView: View {
                     TaskInfoBadge(text: status.text, systemImage: "circle.fill", tint: statusRowColor)
                     TaskInfoBadge(text: taskTypeLabel, systemImage: "circle.dashed", tint: secondaryRowColor)
                     if let ratioText {
-                        TaskInfoBadge(text: "Ratio \(ratioText)", systemImage: "arrow.triangle.swap", tint: secondaryRowColor)
+                        TaskInfoBadge(text: String.localized("taskItem.ratio", ratioText), systemImage: "arrow.triangle.swap", tint: secondaryRowColor)
                     }
                 }
             }
@@ -298,7 +304,7 @@ struct TaskListItemView: View {
                 .foregroundStyle(secondaryRowColor)
 
             if let etaText {
-                Text("ETA \(etaText)")
+                Text(String.localized("taskItem.eta", etaText))
                     .font(.caption2.monospacedDigit())
                     .foregroundStyle(secondaryRowColor)
             }
@@ -312,10 +318,10 @@ struct TaskListItemView: View {
             HStack(spacing: 12) {
                 Text(sizeText)
                 if task.peers > 0 {
-                    Text("Peers \(task.peers)")
+                    Text(String.localized("taskItem.peers", task.peers))
                 }
                 if task.seeders > 0 {
-                    Text("Seeds \(task.seeders)")
+                    Text(String.localized("taskItem.seeds", task.seeders))
                 }
                 Spacer(minLength: 0)
                 Text(progressPercentage)
@@ -326,10 +332,10 @@ struct TaskListItemView: View {
                 Text(sizeText)
                 HStack(spacing: 12) {
                     if task.peers > 0 {
-                        Text("Peers \(task.peers)")
+                        Text(String.localized("taskItem.peers", task.peers))
                     }
                     if task.seeders > 0 {
-                        Text("Seeds \(task.seeders)")
+                        Text(String.localized("taskItem.seeds", task.seeders))
                     }
                 }
             }
@@ -346,7 +352,7 @@ struct TaskListItemView: View {
                     .font(.caption2.monospacedDigit())
                     .foregroundStyle(secondaryRowColor)
                 if let etaText {
-                    Text("ETA \(etaText)")
+                    Text(String.localized("taskItem.eta", etaText))
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(secondaryRowColor)
                 }
@@ -358,7 +364,7 @@ struct TaskListItemView: View {
                     .font(.caption2.monospacedDigit())
                     .foregroundStyle(secondaryRowColor)
                 if let etaText {
-                    Text("ETA \(etaText)")
+                    Text(String.localized("taskItem.eta", etaText))
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(secondaryRowColor)
                 }

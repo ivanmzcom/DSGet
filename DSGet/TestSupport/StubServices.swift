@@ -141,12 +141,15 @@ final class StubAuthService: AuthServiceProtocol, @unchecked Sendable {
     func isLoggedIn() async -> Bool { !loggedOut }
 
     func refreshSession() async throws -> Session { stubSession }
+    func testConnection(configuration: ServerConfiguration) async throws {}
 
     func getServer() async throws -> Server? { stubServer }
     func saveServer(_ server: Server, credentials: Credentials) async throws {}
     func removeServer() async throws {}
     func hasServer() async -> Bool { true }
     func getCredentials() async throws -> Credentials { Credentials(username: "admin", password: "pass") }
+    func getRecentServers() async -> [Server] { [stubServer] }
+    func clearRecentServers() async {}
 }
 
 // MARK: - Stub Connectivity Service

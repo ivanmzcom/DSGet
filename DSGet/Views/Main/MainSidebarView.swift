@@ -22,7 +22,7 @@ struct MainSidebarView: View {
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 SettingsLink {
-                    Label("Settings", systemImage: "gearshape")
+                    Label(String.localized("tab.settings"), systemImage: "gearshape")
                 }
             }
         }
@@ -44,12 +44,16 @@ struct MainSidebarView: View {
         switch section {
         case .downloads:
             let count = appViewModel.tasksViewModel.activeDownloadCount
-            return count > 0 ? "\(count) active" : "All downloads"
+            return count > 0
+                ? String.localized("sidebar.downloads.active", count)
+                : String.localized("sidebar.downloads.all")
         case .feeds:
             let favoriteCount = appViewModel.feedsViewModel.favoriteFeedIDs.count
-            return favoriteCount > 0 ? "\(favoriteCount) favorites" : "RSS sources"
+            return favoriteCount > 0
+                ? String.localized("sidebar.feeds.favorites", favoriteCount)
+                : String.localized("sidebar.feeds.sources")
         case .settings:
-            return "Server and account"
+            return String.localized("sidebar.settings.detail")
         }
     }
 }

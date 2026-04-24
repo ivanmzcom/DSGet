@@ -11,6 +11,20 @@ import DSGetCore
 
 // MARK: - LoginViewModel
 
+enum LoginConnectionTestState: Equatable {
+    case idle
+    case testing
+    case success(Date)
+    case failure(String)
+
+    var isTesting: Bool {
+        if case .testing = self {
+            return true
+        }
+        return false
+    }
+}
+
 /// ViewModel that manages the state and logic for user authentication.
 @MainActor
 @Observable
@@ -21,13 +35,29 @@ final class LoginViewModel: DomainErrorHandling {
     var serverName: String = ""
 
     /// Server host address.
-    var host: String = ""
+    var host: String = "" {
+        didSet {
+            guard oldValue != host else { return }
+            clearConnectionTest()
+        }
+    }
 
     /// Server port.
-    var port: Int = 5001
+    var port: Int = ServerConfiguration.defaultHTTPSPort {
+        didSet {
+            guard oldValue != port else { return }
+            clearConnectionTest()
+        }
+    }
 
     /// Whether to use HTTPS.
-    var useHTTPS: Bool = true
+    var useHTTPS: Bool = true {
+        didSet {
+            guard oldValue != useHTTPS else { return }
+            updatePortForSchemeChange(previousUseHTTPS: oldValue)
+            clearConnectionTest()
+        }
+    }
 
     /// Username for authentication.
     var username: String = ""
@@ -40,6 +70,15 @@ final class LoginViewModel: DomainErrorHandling {
 
     /// Whether login is in progress.
     private(set) var isLoading: Bool = false
+
+    /// Whether validation hints should be shown for missing required values.
+    private(set) var hasAttemptedValidation: Bool = false
+
+    /// Current connection test state for the server configuration.
+    private(set) var connectionTestState: LoginConnectionTestState = .idle
+
+    /// Recently used servers for quick selection.
+    private(set) var recentServers: [Server] = []
 
     /// Current error.
     var currentError: DSGetError?
@@ -56,19 +95,51 @@ final class LoginViewModel: DomainErrorHandling {
 
     /// Whether the form is valid for submission.
     var isFormValid: Bool {
-        !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !password.isEmpty &&
-        port > 0 && port < 65_536
+        isServerConfigurationValid &&
+            usernameValidationMessage(showRequired: true) == nil &&
+            passwordValidationMessage(showRequired: true) == nil
+    }
+
+    /// Whether the server details can be tested without credentials.
+    var isServerConfigurationValid: Bool {
+        hostValidationMessage(showRequired: true) == nil &&
+            portValidationMessage(showRequired: true) == nil
+    }
+
+    var hostValidationMessage: String? {
+        hostValidationMessage(showRequired: hasAttemptedValidation)
+    }
+
+    var portValidationMessage: String? {
+        portValidationMessage(showRequired: hasAttemptedValidation)
+    }
+
+    var usernameValidationMessage: String? {
+        usernameValidationMessage(showRequired: hasAttemptedValidation)
+    }
+
+    var passwordValidationMessage: String? {
+        passwordValidationMessage(showRequired: hasAttemptedValidation)
+    }
+
+    var formGuidanceMessage: String? {
+        guard !isFormValid else { return nil }
+
+        if hostValidationMessage(showRequired: true) != nil || portValidationMessage(showRequired: true) != nil {
+            return String.localized("auth.login.validation.serverSummary")
+        }
+
+        return String.localized("auth.login.validation.credentialsSummary")
     }
 
     /// Port as a string for text field binding.
     var portString: String {
         get { port == 0 ? "" : String(port) }
         set {
-            if let value = Int(newValue) {
+            let digits = newValue.filter(\.isNumber)
+            if let value = Int(digits) {
                 port = value
-            } else if newValue.isEmpty {
+            } else if digits.isEmpty {
                 port = 0
             }
         }
@@ -77,9 +148,13 @@ final class LoginViewModel: DomainErrorHandling {
     /// Generated server name if user didn't provide one.
     private var effectiveServerName: String {
         if serverName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return host
+            return trimmedHost
         }
         return serverName
+    }
+
+    private var trimmedHost: String {
+        host.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     // MARK: - Dependencies
@@ -96,24 +171,17 @@ final class LoginViewModel: DomainErrorHandling {
 
     /// Performs login with the current credentials.
     func login() async {
+        hasAttemptedValidation = true
         guard isFormValid else { return }
 
         isLoading = true
         currentError = nil
         showingError = false
 
-        // Validate port
-        guard port > 0 && port < 65_536 else {
-            currentError = DSGetError.api(.serverError(code: -1, message: "Port must be a valid number between 1 and 65535."))
-            showingError = true
-            isLoading = false
-            return
-        }
-
         // Build server configuration
         let server = Server.create(
             name: effectiveServerName,
-            host: host,
+            host: trimmedHost,
             port: port,
             useHTTPS: useHTTPS
         )
@@ -133,11 +201,49 @@ final class LoginViewModel: DomainErrorHandling {
             try await authService.saveServer(server, credentials: credentials)
 
             isLoading = false
+            await loadRecentServers()
             onLoginSuccess?()
         } catch {
             handleError(error)
             isLoading = false
         }
+    }
+
+    /// Tests server reachability without attempting to authenticate.
+    func testConnection() async {
+        hasAttemptedValidation = true
+
+        guard isServerConfigurationValid else {
+            connectionTestState = .failure(String.localized("auth.login.connection.invalidServer"))
+            return
+        }
+
+        connectionTestState = .testing
+        currentError = nil
+        showingError = false
+
+        do {
+            let configuration = ServerConfiguration(host: trimmedHost, port: port, useHTTPS: useHTTPS)
+            try await authService.testConnection(configuration: configuration)
+            connectionTestState = .success(Date())
+        } catch {
+            connectionTestState = .failure(DSGetError.from(error).localizedDescription)
+        }
+    }
+
+    func loadRecentServers() async {
+        recentServers = await authService.getRecentServers()
+    }
+
+    func applyRecentServer(_ server: Server) {
+        serverName = server.name
+        host = server.configuration.host
+        port = server.configuration.port
+        useHTTPS = server.configuration.useHTTPS
+        password = ""
+        otpCode = ""
+        hasAttemptedValidation = false
+        connectionTestState = .idle
     }
 
     /// Resets the form to default state.
@@ -146,5 +252,70 @@ final class LoginViewModel: DomainErrorHandling {
         otpCode = ""
         currentError = nil
         showingError = false
+        connectionTestState = .idle
+        hasAttemptedValidation = false
+    }
+
+    private func updatePortForSchemeChange(previousUseHTTPS: Bool) {
+        let previousDefault = previousUseHTTPS ? ServerConfiguration.defaultHTTPSPort : ServerConfiguration.defaultHTTPPort
+        let newDefault = useHTTPS ? ServerConfiguration.defaultHTTPSPort : ServerConfiguration.defaultHTTPPort
+
+        if port == previousDefault || port == 0 {
+            port = newDefault
+        }
+    }
+
+    private func clearConnectionTest() {
+        if connectionTestState != .idle {
+            connectionTestState = .idle
+        }
+    }
+
+    private func hostValidationMessage(showRequired: Bool) -> String? {
+        if trimmedHost.isEmpty {
+            return showRequired ? String.localized("auth.login.validation.hostRequired") : nil
+        }
+
+        if trimmedHost.contains("://") {
+            return String.localized("auth.login.validation.hostNoScheme")
+        }
+
+        if trimmedHost.contains("/") {
+            return String.localized("auth.login.validation.hostNoPath")
+        }
+
+        if ServerConfiguration(host: trimmedHost, port: port, useHTTPS: useHTTPS).baseURL == nil {
+            return String.localized("auth.login.validation.hostInvalid")
+        }
+
+        return nil
+    }
+
+    private func portValidationMessage(showRequired: Bool) -> String? {
+        if port == 0 {
+            return showRequired ? String.localized("auth.login.validation.portRequired") : nil
+        }
+
+        if port < 0 || port >= 65_536 {
+            return String.localized("auth.login.validation.portRange")
+        }
+
+        return nil
+    }
+
+    private func usernameValidationMessage(showRequired: Bool) -> String? {
+        if username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return showRequired ? String.localized("auth.login.validation.usernameRequired") : nil
+        }
+
+        return nil
+    }
+
+    private func passwordValidationMessage(showRequired: Bool) -> String? {
+        if password.isEmpty {
+            return showRequired ? String.localized("auth.login.validation.passwordRequired") : nil
+        }
+
+        return nil
     }
 }

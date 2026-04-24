@@ -16,9 +16,29 @@
 "auth.login.placeholder.otp" = "OTP (if enabled)";
 "auth.login.button.login" = "Login";
 "auth.login.subtitle" = "Connect to your Synology Download Station";
+"auth.login.section.continue" = "Continue";
 "auth.login.error.title" = "Login Failed";
 "auth.login.error.unknown" = "An unknown error occurred.";
 "auth.login.error.invalidPort" = "Port must be a valid number between 1 and 65535.";
+"auth.login.recentServers" = "Recent Servers";
+"auth.login.connection.test" = "Test Connection";
+"auth.login.connection.testing" = "Testing Connection";
+"auth.login.connection.testing.description" = "Checking whether this server responds as a Synology API endpoint.";
+"auth.login.connection.success" = "Server Reachable";
+"auth.login.connection.success.description" = "DSGet can reach this server. You can sign in when the credentials are ready.";
+"auth.login.connection.failure" = "Connection Failed";
+"auth.login.connection.invalidServer" = "Complete a valid host and port before testing the connection.";
+"auth.login.validation.readyTitle" = "Before Signing In";
+"auth.login.validation.serverSummary" = "Complete the server address and port first.";
+"auth.login.validation.credentialsSummary" = "Enter your username and password to continue.";
+"auth.login.validation.hostRequired" = "Enter the NAS IP address or host name.";
+"auth.login.validation.hostNoScheme" = "Enter only the host name or IP address, without http:// or https://.";
+"auth.login.validation.hostNoPath" = "Enter only the host name or IP address, without a path.";
+"auth.login.validation.hostInvalid" = "This host cannot be converted into a valid server URL.";
+"auth.login.validation.portRequired" = "Enter a port number.";
+"auth.login.validation.portRange" = "Use a port from 1 to 65535.";
+"auth.login.validation.usernameRequired" = "Enter your username.";
+"auth.login.validation.passwordRequired" = "Enter your password.";
 
 // MARK: - Main Tabs
 "tab.downloads" = "Downloads";
@@ -28,11 +48,42 @@
 // MARK: - Settings
 "settings.title" = "Settings";
 "settings.section.server" = "Server";
+"settings.section.general" = "General";
+"settings.section.account" = "Account";
 "settings.server.noServer" = "No server";
 "settings.section.about" = "About";
 "settings.about.version" = "Version";
 "settings.section.logout" = "Logout";
 "settings.logout.button" = "Logout";
+"settings.section.session" = "Session";
+"settings.session.description" = "Manage the current connection and sign out when you need to switch servers.";
+"settings.detail.name" = "Name";
+"settings.detail.address" = "Address";
+"settings.detail.security" = "Security";
+"settings.detail.lastConnected" = "Last Connected";
+"settings.connection.test" = "Test Connection";
+"settings.section.recentServers" = "Recent Servers";
+"settings.recentServers.empty" = "No recent servers yet.";
+"settings.recentServers.clear" = "Clear Server History";
+"settings.server.status.unknown" = "Status Unknown";
+"settings.server.status.unknown.description" = "Test the connection to confirm this server is reachable.";
+"settings.server.status.checking" = "Checking Server";
+"settings.server.status.checking.description" = "Testing the server and validating the current session.";
+"settings.server.status.connected" = "Connected";
+"settings.server.status.connected.description" = "The server is reachable and the current session is usable.";
+"settings.server.status.signedOut" = "Signed Out";
+"settings.server.status.signedOut.description" = "The server is configured, but there is no active session.";
+"settings.server.status.unavailable" = "Server Unavailable";
+"settings.session.refresh" = "Refresh Session";
+"settings.session.started" = "Started";
+"settings.session.server" = "Server";
+"settings.session.status.active" = "Session Active";
+"settings.session.status.active.description" = "The stored session is valid and ready for Download Station requests.";
+"settings.session.status.expired" = "Session May Be Expired";
+"settings.session.status.expired.description" = "This session may have expired. Refresh it or sign in again.";
+"settings.session.status.signedOut" = "No Active Session";
+"settings.session.status.signedOut.description" = "Sign in again to restore access to Download Station.";
+"settings.badge.showActiveDownload" = "Show active download badge";
 
 // MARK: - Add Task
 "addTask.title" = "Add New Task";
@@ -50,7 +101,9 @@
 "addTask.placeholder.selectTorrent" = "Select .torrent file...";
 "addTask.button.removeFile" = "Remove selected file";
 "addTask.placeholder.selectFolder" = "Select folder...";
+"addTask.section.destination" = "Destination";
 "addTask.section.recentFolders" = "Recent Folders";
+"addTask.section.create" = "Create";
 "addTask.button.createTask" = "Create Task";
 "addTask.error.selectTorrentFile" = "Select a .torrent file before creating the task.";
 
@@ -80,9 +133,19 @@
 "empty.noTasks.title" = "No Tasks";
 "empty.noTasks.description" = "Add a new download task using the + button.";
 "empty.noFolders" = "No folders found.";
+"state.clearFilters" = "Clear Filters";
+"state.clearSearch" = "Clear Search";
+"state.permission.title" = "Permission Required";
+"state.permission.description" = "Sign in again or check that this account has permission to access Download Station.";
 
 // MARK: - Task List
 "tasks.title" = "Downloads";
+"tasks.state.loading.title" = "Loading Downloads";
+"tasks.state.loading.description" = "Fetching the latest tasks from Download Station.";
+"tasks.state.noResults.title" = "No Matching Downloads";
+"tasks.state.noResults.search" = "No downloads match \"%@\". Try another search term.";
+"tasks.state.noResults.searchAndFilters" = "No downloads match \"%@\" with the current filters. Try clearing filters or changing the search.";
+"tasks.state.noResults.filters" = "No downloads match the current filters. Clear filters to see every task.";
 "tasks.filter.all" = "All";
 "tasks.filter.downloading" = "Downloading";
 "tasks.filter.paused" = "Paused";
@@ -92,7 +155,9 @@
 "tasks.type.e2k" = "E2K";
 "tasks.search.prompt" = "Filter";
 "tasks.search.clear" = "Clear Search";
+"tasks.type.filter" = "Type";
 "tasks.sort.by" = "Sort By";
+"tasks.sort.order" = "Sort Order";
 "tasks.sort.date" = "Date";
 "tasks.sort.name" = "Name";
 "tasks.sort.downloadSpeed" = "Download Speed";
@@ -100,13 +165,26 @@
 "tasks.sort.ascending" = "Ascending";
 "tasks.sort.descending" = "Descending";
 "tasks.button.addTask" = "Add Task";
+"tasks.header.transfers" = "Transfers";
+"tasks.header.items" = "%d items";
+"tasks.header.down" = "Down";
+"tasks.header.up" = "Up";
+"tasks.header.active" = "Active";
+"tasks.table.name" = "Name";
+"tasks.table.progress" = "Progress";
+"tasks.table.status" = "Status";
+"tasks.selectTask" = "Select a download";
+"tasks.selectTask.description" = "Choose a task to inspect files, peers, trackers, and transfer details.";
 
 // MARK: - Task Detail
-"taskDetail.title" = "General";
+"taskDetail.title" = "Title";
+"taskDetail.tab.general" = "General";
 "taskDetail.tab.transfer" = "Transfer";
 "taskDetail.tab.trackers" = "Trackers";
 "taskDetail.tab.peers" = "Peers";
 "taskDetail.tab.files" = "Files";
+"taskDetail.tab.picker" = "Section";
+"taskDetail.status" = "Status";
 "taskDetail.overview" = "Overview";
 "taskDetail.status.downloading" = "Downloading";
 "taskDetail.status.completed" = "Completed";
@@ -136,9 +214,14 @@
 "taskDetail.totalPeers" = "Total Peers";
 "taskDetail.filesCount" = "Files (%d)";
 "taskDetail.noTransferData" = "No transfer data";
+"taskDetail.noTransferData.description" = "Speed and ETA will appear once the task starts transferring.";
 "taskDetail.noPeerInfo" = "No peer information";
+"taskDetail.noPeerInfo.description" = "Peer information is unavailable for this task right now.";
 "taskDetail.noFiles" = "No files";
+"taskDetail.noFiles.description" = "File details will appear after Download Station provides them.";
 "taskDetail.noTrackers" = "No trackers";
+"taskDetail.noTrackers.description" = "Tracker information is unavailable for this task.";
+"taskDetail.trackersCount" = "Trackers (%d)";
 "taskDetail.trackerUpdateInterval" = "Update interval: %ds";
 "taskDetail.button.pause" = "Pause";
 "taskDetail.button.resume" = "Resume";
@@ -146,6 +229,12 @@
 "taskDetail.button.close" = "Close";
 "taskDetail.delete.confirmTitle" = "Delete Task";
 "taskDetail.delete.confirmMessage" = "Are you sure you want to delete \"%@\"?";
+"taskDetail.delete.confirmButton" = "Delete Task";
+"taskDetail.metric.downloaded" = "Downloaded";
+"taskDetail.metric.size" = "Size";
+"taskDetail.metric.down" = "Down";
+"taskDetail.metric.up" = "Up";
+"taskDetail.metric.eta" = "ETA";
 
 // MARK: - Task List Item
 "taskItem.status.downloading" = "Downloading";
@@ -154,6 +243,9 @@
 "taskItem.status.waiting" = "Waiting";
 "taskItem.status.error" = "Error";
 "taskItem.eta" = "ETA %@";
+"taskItem.ratio" = "Ratio %@";
+"taskItem.peers" = "%d peers";
+"taskItem.seeds" = "%d seeds";
 "taskItem.action.pause" = "Pause";
 "taskItem.action.resume" = "Resume";
 "taskItem.action.delete" = "Delete";
@@ -163,10 +255,18 @@
 "feeds.title" = "Feeds";
 "feeds.empty.noFeeds" = "No Feeds";
 "feeds.empty.noFeeds.description" = "Pull down to refresh your Download Station feeds.";
+"feeds.state.loading.title" = "Loading Feeds";
+"feeds.state.loading.description" = "Fetching RSS sources from Download Station.";
+"feeds.state.noResults.title" = "No Matching Feeds";
+"feeds.state.noResults.search" = "No feeds match \"%@\". Try another search term.";
 "feed.detail.noItems" = "No Items";
 "feed.detail.noItems.description" = "Pull down to refresh this feed.";
+"feedItems.state.loading.title" = "Loading Feed Items";
+"feedItems.state.loading.description" = "Fetching the latest items for this feed.";
 "feed.item.new" = "NEW";
 "feed.item.updated" = "Updated %@";
+"feed.item.ready" = "Ready";
+"feed.meta.favorite" = "Favorite";
 "feed.action.refresh" = "Refresh";
 "feed.action.favorite" = "Favorite";
 "feed.action.unfavorite" = "Unfavorite";
@@ -176,6 +276,12 @@
 "feed.action.share" = "Share";
 "feed.action.delete" = "Delete Feed";
 "feed.action.refreshing" = "Refreshing";
+"feed.action.download" = "Download";
+"feed.action.copyTitle" = "Copy Title";
+"feed.action.copyDownloadURL" = "Copy Download URL";
+"feeds.search.prompt" = "Search feeds";
+"feeds.selectFeed" = "Select a feed";
+"feeds.selectFeed.description" = "Choose a feed to browse available items.";
 
 // MARK: - Folder Picker
 "folderPicker.title.sharedFolders" = "Shared Folders";
@@ -209,6 +315,7 @@
 
 // MARK: - OTP
 "otp.title" = "Enter OTP";
+"otp.required.title" = "Verification Required";
 "otp.required" = "Your session has expired and OTP is required to re-authenticate.";
 "otp.placeholder" = "OTP Code";
 "otp.button.submit" = "Submit";
@@ -223,3 +330,26 @@
 "general.copy" = "Copy";
 "general.share" = "Share";
 "general.select" = "Select";
+"general.notAvailable" = "N/A";
+
+// MARK: - System Overlays
+"dropZone.title" = "Drop torrent file or magnet link";
+"keyboardShortcuts.title" = "Keyboard Shortcuts";
+"keyboardShortcuts.newTask" = "New Task";
+"keyboardShortcuts.navigation" = "Navigation";
+"keyboardShortcuts.nextField" = "Next Field";
+"keyboardShortcuts.confirm" = "Confirm";
+"keyboardShortcuts.cancelClose" = "Cancel / Close";
+
+// MARK: - macOS
+"mac.command.openTaskDetail" = "Open Detail in New Window";
+"mac.command.clearFilters" = "Clear Filters";
+"mac.detailWindow.taskUnavailable" = "Task Not Available";
+"mac.detailWindow.taskUnavailable.description" = "Refresh the task list and try again.";
+
+// MARK: - Sidebar
+"sidebar.downloads.active" = "%d active";
+"sidebar.downloads.all" = "All downloads";
+"sidebar.feeds.favorites" = "%d favorites";
+"sidebar.feeds.sources" = "RSS sources";
+"sidebar.settings.detail" = "Server and account";

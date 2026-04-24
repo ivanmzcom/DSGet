@@ -19,9 +19,9 @@ struct TaskDetailWindowView: View {
                 }
             } else {
                 ContentUnavailableView(
-                    "Task Not Available",
+                    String.localized("mac.detailWindow.taskUnavailable"),
                     systemImage: "tray",
-                    description: Text("Refresh the task list and try again.")
+                    description: Text(String.localized("mac.detailWindow.taskUnavailable.description"))
                 )
             }
         }

@@ -30,7 +30,7 @@ struct KeyboardShortcutsOverlay: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("Keyboard Shortcuts")
+                Text(String.localized("keyboardShortcuts.title"))
                     .font(.headline)
                 Spacer()
                 Button {
@@ -45,23 +45,22 @@ struct KeyboardShortcutsOverlay: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 12) {
-                ShortcutSection(title: "General") {
-                    ShortcutRow(key: "N", modifiers: "\u{2318}", action: "New Task")
-                    ShortcutRow(key: "R", modifiers: "\u{2318}", action: "Refresh")
-                    ShortcutRow(key: ",", modifiers: "\u{2318}", action: "Settings")
+                ShortcutSection(title: String.localized("settings.section.general")) {
+                    ShortcutRow(key: "N", modifiers: "\u{2318}", action: String.localized("keyboardShortcuts.newTask"))
+                    ShortcutRow(key: "R", modifiers: "\u{2318}", action: String.localized("quickAction.refresh"))
+                    ShortcutRow(key: ",", modifiers: "\u{2318}", action: String.localized("tab.settings"))
                 }
 
-                ShortcutSection(title: "Navigation") {
-                    ShortcutRow(key: "\u{21E5}", modifiers: "", action: "Next Field")
-                    ShortcutRow(key: "\u{21A9}", modifiers: "", action: "Confirm")
-                    ShortcutRow(key: "\u{238B}", modifiers: "", action: "Cancel / Close")
+                ShortcutSection(title: String.localized("keyboardShortcuts.navigation")) {
+                    ShortcutRow(key: "\u{21E5}", modifiers: "", action: String.localized("keyboardShortcuts.nextField"))
+                    ShortcutRow(key: "\u{21A9}", modifiers: "", action: String.localized("keyboardShortcuts.confirm"))
+                    ShortcutRow(key: "\u{238B}", modifiers: "", action: String.localized("keyboardShortcuts.cancelClose"))
                 }
             }
         }
-        .padding(20)
+        .padding(DSGetDesign.cardPadding)
         .frame(width: 300)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .dsgetSurface(.card)
         .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
     }
 }
@@ -101,7 +100,7 @@ private struct ShortcutRow: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(Color.secondary.opacity(0.15))
-            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: DSGetDesign.cornerRadius - 2, style: .continuous))
         }
     }
 }

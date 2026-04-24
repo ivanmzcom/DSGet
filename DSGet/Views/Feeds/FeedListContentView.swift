@@ -53,7 +53,9 @@ struct FeedListContentView: View {
                     onToggleFavorite?(feed)
                 } label: {
                     Label(
-                        feedIsFavorite ? "Remove from Favorites" : "Add to Favorites",
+                        feedIsFavorite
+                            ? String.localized("feed.action.removeFromFavorites")
+                            : String.localized("feed.action.addToFavorites"),
                         systemImage: feedIsFavorite ? "star.slash" : "star"
                     )
                 }
@@ -130,42 +132,146 @@ struct FeedListContentView: View {
         List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
             feedRowView(for: feed)
                 .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                .listRowBackground(Color.clear)
         }
         .listStyle(.plain)
+        .dsgetContentBackground()
         .accessibilityIdentifier(AccessibilityID.FeedList.list)
     }
 
     @ViewBuilder
     private func feedList() -> some View {
-        @Bindable var vm = feedsVM
-
         feedListContent()
+            .overlay {
+                feedStateOverlay
+            }
             .navigationTitle(String.localized("feeds.title"))
             #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #else
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        Task { await feedsVM.refresh() }
+                    } label: {
+                        Label(String.localized("feed.action.refresh"), systemImage: "arrow.clockwise")
+                    }
+                    .disabled(feedsVM.isLoading)
+                    .help(String.localized("feed.action.refresh"))
+                }
+            }
             #endif
             .onAppear {
                 Task { await feedsVM.fetchFeedsIfNeeded() }
             }
             .refreshable { await feedsVM.refresh() }
-            .errorAlert(isPresented: $vm.showingError, error: feedsVM.currentError)
-            .loadingOverlay(
-                isLoading: feedsVM.isLoading,
-                isEmpty: feedsVM.feeds.isEmpty,
-                title: String.localized("feeds.empty.noFeeds"),
-                systemImage: "dot.radiowaves.right",
-                description: String.localized("feeds.empty.noFeeds.description")
-            )
-            .offlineModeIndicator(isOffline: feedsVM.isOfflineMode)
+            .errorAlert(isPresented: feedErrorAlertBinding, error: feedsVM.currentError)
+            .offlineModeIndicator(isOffline: shouldShowOfflineBadge)
     }
 
     var body: some View {
         feedList()
     }
 
+    private var feedContentState: FeedListContentState? {
+        if feedsVM.isLoading && feedsVM.feeds.isEmpty {
+            return .loading
+        }
+
+        if let currentError = feedsVM.currentError, feedsVM.feeds.isEmpty {
+            return .error(currentError)
+        }
+
+        if feedsVM.isOfflineMode && feedsVM.feeds.isEmpty {
+            return .offline
+        }
+
+        if feedsVM.feeds.isEmpty {
+            return .empty
+        }
+
+        if feedsVM.visibleFeeds.isEmpty && !feedsVM.searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return .noResults
+        }
+
+        return nil
+    }
+
+    private var shouldShowOfflineBadge: Bool {
+        feedsVM.isOfflineMode && feedContentState == nil
+    }
+
+    private var feedErrorAlertBinding: Binding<Bool> {
+        Binding(
+            get: { feedsVM.showingError && !isShowingInlineError },
+            set: { feedsVM.showingError = $0 }
+        )
+    }
+
+    private var isShowingInlineError: Bool {
+        if case .error = feedContentState {
+            return true
+        }
+        return false
+    }
+
+    @ViewBuilder
+    private var feedStateOverlay: some View {
+        switch feedContentState {
+        case .loading:
+            DSGetLoadingContentStateView(
+                title: String.localized("feeds.state.loading.title"),
+                description: String.localized("feeds.state.loading.description")
+            )
+        case .offline:
+            DSGetContentStateView.offline(onRetry: retryFeeds)
+        case .error(let error):
+            DSGetContentStateView.error(error, onRetry: retryFeeds)
+        case .empty:
+            DSGetContentStateView(
+                title: String.localized("feeds.empty.noFeeds"),
+                description: String.localized("feeds.empty.noFeeds.description"),
+                systemImage: "dot.radiowaves.right",
+                primaryActionTitle: String.localized("feed.action.refresh"),
+                primaryAction: retryFeeds
+            )
+        case .noResults:
+            DSGetContentStateView(
+                title: String.localized("feeds.state.noResults.title"),
+                description: String.localized(
+                    "feeds.state.noResults.search",
+                    feedsVM.searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                ),
+                systemImage: "magnifyingglass",
+                primaryActionTitle: String.localized("state.clearSearch"),
+                primaryAction: clearFeedSearch
+            )
+        case nil:
+            EmptyView()
+        }
+    }
+
+    private func retryFeeds() {
+        Task { await feedsVM.fetchFeeds(forceRefresh: true) }
+    }
+
+    private func clearFeedSearch() {
+        feedsVM.searchText = ""
+    }
+
     private func shareURL(for feed: RSSFeed) -> URL? {
         feed.url
     }
+}
+
+private enum FeedListContentState {
+    case loading
+    case offline
+    case error(DSGetError)
+    case empty
+    case noResults
 }
 
 // MARK: - Feed Content Row
@@ -177,9 +283,11 @@ private struct FeedContentRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "dot.radiowaves.left.and.right")
-                .foregroundStyle(.secondary)
-                .frame(width: 18)
+            DSGetIconBadge(
+                systemName: isFavorite ? "star.fill" : "dot.radiowaves.left.and.right",
+                tint: isFavorite ? .yellow : .accentColor,
+                size: 32
+            )
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(feed.title)
@@ -195,7 +303,7 @@ private struct FeedContentRow: View {
                             FeedMetaLabel(text: subtitleText, systemImage: "clock")
                         }
                         if isFavorite {
-                            FeedMetaLabel(text: "Favorite", systemImage: "star.fill", tint: .yellow)
+                            FeedMetaLabel(text: String.localized("feed.meta.favorite"), systemImage: "star.fill", tint: .yellow)
                         }
                     }
 
@@ -207,7 +315,7 @@ private struct FeedContentRow: View {
                             FeedMetaLabel(text: subtitleText, systemImage: "clock")
                         }
                         if isFavorite {
-                            FeedMetaLabel(text: "Favorite", systemImage: "star.fill", tint: .yellow)
+                            FeedMetaLabel(text: String.localized("feed.meta.favorite"), systemImage: "star.fill", tint: .yellow)
                         }
                     }
                 }
@@ -219,7 +327,8 @@ private struct FeedContentRow: View {
                     .progressViewStyle(.circular)
             }
         }
-        .padding(.vertical, 6)
+        .padding(DSGetDesign.rowPadding)
+        .dsgetSurface(.row)
     }
 
     private var hostText: String? {
@@ -229,7 +338,7 @@ private struct FeedContentRow: View {
     private var subtitleText: String? {
         guard let lastUpdate = feed.lastUpdate else { return nil }
         let relative = feedRelativeDateFormatter.localizedString(for: lastUpdate, relativeTo: Date())
-        return "Updated \(relative)"
+        return String.localized("feed.item.updated", relative)
     }
 }
 

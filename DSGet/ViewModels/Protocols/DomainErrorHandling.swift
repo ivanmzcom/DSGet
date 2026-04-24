@@ -19,12 +19,14 @@ extension Notification.Name {
 
 /// Unified protocol for ViewModels that handle domain errors.
 /// ViewModels can optionally support offline mode by implementing `isOfflineMode`.
+@MainActor
 protocol DomainErrorHandling: AnyObject {
     var currentError: DSGetError? { get set }
     var showingError: Bool { get set }
 }
 
 /// Optional protocol for ViewModels that support offline mode.
+@MainActor
 protocol OfflineModeSupporting: AnyObject {
     var isOfflineMode: Bool { get set }
 }

@@ -39,7 +39,7 @@ struct TaskContextMenu: View {
                 isPaused ? onResume() : onPause()
             } label: {
                 Label(
-                    isPaused ? "Resume" : "Pause",
+                    isPaused ? String.localized("taskItem.action.resume") : String.localized("taskItem.action.pause"),
                     systemImage: isPaused ? "play.fill" : "pause.fill"
                 )
             }
@@ -81,7 +81,7 @@ struct FeedContextMenu: View {
             Button {
                 onRefresh()
             } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+                Label(String.localized("feed.action.refresh"), systemImage: "arrow.clockwise")
             }
 
             // Toggle Favorite
@@ -89,7 +89,9 @@ struct FeedContextMenu: View {
                 onToggleFavorite()
             } label: {
                 Label(
-                    isFavorite ? "Remove from Favorites" : "Add to Favorites",
+                    isFavorite
+                        ? String.localized("feed.action.removeFromFavorites")
+                        : String.localized("feed.action.addToFavorites"),
                     systemImage: isFavorite ? "star.slash" : "star"
                 )
             }
@@ -101,7 +103,7 @@ struct FeedContextMenu: View {
                 Button {
                     ClipboardUtility.copy(feedURL.absoluteString)
                 } label: {
-                    Label("Copy Feed URL", systemImage: "doc.on.doc")
+                    Label(String.localized("feed.action.copyFeedURL"), systemImage: "doc.on.doc")
                 }
             }
 
@@ -111,7 +113,7 @@ struct FeedContextMenu: View {
             Button(role: .destructive) {
                 onDelete()
             } label: {
-                Label("Delete Feed", systemImage: "trash")
+                Label(String.localized("feed.action.delete"), systemImage: "trash")
             }
         }
     }

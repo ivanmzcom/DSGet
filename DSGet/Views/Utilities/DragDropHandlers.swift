@@ -172,7 +172,7 @@ struct TorrentDropZone<Content: View>: View {
 private struct DropTargetOverlay: View {
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: DSGetDesign.cornerRadius, style: .continuous)
                 .fill(.ultraThinMaterial)
 
             VStack(spacing: 12) {
@@ -180,13 +180,13 @@ private struct DropTargetOverlay: View {
                     .font(.system(size: 48, weight: .light))
                     .foregroundStyle(.secondary)
 
-                Text("Drop torrent file or magnet link")
+                Text(String.localized("dropZone.title"))
                     .font(.headline)
                     .foregroundStyle(.secondary)
             }
         }
         .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: DSGetDesign.cornerRadius, style: .continuous)
                 .strokeBorder(
                     Color.accentColor,
                     style: StrokeStyle(lineWidth: 3, dash: [10, 5])

@@ -22,7 +22,6 @@ struct MainView: View {
     @SceneStorage("main.selectedSection")
     private var selectedSectionRawValue = AppSection.downloads.rawValue
     @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
-    @State private var statusFilter: TaskStatusFilter = .all
 
     private var tasksVM: TasksViewModel { appViewModel.tasksViewModel }
     private var feedsVM: FeedsViewModel { appViewModel.feedsViewModel }
@@ -89,7 +88,7 @@ struct MainView: View {
                     MainContentColumn(
                         appViewModel: appViewModel,
                         selectedSection: .downloads,
-                        statusFilter: $statusFilter
+                        statusFilter: statusFilterBinding
                     )
                 }
                 .tabItem {
@@ -101,7 +100,7 @@ struct MainView: View {
                     MainContentColumn(
                         appViewModel: appViewModel,
                         selectedSection: .feeds,
-                        statusFilter: $statusFilter
+                        statusFilter: statusFilterBinding
                     )
                 }
                 .tabItem {
@@ -135,7 +134,7 @@ struct MainView: View {
             MainContentColumn(
                 appViewModel: appViewModel,
                 selectedSection: selectedSection,
-                statusFilter: $statusFilter
+                statusFilter: statusFilterBinding
             )
             .navigationSplitViewColumnWidth(min: 520, ideal: 760, max: .infinity)
         }
@@ -147,7 +146,7 @@ struct MainView: View {
             MainContentColumn(
                 appViewModel: appViewModel,
                 selectedSection: selectedSection,
-                statusFilter: $statusFilter
+                statusFilter: statusFilterBinding
             )
         } detail: {
             MainDetailColumn(
@@ -171,7 +170,7 @@ struct MainView: View {
                 .searchable(
                     text: feedSearchTextBinding,
                     placement: .toolbar,
-                    prompt: "Search feeds"
+                    prompt: String.localized("feeds.search.prompt")
                 )
         } else {
             splitView
@@ -187,7 +186,7 @@ struct MainView: View {
             splitView
                 .searchable(
                     text: feedSearchTextBinding,
-                    prompt: "Search feeds"
+                    prompt: String.localized("feeds.search.prompt")
                 )
         } else {
             splitView
@@ -229,6 +228,13 @@ struct MainView: View {
         Binding(
             get: { feedsVM.searchText },
             set: { feedsVM.searchText = $0 }
+        )
+    }
+
+    private var statusFilterBinding: Binding<TaskStatusFilter> {
+        Binding(
+            get: { tasksVM.statusFilter },
+            set: { tasksVM.statusFilter = $0 }
         )
     }
 

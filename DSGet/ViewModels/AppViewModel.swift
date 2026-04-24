@@ -145,6 +145,38 @@ final class AppViewModel {
         }
     }
 
+    func currentSession() -> Session? {
+        try? authService.getCurrentSession()
+    }
+
+    func validateCurrentSession() async throws -> Session? {
+        let session = try await authService.validateSession()
+        isLoggedIn = session != nil
+        return session
+    }
+
+    func refreshCurrentSession() async throws -> Session {
+        let session = try await authService.refreshSession()
+        isLoggedIn = true
+        return session
+    }
+
+    func testCurrentServerConnection() async throws {
+        guard let currentServer else {
+            throw DSGetError.authentication(.notLoggedIn)
+        }
+
+        try await authService.testConnection(configuration: currentServer.configuration)
+    }
+
+    func recentServers() async -> [Server] {
+        await authService.getRecentServers()
+    }
+
+    func clearServerHistory() async {
+        await authService.clearRecentServers()
+    }
+
     func logout() async {
         do {
             try await authService.logout()

@@ -19,6 +19,8 @@ enum AccessibilityID {
         static let passwordField = "login.password"
         static let otpField = "login.otp"
         static let loginButton = "login.loginButton"
+        static let testConnectionButton = "login.testConnectionButton"
+        static let recentServersMenu = "login.recentServersMenu"
     }
 
     // MARK: - Sidebar
@@ -58,5 +60,8 @@ enum AccessibilityID {
     enum Settings {
         static let logoutButton = "settings.logoutButton"
         static let serverName = "settings.serverName"
+        static let testConnectionButton = "settings.testConnectionButton"
+        static let refreshSessionButton = "settings.refreshSessionButton"
+        static let clearServerHistoryButton = "settings.clearServerHistoryButton"
     }
 }

@@ -6,6 +6,125 @@
 //
 
 import SwiftUI
+import DSGetCore
+
+// MARK: - Unified Content State
+
+struct DSGetContentStateView: View {
+    let title: String
+    let description: String
+    let systemImage: String
+    var primaryActionTitle: String?
+    var primaryAction: (() -> Void)?
+    var secondaryActionTitle: String?
+    var secondaryAction: (() -> Void)?
+
+    var body: some View {
+        ContentUnavailableView {
+            Label(title, systemImage: systemImage)
+        } description: {
+            Text(description)
+        } actions: {
+            if primaryActionTitle != nil || secondaryActionTitle != nil {
+                VStack(spacing: 10) {
+                    if let primaryActionTitle, let primaryAction {
+                        Button(primaryActionTitle, action: primaryAction)
+                            .buttonStyle(.borderedProminent)
+                    }
+
+                    if let secondaryActionTitle, let secondaryAction {
+                        Button(secondaryActionTitle, action: secondaryAction)
+                            .buttonStyle(.borderless)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct DSGetLoadingContentStateView: View {
+    let title: String
+    let description: String
+
+    var body: some View {
+        VStack(spacing: 14) {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .controlSize(.large)
+
+            VStack(spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(32)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("\(title). \(description)"))
+    }
+}
+
+extension DSGetContentStateView {
+    static func offline(onRetry: @escaping () -> Void) -> DSGetContentStateView {
+        DSGetContentStateView(
+            title: String.localized(EmptyStateText.offlineTitle),
+            description: String.localized(EmptyStateText.offlineDescription),
+            systemImage: "wifi.slash",
+            primaryActionTitle: String.localized(EmptyStateText.offlineAction),
+            primaryAction: onRetry
+        )
+    }
+
+    static func error(_ error: DSGetError, onRetry: @escaping () -> Void) -> DSGetContentStateView {
+        if error.isPermissionState {
+            return DSGetContentStateView(
+                title: String.localized("state.permission.title"),
+                description: String.localized("state.permission.description"),
+                systemImage: "lock.shield",
+                primaryActionTitle: String.localized(EmptyStateText.errorAction),
+                primaryAction: onRetry
+            )
+        }
+
+        if error.isOfflineState {
+            return DSGetContentStateView.offline(onRetry: onRetry)
+        }
+
+        return DSGetContentStateView(
+            title: String.localized(EmptyStateText.errorTitle),
+            description: error.localizedDescription,
+            systemImage: "exclamationmark.triangle",
+            primaryActionTitle: String.localized(EmptyStateText.errorAction),
+            primaryAction: onRetry
+        )
+    }
+}
+
+private extension DSGetError {
+    var isOfflineState: Bool {
+        if case .network(.offline) = self {
+            return true
+        }
+        return false
+    }
+
+    var isPermissionState: Bool {
+        if requiresRelogin {
+            return true
+        }
+
+        let message = localizedDescription.localizedLowercase
+        return message.contains("access denied") ||
+            message.contains("permission") ||
+            message.contains("not authorized") ||
+            message.contains("unauthorized")
+    }
+}
 
 // MARK: - Illustrated Empty State
 
@@ -124,7 +243,7 @@ extension IllustratedEmptyState {
     static func noSearchResults(query: String) -> IllustratedEmptyState {
         IllustratedEmptyState(
             title: String.localized("empty.search.noResults"),
-            description: "No torrents found for \"\(query)\". Try a different search term.",
+            description: String.localized("empty.search.noResults.description", query),
             systemImage: "magnifyingglass"
         )
     }
@@ -166,7 +285,7 @@ extension IllustratedEmptyState {
     static func noFeedItems(feedTitle: String) -> IllustratedEmptyState {
         IllustratedEmptyState(
             title: String.localized("feed.detail.noItems"),
-            description: "\"\(feedTitle)\" doesn't have any items yet.",
+            description: String.localized("empty.noFeedItems.description", feedTitle),
             systemImage: "doc.text"
         )
     }

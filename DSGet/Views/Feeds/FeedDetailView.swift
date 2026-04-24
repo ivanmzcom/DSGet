@@ -32,6 +32,9 @@ struct FeedDetailView: View {
                 }
                 .buttonStyle(.plain)
                 .task { await viewModel.loadMoreIfNeeded(currentItem: item) }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                .listRowBackground(Color.clear)
             }
 
             if viewModel.isLoadingMore {
@@ -49,6 +52,7 @@ struct FeedDetailView: View {
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
         #endif
+        .dsgetContentBackground()
         .navigationTitle(viewModel.feed.title)
         .toolbar {
             if let onClose, showsCloseButton {
@@ -57,30 +61,20 @@ struct FeedDetailView: View {
                 }
             }
             ToolbarItem(placement: .principal) {
-                if viewModel.isLoading {
+                if viewModel.isLoading && !viewModel.items.isEmpty {
                     ProgressView()
                 }
             }
         }
         .task { await viewModel.loadItems(reset: true) }
         .refreshable { await viewModel.loadItems(reset: true) }
-        .alert(String.localized("error.title"), isPresented: $viewModel.showingError) {
+        .alert(String.localized("error.title"), isPresented: feedItemErrorAlertBinding) {
             Button(String.localized("general.ok"), role: .cancel) { }
         } message: {
-            Text(viewModel.currentError?.localizedDescription ?? "An unknown error occurred.")
+            Text(viewModel.currentError?.localizedDescription ?? String.localized("error.unknown"))
         }
         .overlay {
-            if viewModel.isLoading && viewModel.items.isEmpty {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .controlSize(.large)
-                    .tint(Color.accentColor)
-            } else if !viewModel.isLoading && viewModel.items.isEmpty {
-                ContentUnavailableView(String.localized("feed.detail.noItems"),
-                    systemImage: "doc.plaintext",
-                    description: Text(String.localized("feed.detail.noItems.description"))
-                )
-            }
+            feedItemStateOverlay
         }
         .sheet(
             item: $viewModel.presentedAddTaskLink,
@@ -100,6 +94,69 @@ struct FeedDetailView: View {
         horizontalSizeClass != .compact
         #endif
     }
+
+    private var feedItemContentState: FeedItemContentState? {
+        if viewModel.isLoading && viewModel.items.isEmpty {
+            return .loading
+        }
+
+        if let currentError = viewModel.currentError, viewModel.items.isEmpty {
+            return .error(currentError)
+        }
+
+        if viewModel.items.isEmpty {
+            return .empty
+        }
+
+        return nil
+    }
+
+    private var feedItemErrorAlertBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.showingError && !isShowingInlineError },
+            set: { viewModel.showingError = $0 }
+        )
+    }
+
+    private var isShowingInlineError: Bool {
+        if case .error = feedItemContentState {
+            return true
+        }
+        return false
+    }
+
+    @ViewBuilder
+    private var feedItemStateOverlay: some View {
+        switch feedItemContentState {
+        case .loading:
+            DSGetLoadingContentStateView(
+                title: String.localized("feedItems.state.loading.title"),
+                description: String.localized("feedItems.state.loading.description")
+            )
+        case .error(let error):
+            DSGetContentStateView.error(error, onRetry: retryFeedItems)
+        case .empty:
+            DSGetContentStateView(
+                title: String.localized("feed.detail.noItems"),
+                description: String.localized("feed.detail.noItems.description"),
+                systemImage: "doc.plaintext",
+                primaryActionTitle: String.localized("feed.action.refresh"),
+                primaryAction: retryFeedItems
+            )
+        case nil:
+            EmptyView()
+        }
+    }
+
+    private func retryFeedItems() {
+        Task { await viewModel.loadItems(reset: true) }
+    }
+}
+
+private enum FeedItemContentState {
+    case loading
+    case error(DSGetError)
+    case empty
 }
 
 // MARK: - FeedLink
@@ -123,9 +180,11 @@ struct FeedItemRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: item.canDownload ? "arrow.down.circle" : "doc.text")
-                .foregroundStyle(item.canDownload ? Color.accentColor : .secondary)
-                .frame(width: 18)
+            DSGetIconBadge(
+                systemName: item.canDownload ? "arrow.down.circle.fill" : "doc.text",
+                tint: item.canDownload ? .accentColor : .secondary,
+                size: 32
+            )
 
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -155,7 +214,7 @@ struct FeedItemRow: View {
                             FeedItemMetaLabel(text: sizeText, systemImage: "externaldrive")
                         }
                         if item.canDownload {
-                            FeedItemMetaLabel(text: "Ready", systemImage: "checkmark.circle", tint: .green)
+                            FeedItemMetaLabel(text: String.localized("feed.item.ready"), systemImage: "checkmark.circle", tint: .green)
                         }
                     }
 
@@ -171,7 +230,8 @@ struct FeedItemRow: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, 6)
+        .padding(DSGetDesign.rowPadding)
+        .dsgetSurface(.row)
     }
 
     private var sizeText: String? {
