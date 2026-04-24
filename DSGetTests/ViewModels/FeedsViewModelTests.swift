@@ -227,7 +227,7 @@ final class FeedsViewModelTests: XCTestCase {
         XCTAssertEqual(sut.selectedFeed?.title, "Feed B Updated")
     }
 
-    func testFetchFeedsClearsSelectionWhenSelectedFeedDisappears() async {
+    func testFetchFeedsKeepsSelectionIDWhenSelectedFeedTemporarilyMissing() async {
         sut = makeSUT()
         mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [
             makeFeed(id: "1", title: "Feed A"),
@@ -242,7 +242,7 @@ final class FeedsViewModelTests: XCTestCase {
 
         await sut.fetchFeeds(forceRefresh: true)
 
-        XCTAssertNil(sut.selectedFeedID)
+        XCTAssertEqual(sut.selectedFeedID, FeedID("2"))
         XCTAssertNil(sut.selectedFeed)
     }
 

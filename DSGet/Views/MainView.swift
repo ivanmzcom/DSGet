@@ -200,10 +200,6 @@ struct MainView: View {
     private func handleSectionChange(from oldValue: AppSection?, to newValue: AppSection?) {
         if oldValue == .downloads {
             tasksVM.stopAutoRefresh()
-            tasksVM.selectedTask = nil
-        }
-        if oldValue == .feeds {
-            feedsVM.selectedFeedID = nil
         }
         if newValue == .downloads {
             tasksVM.startAutoRefresh()

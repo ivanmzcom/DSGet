@@ -39,10 +39,16 @@ struct TaskListSelectionView: View {
             }
             .accessibilityIdentifier(AccessibilityID.TaskList.list)
         } else {
-            List(selection: $selectedTaskID) {
+            List {
                 ForEach(tasks) { task in
+                    let isSelected = selectedTaskID == task.id
                     taskRow(task)
-                        .tag(task.id)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedTaskID = task.id
+                        }
+                        .listRowBackground(isSelected ? Color.accentColor.opacity(0.16) : Color.clear)
+                        .accessibilityAddTraits(isSelected ? .isSelected : [])
                         .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
                 }
             }

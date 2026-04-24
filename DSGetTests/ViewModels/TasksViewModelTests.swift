@@ -97,7 +97,7 @@ final class TasksViewModelTests: XCTestCase {
         XCTAssertEqual(sut.selectedTask?.downloadedSize.bytes, 200)
     }
 
-    func testFetchTasksClearsSelectionWhenSelectedTaskDisappears() async {
+    func testFetchTasksKeepsSelectionIDWhenSelectedTaskTemporarilyMissing() async {
         sut = makeSUT()
         let initialTask = makeSampleTask(id: "1")
         mockTaskService.getTasksResult = .success(TasksResult(tasks: [initialTask], isFromCache: false))
@@ -107,7 +107,7 @@ final class TasksViewModelTests: XCTestCase {
         mockTaskService.getTasksResult = .success(TasksResult(tasks: [], isFromCache: false))
         await sut.fetchTasks(forceRefresh: true)
 
-        XCTAssertNil(sut.selectedTaskID)
+        XCTAssertEqual(sut.selectedTaskID, initialTask.id)
         XCTAssertNil(sut.selectedTask)
     }
 

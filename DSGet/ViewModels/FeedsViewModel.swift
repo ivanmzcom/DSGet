@@ -92,7 +92,6 @@ final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
             feeds = result.feeds.sorted {
                 $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
             }
-            pruneMissingSelection()
             isOfflineMode = result.isFromCache
         } catch is CancellationError {
             // Ignore - SwiftUI task was cancelled (view disappeared)
@@ -167,10 +166,4 @@ final class FeedsViewModel: DomainErrorHandling, OfflineModeSupporting {
         refreshingFeeds.contains(feed.id) || feed.isUpdating
     }
 
-    private func pruneMissingSelection() {
-        guard let selectedFeedID else { return }
-        if !feeds.contains(where: { $0.id == selectedFeedID }) {
-            self.selectedFeedID = nil
-        }
-    }
 }

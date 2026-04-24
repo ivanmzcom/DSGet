@@ -155,7 +155,7 @@ struct TaskListItemView: View {
     private var iosLayout: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: task.type == .bt ? "arrow.down.circle" : "tray.full")
-                .foregroundStyle(status.color)
+                .foregroundStyle(isSelected ? .accentColor : status.color)
                 .frame(width: 24)
 
             VStack(alignment: .leading, spacing: 6) {

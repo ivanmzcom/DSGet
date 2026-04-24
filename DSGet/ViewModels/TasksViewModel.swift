@@ -155,7 +155,6 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
             let result = try await taskService.getTasks(forceRefresh: forceRefresh)
 
             tasks = result.tasks.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
-            pruneMissingSelection()
             isOfflineMode = result.isFromCache
             updateCounts()
 
@@ -269,13 +268,6 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
 
     private func updateCounts() {
         activeDownloadCount = tasks.filter { $0.isDownloading }.count
-    }
-
-    private func pruneMissingSelection() {
-        guard let selectedTaskID else { return }
-        if !tasks.contains(where: { $0.id == selectedTaskID }) {
-            self.selectedTaskID = nil
-        }
     }
 
     private func matchesType(_ task: DownloadTask) -> Bool {

@@ -84,7 +84,6 @@ struct FeedListContentView: View {
         baseRow
         #else
         baseRow
-            .listRowBackground(feedIsSelected ? Color.accentColor.opacity(0.12) : Color.clear)
             .hoverEffect(.highlight)
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                 favoriteButton(for: feed, isFavorite: feedIsFavorite)
@@ -151,10 +150,16 @@ struct FeedListContentView: View {
             }
             .accessibilityIdentifier(AccessibilityID.FeedList.list)
         } else {
-            List(selection: $vm.selectedFeedID) {
+            List {
                 ForEach(feedsVM.visibleFeeds) { feed in
+                    let isSelected = feedsVM.selectedFeedID == feed.id
                     feedRowView(for: feed)
-                        .tag(feed.id)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            feedsVM.selectedFeedID = feed.id
+                        }
+                        .listRowBackground(isSelected ? Color.accentColor.opacity(0.16) : Color.clear)
+                        .accessibilityAddTraits(isSelected ? .isSelected : [])
                         .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
                 }
             }
