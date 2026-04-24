@@ -77,6 +77,14 @@ final class WatchCompanionSyncService: NSObject {
 }
 
 extension WatchCompanionSyncService: WCSessionDelegate {
+    #if os(iOS)
+    nonisolated func sessionDidBecomeInactive(_ session: WCSession) {}
+
+    nonisolated func sessionDidDeactivate(_ session: WCSession) {
+        session.activate()
+    }
+    #endif
+
     nonisolated func session(
         _ session: WCSession,
         activationDidCompleteWith activationState: WCSessionActivationState,

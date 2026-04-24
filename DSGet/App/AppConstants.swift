@@ -13,7 +13,7 @@ enum AppConstants {
     // MARK: - App Group
 
     enum AppGroup {
-        static let identifier = "group.com.ivanmz.DSGet"
+        static let identifier = "group.es.ncrd.DSGet"
     }
 
     // MARK: - Storage Keys

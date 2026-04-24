@@ -1,0 +1,196 @@
+require "fileutils"
+
+# This file contains the fastlane.tools configuration.
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out:
+#     https://docs.fastlane.tools/actions
+
+default_platform(:ios)
+
+PROJECT = "DSGet.xcodeproj"
+IOS_SCHEME = "DSGet"
+MAC_SCHEME = "DSGetMac"
+IOS_APP_IDENTIFIER = "com.ivanmz.DSGet"
+MAC_APP_IDENTIFIER = "com.ivanmz.DSGet"
+
+private_lane :timestamp_build_number do
+  Time.now.strftime("%Y%m%d%H%M%S")
+end
+
+private_lane :apply_build_number do |options|
+  build_number = options[:build_number] || timestamp_build_number
+  increment_build_number(
+    xcodeproj: PROJECT,
+    build_number: build_number
+  )
+  build_number
+end
+
+private_lane :app_store_connect_upload_options do
+  api_key_path = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+  api_key_p8_path = ENV["APP_STORE_CONNECT_API_KEY_P8_PATH"]
+  issuer_id = ENV["APP_STORE_CONNECT_ISSUER_ID"]
+  app_specific_password = ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"]
+  itc_provider = ENV["ITC_PROVIDER"]
+  api_key = nil
+
+  if (api_key_path.nil? || api_key_path.empty?) && api_key_p8_path && !api_key_p8_path.empty?
+    expanded_key_path = File.expand_path(api_key_p8_path)
+
+    if File.exist?(expanded_key_path)
+      key_id_match = File.basename(expanded_key_path).match(/AuthKey_([A-Z0-9]+)\.p8\z/)
+      key_id = key_id_match&.captures&.first
+
+      if issuer_id && !issuer_id.empty? && key_id
+        api_key = app_store_connect_api_key(
+          key_id: key_id,
+          issuer_id: issuer_id,
+          key_filepath: expanded_key_path
+        )
+      end
+    end
+  end
+
+  upload_options = {
+    skip_waiting_for_build_processing: true
+  }
+
+  upload_options[:itc_provider] = itc_provider if itc_provider && !itc_provider.empty?
+
+  if api_key
+    upload_options[:api_key] = api_key
+  elsif api_key_path && !api_key_path.empty?
+    upload_options[:api_key_path] = api_key_path
+  elsif app_specific_password.nil? || app_specific_password.empty?
+    UI.user_error!("Configura APP_STORE_CONNECT_API_KEY_P8_PATH + APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_API_KEY_PATH, o FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD para subir a TestFlight")
+  end
+
+  upload_options
+end
+
+private_lane :ios_beta_build do |options|
+  apply_build_number(build_number: options[:build_number])
+  output_directory = File.expand_path("build/testflight-ios")
+  FileUtils.rm_rf(output_directory)
+  FileUtils.mkdir_p(output_directory)
+
+  build_app(
+    project: PROJECT,
+    scheme: IOS_SCHEME,
+    destination: "generic/platform=iOS",
+    export_method: "app-store",
+    skip_package_pkg: true,
+    output_directory: output_directory,
+    xcargs: "-allowProvisioningUpdates",
+    export_xcargs: "-allowProvisioningUpdates"
+  )
+
+  ipa_path = lane_context[SharedValues::IPA_OUTPUT_PATH]
+  UI.user_error!("No se ha generado el .ipa para TestFlight") unless ipa_path
+
+  upload_to_testflight(
+    **app_store_connect_upload_options.merge(
+      ipa: ipa_path,
+      app_identifier: IOS_APP_IDENTIFIER
+    )
+  )
+end
+
+private_lane :mac_beta_build do |options|
+  apply_build_number(build_number: options[:build_number])
+  output_directory = File.expand_path("build/testflight-mac")
+  FileUtils.rm_rf(output_directory)
+  FileUtils.mkdir_p(output_directory)
+
+  build_app(
+    project: PROJECT,
+    scheme: MAC_SCHEME,
+    destination: "generic/platform=macOS",
+    export_method: "app-store",
+    skip_package_ipa: true,
+    output_directory: output_directory,
+    xcargs: "-allowProvisioningUpdates",
+    export_xcargs: "-allowProvisioningUpdates"
+  )
+
+  archive_path = lane_context[SharedValues::XCODEBUILD_ARCHIVE]
+  UI.user_error!("No se ha generado el archive de Xcode para exportar a TestFlight") unless archive_path
+  lane_context[SharedValues::IPA_OUTPUT_PATH] = nil
+
+  export_directory = File.expand_path("build/testflight-export")
+  export_options_path = File.join(export_directory, "ExportOptions.plist")
+  FileUtils.rm_rf(export_directory)
+  FileUtils.mkdir_p(export_directory)
+
+  File.write(
+    export_options_path,
+    <<~PLIST
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+        <key>method</key>
+        <string>app-store</string>
+      </dict>
+      </plist>
+    PLIST
+  )
+
+  sh(
+    "xcodebuild",
+    "-exportArchive",
+    "-archivePath", archive_path,
+    "-exportPath", export_directory,
+    "-exportOptionsPlist", export_options_path,
+    "-allowProvisioningUpdates"
+  )
+
+  pkg_path = Dir[File.join(export_directory, "*.pkg")].first
+  UI.user_error!("No se ha generado el paquete .pkg para TestFlight") unless pkg_path
+
+  upload_to_testflight(
+    **app_store_connect_upload_options.merge(
+      pkg: pkg_path,
+      app_identifier: MAC_APP_IDENTIFIER,
+      app_platform: "osx"
+    )
+  )
+end
+
+platform :ios do
+  desc "Push a new release build to the App Store"
+  lane :release do
+    apply_build_number
+    build_app(
+      project: PROJECT,
+      scheme: IOS_SCHEME,
+      destination: "generic/platform=iOS",
+      export_method: "app-store",
+      xcargs: "-allowProvisioningUpdates",
+      export_xcargs: "-allowProvisioningUpdates"
+    )
+    upload_to_app_store(app_identifier: IOS_APP_IDENTIFIER)
+  end
+
+  desc "Build and upload a new iOS beta to TestFlight"
+  lane :beta do |options|
+    ios_beta_build(build_number: options[:build_number])
+  end
+end
+
+platform :mac do
+  desc "Build and upload a new macOS beta to TestFlight"
+  lane :beta do |options|
+    mac_beta_build(build_number: options[:build_number])
+  end
+end
+
+desc "Build and upload iOS and macOS betas to TestFlight"
+lane :beta_all do
+  ios_build_number = timestamp_build_number.to_i
+  mac_build_number = ios_build_number + 1
+
+  ios_beta_build(build_number: ios_build_number.to_s)
+  mac_beta_build(build_number: mac_build_number.to_s)
+end

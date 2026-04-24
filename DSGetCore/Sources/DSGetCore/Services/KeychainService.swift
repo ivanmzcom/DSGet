@@ -43,7 +43,7 @@ public final class KeychainService: SecureStorageProtocol, @unchecked Sendable {
 
     public static let shared: KeychainService = {
         KeychainService(
-            service: "es.ncrd.DSGet",
+            service: "com.ivanmz.DSGet",
             accessGroup: resolvedSharedAccessGroup()
         )
     }()

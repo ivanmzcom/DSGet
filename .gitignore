@@ -9,8 +9,10 @@ xcuserdata/
 # Build artifacts
 build/
 *.ipa
+*.pkg
 *.dSYM.zip
 *.dSYM
+/DSGetMac.app/
 
 # Swift Package Manager
 .build/
@@ -21,6 +23,7 @@ Package.resolved
 Pods/
 
 # Fastlane
+fastlane/build/
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
@@ -36,6 +39,7 @@ fastlane/test_output/
 *.key
 *.cer
 *.mobileprovision
+AuthKey_*.p8
 Authkey_*.p8
 
 # macOS

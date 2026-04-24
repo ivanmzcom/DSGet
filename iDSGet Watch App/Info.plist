@@ -19,14 +19,16 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>20260424173211</string>
 	<key>DSGetSharedKeychainAccessGroup</key>
-	<string>$(AppIdentifierPrefix)es.ncrd.DSGet.shared</string>
+	<string>$(AppIdentifierPrefix)com.ivanmz.DSGet.shared</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>WKApplication</key>
 	<true/>
 	<key>WKApplicationNavigationBarTitleText</key>
 	<string>iDSGet Watch</string>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>es.ncrd.DSGet</string>
+	<string>com.ivanmz.DSGet</string>
 </dict>
 </plist>

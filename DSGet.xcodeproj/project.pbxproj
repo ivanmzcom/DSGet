@@ -1326,7 +1326,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1343,7 +1343,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetTests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DSGet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DSGet";
@@ -1385,7 +1385,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20260424173211;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1424,7 +1424,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1439,7 +1439,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGetWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetWidgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1454,9 +1454,10 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iDSGet Watch App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet.watchapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet.watchkitapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -1466,15 +1467,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DSGet/DSGetMac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetMac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1487,9 +1491,10 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "iDSGet Watch App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet.watchapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet.watchkitapp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -1499,15 +1504,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DSGet/DSGetMac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetMac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1522,7 +1530,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetTests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DSGet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DSGet";
@@ -1564,7 +1572,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20260424173211;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = BH4ZLEBC89;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1598,7 +1606,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetUITests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = DSGet;
@@ -1615,7 +1623,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = DSGet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGet;
 				SDKROOT = iphoneos;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1632,7 +1640,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = es.ncrd.DSGetUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivanmz.DSGetUITests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = DSGet;

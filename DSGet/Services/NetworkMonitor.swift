@@ -30,7 +30,7 @@ final class NetworkMonitor {
     // MARK: - Private Properties
 
     private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "es.ncrd.DSGet.NetworkMonitor")
+    private let queue = DispatchQueue(label: "com.ivanmz.DSGet.NetworkMonitor")
     private var isMonitoring = false
 
     // MARK: - Connection Type

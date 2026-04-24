@@ -1,6 +1,6 @@
 name: DSGet
 options:
-  bundleIdPrefix: es.ncrd
+  bundleIdPrefix: com.ivanmz
   deploymentTarget:
     iOS: "18.0"
   xcodeVersion: "15.0"
@@ -31,7 +31,7 @@ targets:
       - target: iDSGet Watch App
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGet
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivanmz.DSGet
         INFOPLIST_FILE: DSGet/Info.plist
         CODE_SIGN_ENTITLEMENTS: DSGet/DSGet.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -44,8 +44,9 @@ targets:
       path: DSGet/Info.plist
       properties:
         CFBundleDisplayName: DSGet
-        DSGetSharedKeychainAccessGroup: $(AppIdentifierPrefix)es.ncrd.DSGet.shared
-        UILaunchStoryboardName: LaunchScreen
+        DSGetSharedKeychainAccessGroup: $(AppIdentifierPrefix)com.ivanmz.DSGet.shared
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -61,7 +62,7 @@ targets:
         com.apple.security.application-groups:
           - group.es.ncrd.DSGet
         keychain-access-groups:
-          - $(AppIdentifierPrefix)es.ncrd.DSGet.shared
+          - $(AppIdentifierPrefix)com.ivanmz.DSGet.shared
 
   DSGetMac:
     type: application
@@ -76,8 +77,11 @@ targets:
       - package: DSGetCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetMac
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivanmz.DSGet
         GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_ENTITLEMENTS: DSGet/DSGetMac.entitlements
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: false
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_PREVIEWS: true
@@ -91,7 +95,7 @@ targets:
           - "**/.DS_Store"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivanmz.DSGetWidgets
         INFOPLIST_FILE: DSGetWidgets/Info.plist
         CODE_SIGN_ENTITLEMENTS: DSGetWidgets/DSGetWidgets.entitlements
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -101,6 +105,8 @@ targets:
         ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: WidgetBackground
     info:
       path: DSGetWidgets/Info.plist
+      properties:
+        ITSAppUsesNonExemptEncryption: false
     entitlements:
       path: DSGetWidgets/DSGetWidgets.entitlements
       properties:
@@ -122,10 +128,11 @@ targets:
           - "**/.DS_Store"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGet.watchapp
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivanmz.DSGet.watchkitapp
         INFOPLIST_FILE: iDSGet Watch App/Info.plist
         CODE_SIGN_ENTITLEMENTS: iDSGet Watch App/iDSGet Watch App.entitlements
         TARGETED_DEVICE_FAMILY: "4"
+        SUPPORTED_PLATFORMS: "watchos watchsimulator"
         SKIP_INSTALL: true
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
         ENABLE_PREVIEWS: true
@@ -133,17 +140,18 @@ targets:
       path: iDSGet Watch App/Info.plist
       properties:
         CFBundleDisplayName: iDSGet Watch
-        DSGetSharedKeychainAccessGroup: $(AppIdentifierPrefix)es.ncrd.DSGet.shared
+        DSGetSharedKeychainAccessGroup: $(AppIdentifierPrefix)com.ivanmz.DSGet.shared
+        ITSAppUsesNonExemptEncryption: false
         WKApplicationNavigationBarTitleText: iDSGet Watch
         WKApplication: true
-        WKCompanionAppBundleIdentifier: es.ncrd.DSGet
+        WKCompanionAppBundleIdentifier: com.ivanmz.DSGet
     entitlements:
       path: iDSGet Watch App/iDSGet Watch App.entitlements
       properties:
         com.apple.security.application-groups:
           - group.es.ncrd.DSGet
         keychain-access-groups:
-          - $(AppIdentifierPrefix)es.ncrd.DSGet.shared
+          - $(AppIdentifierPrefix)com.ivanmz.DSGet.shared
     dependencies:
       - package: DSGetCore
 
@@ -159,7 +167,7 @@ targets:
       - package: DSGetCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivanmz.DSGetTests
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/DSGet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DSGet"
         BUNDLE_LOADER: "$(TEST_HOST)"
         GENERATE_INFOPLIST_FILE: YES
@@ -175,7 +183,7 @@ targets:
       - target: DSGet
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: es.ncrd.DSGetUITests
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivanmz.DSGetUITests
         TEST_TARGET_NAME: DSGet
         GENERATE_INFOPLIST_FILE: YES
 

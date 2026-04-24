@@ -8,7 +8,7 @@
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)es.ncrd.DSGet.shared</string>
+		<string>$(AppIdentifierPrefix)com.ivanmz.DSGet.shared</string>
 	</array>
 </dict>
 </plist>
