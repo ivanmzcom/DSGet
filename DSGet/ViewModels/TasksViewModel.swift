@@ -55,8 +55,19 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
     /// Complete list of tasks.
     private(set) var tasks: [DownloadTask] = []
 
-    /// Currently selected task.
-    var selectedTask: DownloadTask?
+    /// Stable identifier for the currently selected task.
+    var selectedTaskID: TaskID?
+
+    /// Currently selected task, resolved from the latest task snapshot.
+    var selectedTask: DownloadTask? {
+        get {
+            guard let selectedTaskID else { return nil }
+            return tasks.first { $0.id == selectedTaskID }
+        }
+        set {
+            selectedTaskID = newValue?.id
+        }
+    }
 
     /// Indicates if data is loading.
     private(set) var isLoading: Bool = false
@@ -144,6 +155,7 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
             let result = try await taskService.getTasks(forceRefresh: forceRefresh)
 
             tasks = result.tasks.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+            pruneMissingSelection()
             isOfflineMode = result.isFromCache
             updateCounts()
 
@@ -210,8 +222,8 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
             try await taskService.deleteTasks(ids: [task.id])
 
             tasks.removeAll { $0.id == task.id }
-            if selectedTask?.id == task.id {
-                selectedTask = nil
+            if selectedTaskID == task.id {
+                selectedTaskID = nil
             }
             updateCounts()
 
@@ -257,6 +269,13 @@ final class TasksViewModel: DomainErrorHandling, OfflineModeSupporting {
 
     private func updateCounts() {
         activeDownloadCount = tasks.filter { $0.isDownloading }.count
+    }
+
+    private func pruneMissingSelection() {
+        guard let selectedTaskID else { return }
+        if !tasks.contains(where: { $0.id == selectedTaskID }) {
+            self.selectedTaskID = nil
+        }
     }
 
     private func matchesType(_ task: DownloadTask) -> Bool {

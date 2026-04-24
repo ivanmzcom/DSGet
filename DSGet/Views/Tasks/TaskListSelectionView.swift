@@ -12,7 +12,7 @@ struct TaskListSelectionView: View {
     #endif
 
     let tasks: [DownloadTask]
-    @Binding var selectedTask: DownloadTask?
+    @Binding var selectedTaskID: TaskID?
 
     let onDelete: (DownloadTask) -> Void
     let onTogglePause: (DownloadTask) -> Void
@@ -22,7 +22,7 @@ struct TaskListSelectionView: View {
         #if os(macOS)
         TaskTableView(
             tasks: tasks,
-            selectedTask: $selectedTask,
+            selectedTaskID: $selectedTaskID,
             onDelete: onDelete,
             onTogglePause: onTogglePause,
             opensTaskDetailInWindow: opensTaskDetailInWindow
@@ -39,10 +39,10 @@ struct TaskListSelectionView: View {
             }
             .accessibilityIdentifier(AccessibilityID.TaskList.list)
         } else {
-            List(selection: $selectedTask) {
+            List(selection: $selectedTaskID) {
                 ForEach(tasks) { task in
                     taskRow(task)
-                        .tag(task)
+                        .tag(task.id)
                         .accessibilityIdentifier("\(AccessibilityID.TaskList.taskRow).\(task.id.rawValue)")
                 }
             }
@@ -54,7 +54,7 @@ struct TaskListSelectionView: View {
     private func taskRow(_ task: DownloadTask) -> some View {
         TaskListItemView(
             task: task,
-            isSelected: selectedTask?.id == task.id,
+            isSelected: selectedTaskID == task.id,
             opensDetailInWindowOnDoubleClick: opensTaskDetailInWindow,
             onDelete: onDelete,
             onTogglePause: onTogglePause
@@ -67,18 +67,18 @@ private struct TaskTableView: View {
     @Environment(\.openWindow) private var openWindow
 
     let tasks: [DownloadTask]
-    @Binding var selectedTask: DownloadTask?
+    @Binding var selectedTaskID: TaskID?
     let onDelete: (DownloadTask) -> Void
     let onTogglePause: (DownloadTask) -> Void
     let opensTaskDetailInWindow: Bool
 
     var body: some View {
-        Table(tasks, selection: selectedTaskID) {
+        Table(tasks, selection: $selectedTaskID) {
             TableColumn(String.localized("tasks.table.name")) { task in
                 TaskNameTableCell(task: task)
                     .contentShape(Rectangle())
                     .onTapGesture(count: 2) {
-                        selectedTask = task
+                        selectedTaskID = task.id
                         guard opensTaskDetailInWindow else { return }
                         openWindow(value: task.id)
                     }
@@ -124,15 +124,6 @@ private struct TaskTableView: View {
             .width(110)
         }
         .accessibilityIdentifier(AccessibilityID.TaskList.list)
-    }
-
-    private var selectedTaskID: Binding<TaskID?> {
-        Binding(
-            get: { selectedTask?.id },
-            set: { taskID in
-                selectedTask = tasks.first { $0.id == taskID }
-            }
-        )
     }
 
     @ViewBuilder

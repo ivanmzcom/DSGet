@@ -38,6 +38,8 @@ enum TaskDetailTab: String, CaseIterable {
 
 struct TaskDetailView: View {
     @State private var viewModel: TaskDetailViewModel
+    let task: DownloadTask
+    let onTaskUpdated: (() -> Void)?
     let onClose: (() -> Void)?
     @Environment(\.dismiss) var dismiss
     #if !os(macOS)
@@ -48,8 +50,9 @@ struct TaskDetailView: View {
 
     init(task: DownloadTask, onTaskUpdated: (() -> Void)? = nil, onClose: (() -> Void)? = nil) {
         _viewModel = State(initialValue: TaskDetailViewModel(task: task))
+        self.task = task
+        self.onTaskUpdated = onTaskUpdated
         self.onClose = onClose
-        // Callbacks are set via the viewModel properties after creation
     }
 
     // MARK: - Helper Properties for Display
@@ -169,6 +172,11 @@ struct TaskDetailView: View {
         #endif
         .navigationTitle(String.localized("taskDetail.navigationTitle"))
         .toolbar { toolbarContent }
+        .onAppear(perform: configureCallbacks)
+        .onChange(of: task) { _, newTask in
+            viewModel.updateTask(newTask)
+            configureCallbacks()
+        }
         .confirmationDialog(
             String.localized("taskDetail.delete.confirmTitle"),
             isPresented: $viewModel.showingDeleteConfirmation,
@@ -196,6 +204,11 @@ struct TaskDetailView: View {
         } message: {
             Text(viewModel.currentError?.localizedDescription ?? String.localized("error.unknown"))
         }
+    }
+
+    private func configureCallbacks() {
+        viewModel.onTaskUpdated = onTaskUpdated
+        viewModel.onTaskDeleted = onClose
     }
 
     private func taskDetailContent(prefersSegmentedTabs: Bool, usesIconOnlyTabs: Bool) -> some View {

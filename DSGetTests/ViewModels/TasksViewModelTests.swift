@@ -81,6 +81,36 @@ final class TasksViewModelTests: XCTestCase {
         XCTAssertTrue(sut.isOfflineMode)
     }
 
+    func testFetchTasksKeepsSelectionWhenSelectedTaskUpdates() async {
+        sut = makeSUT()
+        let initialTask = makeSampleTask(id: "1", status: .downloading, downloadedBytes: 100)
+        let refreshedTask = makeSampleTask(id: "1", status: .paused, downloadedBytes: 200)
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [initialTask], isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.selectedTask = initialTask
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [refreshedTask], isFromCache: false))
+        await sut.fetchTasks(forceRefresh: true)
+
+        XCTAssertEqual(sut.selectedTaskID, refreshedTask.id)
+        XCTAssertEqual(sut.selectedTask?.status, .paused)
+        XCTAssertEqual(sut.selectedTask?.downloadedSize.bytes, 200)
+    }
+
+    func testFetchTasksClearsSelectionWhenSelectedTaskDisappears() async {
+        sut = makeSUT()
+        let initialTask = makeSampleTask(id: "1")
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [initialTask], isFromCache: false))
+        await sut.fetchTasks()
+
+        sut.selectedTask = initialTask
+        mockTaskService.getTasksResult = .success(TasksResult(tasks: [], isFromCache: false))
+        await sut.fetchTasks(forceRefresh: true)
+
+        XCTAssertNil(sut.selectedTaskID)
+        XCTAssertNil(sut.selectedTask)
+    }
+
     func testFetchTasksNoConnectionError() async {
         sut = makeSUT()
         mockTaskService.getTasksResult = .failure(DomainError.noConnection)

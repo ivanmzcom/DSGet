@@ -27,7 +27,11 @@ struct MainDetailColumn: View {
             }
         case .feeds:
             if let feed = selectedFeed {
-                FeedDetailView(feed: feed, onClose: closeFeed)
+                FeedDetailView(
+                    feed: feed,
+                    onClose: closeFeed,
+                    onItemActivated: { keepFeedSelected(feed) }
+                )
                     .id(feed.id)
             } else {
                 ContentUnavailableView(
@@ -45,8 +49,7 @@ struct MainDetailColumn: View {
     }
 
     private var selectedFeed: RSSFeed? {
-        guard let feedID = feedsViewModel.selectedFeedID else { return nil }
-        return feedsViewModel.feeds.first(where: { $0.id == feedID })
+        feedsViewModel.selectedFeed
     }
 
     private func refreshTasks() {
@@ -59,5 +62,12 @@ struct MainDetailColumn: View {
 
     private func closeFeed() {
         feedsViewModel.selectedFeedID = nil
+    }
+
+    private func keepFeedSelected(_ feed: RSSFeed) {
+        feedsViewModel.selectedFeedID = feed.id
+        Task { @MainActor in
+            feedsViewModel.selectedFeedID = feed.id
+        }
     }
 }

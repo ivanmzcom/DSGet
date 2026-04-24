@@ -10,6 +10,7 @@ import DSGetCore
 
 struct FeedDetailView: View {
     var onClose: (() -> Void)?
+    var onItemActivated: (() -> Void)?
 
     #if !os(macOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -17,15 +18,21 @@ struct FeedDetailView: View {
 
     @State private var viewModel: FeedDetailViewModel
 
-    init(feed: RSSFeed, onClose: (() -> Void)? = nil) {
+    init(
+        feed: RSSFeed,
+        onClose: (() -> Void)? = nil,
+        onItemActivated: (() -> Void)? = nil
+    ) {
         _viewModel = State(initialValue: FeedDetailViewModel(feed: feed))
         self.onClose = onClose
+        self.onItemActivated = onItemActivated
     }
 
     var body: some View {
         List {
             ForEach(viewModel.items) { item in
                 Button {
+                    onItemActivated?()
                     viewModel.handleItemSelection(item)
                 } label: {
                     FeedItemRow(item: item)

@@ -93,14 +93,14 @@ struct TaskListContentView: View {
         #if os(macOS)
         AdaptiveLayoutReader { width in
             taskListContent(
-                selectedTask: $vm.selectedTask,
+                selectedTaskID: $vm.selectedTaskID,
                 searchText: $vm.searchText,
                 layoutWidth: width
             )
         }
         #else
         taskListContent(
-            selectedTask: $vm.selectedTask,
+            selectedTaskID: $vm.selectedTaskID,
             searchText: $vm.searchText
         )
         #endif
@@ -108,7 +108,7 @@ struct TaskListContentView: View {
 
     @ViewBuilder
     private func taskListContent(
-        selectedTask: Binding<DownloadTask?>,
+        selectedTaskID: Binding<TaskID?>,
         searchText: Binding<String>,
         layoutWidth: AdaptiveLayoutWidth? = nil
     ) -> some View {
@@ -128,7 +128,7 @@ struct TaskListContentView: View {
 
             TaskListSelectionView(
                 tasks: tasksVM.visibleTasks,
-                selectedTask: selectedTask,
+                selectedTaskID: selectedTaskID,
                 onDelete: handleDeleteTask,
                 onTogglePause: handleTogglePause,
                 opensTaskDetailInWindow: opensTaskDetailInWindow

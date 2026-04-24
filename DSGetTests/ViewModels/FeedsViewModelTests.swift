@@ -207,6 +207,45 @@ final class FeedsViewModelTests: XCTestCase {
         XCTAssertEqual(sut.selectedFeed?.title, "Feed B")
     }
 
+    func testFetchFeedsKeepsSelectionWhenSelectedFeedUpdates() async {
+        sut = makeSUT()
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [
+            makeFeed(id: "1", title: "Feed A"),
+            makeFeed(id: "2", title: "Feed B")
+        ], isFromCache: false))
+        await sut.fetchFeeds()
+
+        sut.selectedFeedID = FeedID("2")
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [
+            makeFeed(id: "1", title: "Feed A"),
+            makeFeed(id: "2", title: "Feed B Updated")
+        ], isFromCache: false))
+
+        await sut.fetchFeeds(forceRefresh: true)
+
+        XCTAssertEqual(sut.selectedFeedID, FeedID("2"))
+        XCTAssertEqual(sut.selectedFeed?.title, "Feed B Updated")
+    }
+
+    func testFetchFeedsClearsSelectionWhenSelectedFeedDisappears() async {
+        sut = makeSUT()
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [
+            makeFeed(id: "1", title: "Feed A"),
+            makeFeed(id: "2", title: "Feed B")
+        ], isFromCache: false))
+        await sut.fetchFeeds()
+
+        sut.selectedFeedID = FeedID("2")
+        mockFeedService.getFeedsResult = .success(FeedsResult(feeds: [
+            makeFeed(id: "1", title: "Feed A")
+        ], isFromCache: false))
+
+        await sut.fetchFeeds(forceRefresh: true)
+
+        XCTAssertNil(sut.selectedFeedID)
+        XCTAssertNil(sut.selectedFeed)
+    }
+
     func testSelectedFeedNilWhenNoSelection() {
         sut = makeSUT()
         XCTAssertNil(sut.selectedFeed)

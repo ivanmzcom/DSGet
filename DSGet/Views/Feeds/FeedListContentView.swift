@@ -36,10 +36,16 @@ struct FeedListContentView: View {
     private func feedRowView(for feed: RSSFeed) -> some View {
         let feedIsRefreshing = feedsVM.isRefreshing(feed)
         let feedIsFavorite = isFavorite(feed)
+        let feedIsSelected = feedsVM.selectedFeedID == feed.id
 
-        let baseRow = FeedContentRow(feed: feed, isRefreshing: feedIsRefreshing, isFavorite: feedIsFavorite)
-            .tag(feed.id)
+        let baseRow = FeedContentRow(
+            feed: feed,
+            isRefreshing: feedIsRefreshing,
+            isFavorite: feedIsFavorite,
+            isSelected: feedIsSelected
+        )
             .feedAccessibility(feed, isFavorite: feedIsFavorite, isRefreshing: feedIsRefreshing)
+            .accessibilityAddTraits(feedIsSelected ? .isSelected : [])
             .feedRotorActions(
                 onRefresh: { Task { await feedsVM.refreshFeed(feed) } },
                 onToggleFavorite: { onToggleFavorite?(feed) },
@@ -78,6 +84,7 @@ struct FeedListContentView: View {
         baseRow
         #else
         baseRow
+            .listRowBackground(feedIsSelected ? Color.accentColor.opacity(0.12) : Color.clear)
             .hoverEffect(.highlight)
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                 favoriteButton(for: feed, isFavorite: feedIsFavorite)
@@ -144,16 +151,22 @@ struct FeedListContentView: View {
             }
             .accessibilityIdentifier(AccessibilityID.FeedList.list)
         } else {
-            List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
-                feedRowView(for: feed)
-                    .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+            List(selection: $vm.selectedFeedID) {
+                ForEach(feedsVM.visibleFeeds) { feed in
+                    feedRowView(for: feed)
+                        .tag(feed.id)
+                        .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+                }
             }
             .accessibilityIdentifier(AccessibilityID.FeedList.list)
         }
         #else
-        List(feedsVM.visibleFeeds, selection: $vm.selectedFeedID) { feed in
-            feedRowView(for: feed)
-                .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+        List(selection: $vm.selectedFeedID) {
+            ForEach(feedsVM.visibleFeeds) { feed in
+                feedRowView(for: feed)
+                    .tag(feed.id)
+                    .accessibilityIdentifier("\(AccessibilityID.FeedList.feedRow).\(feed.id.rawValue)")
+            }
         }
         .accessibilityIdentifier(AccessibilityID.FeedList.list)
         #endif
@@ -308,11 +321,12 @@ private struct FeedContentRow: View {
     let feed: RSSFeed
     let isRefreshing: Bool
     var isFavorite: Bool = false
+    var isSelected: Bool = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: isFavorite ? "star.fill" : "dot.radiowaves.left.and.right")
-                .foregroundStyle(isFavorite ? .yellow : .secondary)
+                .foregroundStyle(iconColor)
                 .frame(width: 24)
 
             VStack(alignment: .leading, spacing: 8) {
@@ -363,6 +377,14 @@ private struct FeedContentRow: View {
         guard let lastUpdate = feed.lastUpdate else { return nil }
         let relative = feedRelativeDateFormatter.localizedString(for: lastUpdate, relativeTo: Date())
         return String.localized("feed.item.updated", relative)
+    }
+
+    private var iconColor: Color {
+        if isFavorite { return .yellow }
+        #if os(iOS)
+        if isSelected { return .accentColor }
+        #endif
+        return .secondary
     }
 }
 
